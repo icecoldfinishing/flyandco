@@ -1,0 +1,144 @@
+/* Style général */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e8f0f8, #f5fcff);
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Titre principal */
+h1 {
+    text-align: center;
+    background-color: #3a7ca5;
+    color: white;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+/* Messages de succès / erreur */
+div[th\:if] p {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+/* Table */
+table {
+    width: 95%;
+    margin: 0 auto 30px auto;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+thead {
+    background-color: #4a90e2;
+    color: white;
+}
+
+tbody tr:hover {
+    background-color: #f1f9ff;
+}
+
+/* Boutons */
+button {
+    padding: 8px 12px;
+    margin: 0 3px;
+    background-color: #3a7ca5;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: #2f6384;
+}
+
+/* Aucune demande */
+div[th\:if] p:last-child {
+    text-align: center;
+    font-style: italic;
+    color: #666;
+}
+/* Champ input date */
+input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+    width: 160px; /* taille raisonnable pour date */
+}
+
+input[type="date"]:focus {
+    border-color: #3a7ca5;
+    outline: none;
+    background-color: #f0f7ff;
+    box-shadow: 0 0 5px rgba(58, 124, 165, 0.5);
+}
+
+
+a.btn-return {
+    display: block;
+    width: max-content;
+    margin: 0 auto 40px auto;
+    padding: 10px 25px;
+    text-decoration: none;
+    background-color: #3a7ca5;
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+a.btn-return:hover {
+    background-color: #2f6384;
+}
+
+
+button.btn-accept {
+    background-color: #28a745; /* vert */
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.btn-accept:hover {
+    background-color: #218838;
+}
+
+button.btn-refuse {
+    background-color: #dc3545; /* rouge */
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.btn-refuse:hover {
+    background-color: #c82333;
+}

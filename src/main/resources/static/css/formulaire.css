@@ -1,0 +1,100 @@
+/* Base */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #f3f7fa, #e6f0f8);
+    margin: 0;
+    padding: 30px;
+    color: #333;
+}
+
+/* Titre principal */
+h1 {
+    text-align: center;
+    background-color: #3a7ca5;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Formulaire */
+form {
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+form div {
+    margin-bottom: 20px;
+}
+
+/* Labels */
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* Inputs et Select */
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #3a7ca5;
+    outline: none;
+}
+
+/* Bouton */
+button {
+    background-color: #3a7ca5;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #32698a;
+}
+
+
+a.btn-return {
+    display: block;
+    width: max-content;
+    margin: 0 auto 40px auto;
+    padding: 10px 25px;
+    text-decoration: none;
+    background-color: #3a7ca5;
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+a.btn-return:hover {
+    background-color: #2f6384;
+}

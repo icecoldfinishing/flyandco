@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Demandes de Prolongation en Attente</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+
+</head>
+<body>
+    <h1>Demandes de Prolongation en Attente</h1>
+
+    <div th:if="${success}">
+        <p th:text="${success}" style="color: green;"></p>
+    </div>
+    <div th:if="${error}">
+        <p th:text="${error}" style="color: red;"></p>
+    </div>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID Demande</th>
+                <th>ID Prêt</th>
+                <th>Adhérent</th>
+                <th>Livre</th>
+                <th>Date de fin actuelle</th>
+                <th>Date de fin demandée</th>
+                <th>Date de la demande</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="request : ${pendingRequests}">
+                <td th:text="${request.idStatus}"></td>
+                <td th:text="${request.pret.id_pret}"></td>
+                <td th:text="${request.pret.adherent.nom} + ' ' + ${request.pret.adherent.prenom}"></td>
+                <td th:text="${request.pret.exemplaire.livre.titre}"></td>
+                <td th:text="${request.pret.date_fin}"></td>
+                <td th:text="${request.dateFinDemandee}"></td>
+                <td th:text="${request.dateProlongement}"></td>
+                <td>
+                    <form th:action="@{/librarian/prolongement/accept/{id}(id=${request.idStatus})}" method="post" style="display:inline;">
+                        <button type="submit">Accepter</button>
+                    </form>
+                    <form th:action="@{/librarian/prolongement/refuse/{id}(id=${request.idStatus})}" method="post" style="display:inline;">
+                        <button type="submit">Refuser</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(pendingRequests)}">
+        <p>Aucune demande de prolongation en attente.</p>
+    </div>
+        <a th:href="@{/retour_librarian}" class="btn-return">Retour</a>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>API Data Display</title>
+    <link rel="stylesheet" th:href="@{/css/formulaire.css}">
+</head>
+
+<body>
+    <h1>API Data Display</h1>
+
+    <form th:action="@{/api_forms/redirect_adherent}" method="get">
+        <div>
+            <label for="adherent">Adherent :</label><br>
+            <select id="adherent" name="id" required>
+                <option th:each="adherent : ${adherents}"
+                        th:value="${adherent.idAdherent}"
+                        th:text="'Adherent #' + ${adherent.idAdherent} + ' - ' + ${adherent.nom} + ' ' + ${adherent.prenom}"></option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <button type="submit">Afficher API Data</button>
+        </div>
+    </form>
+
+    <a th:href="@{/retour_librarian}" class="btn-return">Retour</a>
+
+</body>
+
+</html>

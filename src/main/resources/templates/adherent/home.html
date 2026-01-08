@@ -1,0 +1,18 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil Adhérent</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+    <h1>Bienvenue, Adhérent</h1>
+    <ul>
+        <li><a href="/preter/liste">Mes prêts</a></li>
+        <li><a href="/reservation/add">Réserver un livre</a></li>
+    </ul>
+        <a th:href="@{/logout}" class="btn-logout">Logout</a>
+
+</body>
+</html>

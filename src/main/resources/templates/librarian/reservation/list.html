@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des réservations</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>Liste des réservations</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Livre</th>
+                    <th>Adhérent</th>
+                    <th>Date de réservation</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="reservation : ${reservations}">
+                    <td th:text="${reservation.id_reservation}"></td>
+                    <td th:text="${reservation.exemplaire.livre.titre}"></td>
+                    <td th:text="${reservation.adherent.nom}"></td>
+                    <td th:text="${reservation.date_reservation}"></td>
+                    <td>
+                        <span th:if="${reservation.getCurrentStatutReservation() != null and reservation.getCurrentStatutReservation().getStatut() != null and reservation.getCurrentStatutReservation().getStatut().getId_statut() == 1}">En attente</span>
+                        <span th:if="${reservation.getCurrentStatutReservation() != null and reservation.getCurrentStatutReservation().getStatut() != null and reservation.getCurrentStatutReservation().getStatut().getId_statut() == 2}">Validée</span>
+                        <span th:if="${reservation.getCurrentStatutReservation() == null or reservation.getCurrentStatutReservation().getStatut() == null}">Statut inconnu</span>
+                    </td>
+                    <td>
+                        <form th:if="${reservation.getCurrentStatutReservation() != null and reservation.getCurrentStatutReservation().getStatut() != null and reservation.getCurrentStatutReservation().getStatut().getId_statut() == 1}" th:action="@{/reservation/validate}" method="post" style="display: inline;">
+                            <input type="hidden" name="idReservation" th:value="${reservation.id_reservation}" />
+                            <button type="submit" class="btn btn-success">Valider</button>
+                        </form>
+                        <form th:if="${reservation.getCurrentStatutReservation() != null and reservation.getCurrentStatutReservation().getStatut() != null and reservation.getCurrentStatutReservation().getStatut().getId_statut() == 1}" th:action="@{/reservation/reject}" method="post" style="display: inline;">
+                            <input type="hidden" name="idReservation" th:value="${reservation.id_reservation}" />
+                            <button type="submit" class="btn btn-danger">Rejeter</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        <a th:href="@{/retour_librarian}" class="btn-return">Retour</a>
+
+</body>
+</html>

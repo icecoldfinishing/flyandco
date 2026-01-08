@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Affichage Prêt</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/verif_pret.css}">
+</head>
+
+<body>
+    <h1>Informations du prêt reçu</h1>
+
+    <div class="info-container">
+        <p th:text="'Date de début : ' + ${dateDebut}"></p>
+        <p th:text="'Date de fin prévue : ' + ${dateFin}"></p>
+
+        <p th:text="'ID de l’adhérent : ' + ${idAdherent}"></p>
+        <p th:text="'ID du livre : ' + ${idLivre}"></p>
+        <p th:text="'Âge de l’adhérent : ' + ${ageAdherent} + ' ans'"></p>
+        <p th:text="'Âge restriction : ' + (${ageRestriction} != null ? ageRestriction + ' ans' : 'Non défini')"></p>
+
+        <p th:text="${message}" class="info-message"></p>
+
+        <div class="status-line">
+            <p>
+                Statut adhérent : 
+                <span th:text="${statut == 'actif' ? 'Actif ✅' : 'Inactif ❌'}"></span>
+            </p>
+
+            <p>
+                Sanction : 
+                <span th:if="${isSanctioned == true}">Sanctionné 🚫</span>
+                <span th:if="${isSanctioned == false or isSanctioned == null}">Non sanctionné ✅</span>
+            </p>
+        </div>
+    </div>
+
+    <h2>Historique des dates prévues de rendu</h2>
+    <table th:if="${datesPrevues != null and !datesPrevues.isEmpty()}">
+        <thead>
+            <tr>
+                <th>ID Date</th>
+                <th>Date prévue</th>
+                <th>ID Prêt lié</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="date : ${datesPrevues}">
+                <td th:text="${date.id_date_prevue}"></td>
+                <td th:text="${date.datePrevue}"></td>
+                <td th:text="${date.pret.id_pret}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <p th:if="${datesPrevues == null or datesPrevues.isEmpty()}" class="empty-message">
+        Aucune date prévue de rendu trouvée pour cet adhérent.
+    </p>
+
+    <h2>Historique des rendus liés aux prêts</h2>
+    <table th:if="${rendus != null and !rendus.isEmpty()}">
+        <thead>
+            <tr>
+                <th>ID Rendu</th>
+                <th>Date du rendu</th>
+                <th>ID Prêt lié</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="rendu : ${rendus}">
+                <td th:text="${rendu.id_rendu}"></td>
+                <td th:text="${rendu.dateDuRendu}"></td>
+                <td th:text="${rendu.pret.id_pret}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <p th:if="${rendus == null or rendus.isEmpty()}" class="empty-message">
+        Aucun rendu trouvé pour ces prêts.
+    </p>
+
+    <a th:href="@{/preter/formpreter/livre}" class="btn-return">Retour au formulaire</a>
+</body>
+
+</html>

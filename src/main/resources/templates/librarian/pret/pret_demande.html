@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des demandes de prêt</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
+<body>
+    <h1>Liste des Demandes de Prêt</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date début</th>
+                <th>Date fin</th>
+                <th>Adhérent</th>
+                <th>Exemplaire</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="pret : ${listeDemandes}">
+                <td th:text="${pret.id_pret}"></td>
+                <td th:text="${pret.date_debut}"></td>
+                <td th:text="${pret.date_fin}"></td>
+                <td th:text="${pret.adherent.nom + ' ' + pret.adherent.prenom}"></td>
+                <td th:text="${pret.exemplaire.code}"></td>
+                <td th:text="${pret.type.nom}"></td>
+                <td>
+                    <form th:action="@{/librarian/accept/{id}(id=${pret.id_pret})}" method="post" style="display:inline;">
+                        <button class="btn-accept" type="submit">Accepter</button>
+                    </form>
+                    <form th:action="@{/librarian/refuse/{id}(id=${pret.id_pret})}" method="post" style="display:inline;">
+                        <button class="btn-refuse" type="submit">Refuser</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="back-link" th:href="@{/retour_librarian}">⬅ Retour à l'accueil</a>
+</body>
+</html>
