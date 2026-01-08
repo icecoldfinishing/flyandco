@@ -1,12 +1,14 @@
-package com.biblio.bibliotheque.controller;
+package com.fly.andco.controller;
 
-import com.biblio.bibliotheque.service.gestion.UtilisateurService;
-
+import com.fly.andco.model.Utilisateur;
+import com.fly.andco.service.UtilisateurService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 public class LoginController {
@@ -16,33 +18,31 @@ public class LoginController {
 
     @GetMapping("/")
     public String loginForm() {
-        return "login/login"; 
+        return "login/login";
     }
 
     @GetMapping("/login")
-    public String logout() {
-        return "login/login"; 
+    public String loginPage() {
+        return "login/login";
     }
-
-
 
     @PostMapping("/login")
     public String login(@RequestParam String username,
-            @RequestParam String mdp,
-            Model model,
-            HttpSession session) {
-        return utilisateurService.login(username, mdp).map(utilisateur -> {
+                        @RequestParam String mdp,
+                        Model model,
+                        HttpSession session) {
+        Optional<Utilisateur> utilisateurOpt = utilisateurService.login(username, mdp);
+        
+        if (utilisateurOpt.isPresent()) {
+            Utilisateur utilisateur = utilisateurOpt.get();
             session.setAttribute("user", utilisateur);
-            session.setAttribute("role", utilisateur.getRole().getNom());
-            if ("bibliothequaire".equals(utilisateur.getRole().getNom())) {
-                return "redirect:/librarian/home";
-            } else {
-                return "redirect:/adherent/home";
-            }
-        }).orElseGet(() -> {
+            session.setAttribute("username", utilisateur.getUsername());
+            session.setAttribute("role", utilisateur.getRole());
+            return "redirect:/hello";
+        } else {
             model.addAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
             return "login/login";
-        });
+        }
     }
 
     @GetMapping("/logout")

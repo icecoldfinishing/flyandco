@@ -1,14 +1,9 @@
-package com.biblio.bibliotheque.controller;
+package com.fly.andco.controller;
 
+import com.fly.andco.model.Utilisateur;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import com.biblio.bibliotheque.model.gestion.Utilisateur;
-import com.biblio.bibliotheque.model.pret.Pret;
-import com.biblio.bibliotheque.service.pret.PretService;
-
 import jakarta.servlet.http.HttpSession;
-
 import org.springframework.ui.Model;
 
 @Controller
@@ -16,17 +11,8 @@ public class HelloController {
 
     @GetMapping("/bienvenue")
     public String afficherHello(Model model) {
-        model.addAttribute("message", "Bienvenue à la bibliothèque !");
-        return "/views/hello";
-    }
-
-    @GetMapping("/retour_adherent")
-    public String retour_adherent(Model model) {
-        return "redirect:/adherent/home";
-    }
-    @GetMapping("/retour_librarian")
-    public String retour_librarian(Model model) {
-        return "redirect:/librarian/home";
+        model.addAttribute("message", "Bienvenue !");
+        return "views/hello";
     }
 
     @GetMapping("/hello")
@@ -36,17 +22,8 @@ public class HelloController {
             return "redirect:/login";
         }
 
-        String username = utilisateur.getUsername();
-        String role = utilisateur.getRole().getNom();
-
-        model.addAttribute("username", username);
-        model.addAttribute("role", role);
-
-        // Détermine si l'utilisateur est un adhérent
-        boolean isAdherent = "adherent".equalsIgnoreCase(role);
-        model.addAttribute("isAdherent", isAdherent);
-
-        return "/views/hello";
+        model.addAttribute("username", utilisateur.getUsername());
+        model.addAttribute("role", utilisateur.getRole());
+        return "views/hello";
     }
-
 }

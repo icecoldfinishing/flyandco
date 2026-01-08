@@ -1,7 +1,7 @@
-package com.biblio.bibliotheque.service.gestion;
+package com.fly.andco.service;
 
-import com.biblio.bibliotheque.model.gestion.Utilisateur;
-import com.biblio.bibliotheque.repository.gestion.UtilisateurRepository;
+import com.fly.andco.model.Utilisateur;
+import com.fly.andco.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,10 +30,16 @@ public class UtilisateurService {
         utilisateurRepository.deleteById(id);
     }
 
-    public Optional<Utilisateur> findByUsernameAndMdp(String username, String mdp) {
-        return utilisateurRepository.findByUsernameAndMdp(username, mdp);
+    public Optional<Utilisateur> findByUsernameAndMotDePasse(String username, String motDePasse) {
+        return utilisateurRepository.findByUsernameAndMotDePasse(username, motDePasse);
     }
-    public Optional<Utilisateur> login(String username, String mdp) {
-        return utilisateurRepository.findByUsernameAndMdp(username, mdp);
+
+    public Optional<Utilisateur> findByUsername(String username) {
+        return utilisateurRepository.findByUsername(username);
+    }
+
+    public Optional<Utilisateur> login(String username, String motDePasse) {
+        return utilisateurRepository.findByUsernameAndMotDePasse(username, motDePasse);
     }
 }
+

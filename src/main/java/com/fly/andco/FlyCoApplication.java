@@ -1,12 +1,13 @@
-package com.biblio.bibliotheque;
+package com.fly.andco;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BibliothequeApplication {
+public class FlyCoApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BibliothequeApplication.class, args);
+		SpringApplication.run(FlyCoApplication.class, args);
 	}
 }
+

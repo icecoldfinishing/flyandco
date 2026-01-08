@@ -2,6 +2,18 @@ DROP DATABASE IF EXISTS pg10;
 CREATE DATABASE pg10;
 \c pg10;
 
+-- Table Utilisateur pour login admin
+CREATE TABLE Utilisateur (
+    id_utilisateur SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    mot_de_passe VARCHAR(100) NOT NULL,
+    role VARCHAR(20) DEFAULT 'admin'
+);
+
+-- Insérer le compte admin par défaut
+INSERT INTO Utilisateur (username, mot_de_passe, role)
+VALUES ('admin', 'admin', 'admin');
+
 -- Table Compagnie
 CREATE TABLE Compagnie (
     id_compagnie SERIAL PRIMARY KEY,
