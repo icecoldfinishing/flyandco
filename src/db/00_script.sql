@@ -1,0 +1,3 @@
+DROP DATABASE if exists pg10;
+CREATE DATABASE pg10;
+\c pg10;

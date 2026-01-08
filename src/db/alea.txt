@@ -1,3 +1,0 @@
-adherent,
-cota,
-sanction
