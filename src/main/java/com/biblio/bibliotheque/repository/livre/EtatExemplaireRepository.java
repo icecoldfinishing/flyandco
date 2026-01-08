@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EtatExemplaireRepository extends JpaRepository<EtatExemplaire, Integer> {
 
-    @Query("""
-        SELECT ee FROM EtatExemplaire ee
-        WHERE ee.exemplaire.id_exemplaire = :id
-        ORDER BY ee.date_modif DESC
-        LIMIT 1
-    """)
-    EtatExemplaire findLatestEtatForExemplaire(@Param("id") Integer idExemplaire);
-
+    @Query(
+        "SELECT ee FROM EtatExemplaire ee " +
+        "WHERE ee.exemplaire.idExemplaire = :idExemplaire " +
+        "ORDER BY ee.dateModif DESC"
+    )
+    EtatExemplaire findLatestEtatForExemplaire(
+            @Param("idExemplaire") Integer idExemplaire
+    );
 }
