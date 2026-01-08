@@ -121,3 +121,25 @@ INSERT INTO Compagnie (nom, pays, code_iata, code_icao) VALUES
 ('Air France', 'France', 'AF', 'AFR'),
 ('Lufthansa', 'Germany', 'LH', 'DLH'),
 ('Emirates', 'United Arab Emirates', 'EK', 'UAE');
+
+INSERT INTO Avion (id_compagnie, modele, capacite, numero_immatriculation) VALUES
+-- Air France
+(1, 'Airbus A320', 180, 'F-A32001'),
+(1, 'Airbus A330', 250, 'F-A33001'),
+(1, 'Boeing 777', 300, 'F-B77701'),
+(1, 'Boeing 787', 280, 'F-B78701'),
+(1, 'Embraer E190', 100, 'F-E19001'),
+
+-- Lufthansa
+(2, 'Airbus A320', 180, 'D-A32001'),
+(2, 'Airbus A350', 300, 'D-A35001'),
+(2, 'Boeing 747', 400, 'D-B74701'),
+(2, 'Boeing 777', 300, 'D-B77702'),
+(2, 'Embraer E195', 120, 'D-E19501'),
+
+-- Emirates
+(3, 'Airbus A380', 500, 'A6-A38001'),
+(3, 'Boeing 777', 350, 'A6-B77701'),
+(3, 'Boeing 787', 280, 'A6-B78701'),
+(3, 'Airbus A350', 300, 'A6-A35001'),
+(3, 'Boeing 737', 180, 'A6-B73701');
