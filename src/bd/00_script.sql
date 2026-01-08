@@ -10,9 +10,6 @@ CREATE TABLE Utilisateur (
     role VARCHAR(20) DEFAULT 'admin'
 );
 
--- Insérer le compte admin par défaut
-INSERT INTO Utilisateur (username, mot_de_passe, role)
-VALUES ('admin', 'admin', 'admin');
 
 -- Table Compagnie
 CREATE TABLE Compagnie (
@@ -113,3 +110,14 @@ CREATE TABLE Equipage (
     FOREIGN KEY (id_pilote) REFERENCES Pilote(id_pilote),
     UNIQUE (id_vol, id_pilote)
 );
+
+
+
+-- Insérer le compte admin par défaut
+INSERT INTO Utilisateur (username, mot_de_passe, role)
+VALUES ('admin', 'admin', 'admin');
+
+INSERT INTO Compagnie (nom, pays, code_iata, code_icao) VALUES
+('Air France', 'France', 'AF', 'AFR'),
+('Lufthansa', 'Germany', 'LH', 'DLH'),
+('Emirates', 'United Arab Emirates', 'EK', 'UAE');

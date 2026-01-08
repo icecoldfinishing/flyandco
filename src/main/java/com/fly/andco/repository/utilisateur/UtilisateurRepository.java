@@ -1,6 +1,6 @@
-package com.fly.andco.repository;
+package com.fly.andco.repository.utilisateur;
 
-import com.fly.andco.model.Utilisateur;
+import com.fly.andco.model.utilisateur.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.fly.andco.model;
+package com.fly.andco.model.utilisateur;
 
 import jakarta.persistence.*;
 

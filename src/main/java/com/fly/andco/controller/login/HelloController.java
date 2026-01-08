@@ -1,6 +1,6 @@
-package com.fly.andco.controller;
+package com.fly.andco.controller.login;
 
-import com.fly.andco.model.Utilisateur;
+import com.fly.andco.model.utilisateur.Utilisateur;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.servlet.http.HttpSession;
@@ -12,10 +12,10 @@ public class HelloController {
     @GetMapping("/bienvenue")
     public String afficherHello(Model model) {
         model.addAttribute("message", "Bienvenue !");
-        return "views/hello";
+        return "views/home/home";
     }
 
-    @GetMapping("/hello")
+    @GetMapping("/home")
     public String hello(HttpSession session, Model model) {
         Utilisateur utilisateur = (Utilisateur) session.getAttribute("user");
         if (utilisateur == null) {
@@ -24,6 +24,6 @@ public class HelloController {
 
         model.addAttribute("username", utilisateur.getUsername());
         model.addAttribute("role", utilisateur.getRole());
-        return "views/hello";
+        return "views/home/home";
     }
 }

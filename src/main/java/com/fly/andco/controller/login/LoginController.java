@@ -1,7 +1,7 @@
-package com.fly.andco.controller;
+package com.fly.andco.controller.login;
 
-import com.fly.andco.model.Utilisateur;
-import com.fly.andco.service.UtilisateurService;
+import com.fly.andco.model.utilisateur.Utilisateur;
+import com.fly.andco.service.utilisateur.UtilisateurService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +38,7 @@ public class LoginController {
             session.setAttribute("user", utilisateur);
             session.setAttribute("username", utilisateur.getUsername());
             session.setAttribute("role", utilisateur.getRole());
-            return "redirect:/hello";
+            return "redirect:/home";
         } else {
             model.addAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
             return "login/login";
