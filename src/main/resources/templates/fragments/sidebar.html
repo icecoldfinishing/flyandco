@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div id="sidebar" th:fragment="sidebar">
+    <div class="sidebar-wrapper">
+        <div class="sidebar-header position-relative">
+            <!-- TON CODE EXISTANT -->
+        </div>
+
+        <div class="sidebar-menu">
+            <ul class="menu">
+                <li class="sidebar-title">Menu</li>
+
+                <li class="sidebar-item">
+                    <a href="/home" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item has-sub">
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                        <span>Filtre</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="/compagnies" class="submenu-link">Compagnie</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="/avions" class="submenu-link">Avion</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="/logout" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Déconnexion</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
