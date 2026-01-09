@@ -1,7 +1,7 @@
 package com.fly.andco.controller.login;
 
-import com.fly.andco.model.utilisateur.Utilisateur;
-import com.fly.andco.service.utilisateur.UtilisateurService;
+import com.fly.andco.model.utilisateurs.Utilisateur;
+import com.fly.andco.service.utilisateurs.UtilisateurService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

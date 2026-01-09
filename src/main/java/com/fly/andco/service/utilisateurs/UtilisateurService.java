@@ -1,7 +1,7 @@
-package com.fly.andco.service.utilisateur;
+package com.fly.andco.service.utilisateurs;
 
-import com.fly.andco.model.utilisateur.Utilisateur;
-import com.fly.andco.repository.utilisateur.UtilisateurRepository;
+import com.fly.andco.model.utilisateurs.Utilisateur;
+import com.fly.andco.repository.utilisateurs.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
