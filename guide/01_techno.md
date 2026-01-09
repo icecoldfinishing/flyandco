@@ -6,7 +6,7 @@ Framework : Spring Boot (gestion via Maven)
 Gestion des dépendances et compilation : Maven 21
 
 # Frontend
-Technologie : JSP (Java Server Pages)
+Technologie : View html
 Template / pages web servies par Spring Boot
 
 # Base de données
