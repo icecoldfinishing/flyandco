@@ -143,36 +143,58 @@ CREATE TABLE equipage (
     UNIQUE (id_vol_instance, id_pilote)
 );
 
--- ======================================================
--- INSERTS (cohérents avec le modèle)
--- ======================================================
+-- =========================
+-- UTILISATEUR
+-- =========================
+INSERT INTO utilisateur (username, mot_de_passe, role)
+VALUES ('admin', 'admin', 'admin')
+ON CONFLICT (username) DO NOTHING;
 
-INSERT INTO aeroport(nom,ville,pays,code_iata,code_icao) VALUES ('Ivato International Airport','Antananarivo','Madagascar','TNR','FMMI');
-INSERT INTO aeroport(nom,ville,pays,code_iata,code_icao) VALUES ('Fascene Airport','Nosy Be','Madagascar','NOS','FMNN');
-INSERT INTO aeroport(nom,ville,pays,code_iata,code_icao) VALUES ('Arrachart Airport','Antsiranana','Madagascar','DIE','FMNA');
-INSERT INTO aeroport(nom,ville,pays,code_iata,code_icao) VALUES ('Toliara Airport','Toliara','Madagascar','TLE','FMST');
-INSERT INTO aeroport(nom,ville,pays,code_iata,code_icao) VALUES ('Marillac Airport','Fort Dauphin','Madagascar','FTU','FMSD');
+-- =========================
+-- AEROPORTS
+-- =========================
+INSERT INTO aeroport (nom, ville, pays, code_iata, code_icao) VALUES ('Ivato International Airport', 'Antananarivo', 'Madagascar', 'TNR', 'FMMI') ON CONFLICT (code_iata) DO NOTHING;
+INSERT INTO aeroport (nom, ville, pays, code_iata, code_icao) VALUES ('Fascene Airport', 'Nosy Be', 'Madagascar', 'NOS', 'FMNN') ON CONFLICT (code_iata) DO NOTHING;
+INSERT INTO aeroport (nom, ville, pays, code_iata, code_icao) VALUES ('Arrachart Airport', 'Antsiranana', 'Madagascar', 'DIE', 'FMNA') ON CONFLICT (code_iata) DO NOTHING;
+INSERT INTO aeroport (nom, ville, pays, code_iata, code_icao) VALUES ('Toliara Airport', 'Toliara', 'Madagascar', 'TLE', 'FMST') ON CONFLICT (code_iata) DO NOTHING;
+INSERT INTO aeroport (nom, ville, pays, code_iata, code_icao) VALUES ('Marillac Airport', 'Fort Dauphin', 'Madagascar', 'FTU', 'FMSD') ON CONFLICT (code_iata) DO NOTHING;
 
-INSERT INTO compagnie(nom,pays,code_iata,code_icao) VALUES ('Air Madagascar','Madagascar','MD','MDG');
-INSERT INTO compagnie(nom,pays,code_iata,code_icao) VALUES ('Tsaradia','Madagascar','TZ','TSD');
-INSERT INTO compagnie(nom,pays,code_iata,code_icao) VALUES ('Madagascar Airlines','Madagascar','MA','MDA');
-INSERT INTO compagnie(nom,pays,code_iata,code_icao) VALUES ('Ewa Air','Comores','ZW','EWR');
+-- =========================
+-- COMPAGNIES
+-- =========================
+INSERT INTO compagnie (nom, pays, code_iata, code_icao) VALUES ('Air Madagascar', 'Madagascar', 'MD', 'MDG') ON CONFLICT (code_iata) DO NOTHING;
+INSERT INTO compagnie (nom, pays, code_iata, code_icao) VALUES ('Tsaradia', 'Madagascar', 'TZ', 'TSD') ON CONFLICT (code_iata) DO NOTHING;
+INSERT INTO compagnie (nom, pays, code_iata, code_icao) VALUES ('Madagascar Airlines', 'Madagascar', 'MA', 'MDA') ON CONFLICT (code_iata) DO NOTHING;
+INSERT INTO compagnie (nom, pays, code_iata, code_icao) VALUES ('Ewa Air', 'Comores', 'ZW', 'EWR') ON CONFLICT (code_iata) DO NOTHING;
 
-INSERT INTO avion(id_compagnie,modele,capacite,numero_immatriculation) VALUES (1,'ATR 72',70,'5R-MJG');
-INSERT INTO avion(id_compagnie,modele,capacite,numero_immatriculation) VALUES (2,'ATR 42',48,'5R-TSA');
-INSERT INTO avion(id_compagnie,modele,capacite,numero_immatriculation) VALUES (3,'Boeing 737',140,'5R-MDL');
-INSERT INTO avion(id_compagnie,modele,capacite,numero_immatriculation) VALUES (1,'Dash 8 Q400',78,'5R-DQ4');
-INSERT INTO avion(id_compagnie,modele,capacite,numero_immatriculation) VALUES (4,'Embraer 190',100,'D2-EWA');
+-- =========================
+-- AVIONS
+-- =========================
+INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation) VALUES (1, 'ATR 72', 70, '5R-MJG') ON CONFLICT (numero_immatriculation) DO NOTHING;
+INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation) VALUES (2, 'ATR 42', 48, '5R-TSA') ON CONFLICT (numero_immatriculation) DO NOTHING;
+INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation) VALUES (3, 'Boeing 737', 140, '5R-MDL') ON CONFLICT (numero_immatriculation) DO NOTHING;
+INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation) VALUES (1, 'Dash 8 Q400', 78, '5R-DQ4') ON CONFLICT (numero_immatriculation) DO NOTHING;
+INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation) VALUES (4, 'Embraer 190', 100, 'D2-EWA') ON CONFLICT (numero_immatriculation) DO NOTHING;
 
-INSERT INTO vol(id_compagnie,id_aeroport_depart,id_aeroport_arrivee,duree_minutes) VALUES (1,1,2,90);
-INSERT INTO vol(id_compagnie,id_aeroport_depart,id_aeroport_arrivee,duree_minutes) VALUES (2,1,2,85);
-INSERT INTO vol(id_compagnie,id_aeroport_depart,id_aeroport_arrivee,duree_minutes) VALUES (1,1,3,120);
+-- =========================
+-- VOLS (trajets)
+-- =========================
+INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee, duree_minutes) VALUES (1, 1, 2, 90);
+INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee, duree_minutes) VALUES (2, 1, 2, 85);
+INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee, duree_minutes) VALUES (1, 1, 3, 120);
 
-INSERT INTO vol_instance(id_vol,id_avion,date_depart,date_arrivee) VALUES (1,1,'2026-01-12 12:00','2026-01-12 13:30');
-INSERT INTO vol_instance(id_vol,id_avion,date_depart,date_arrivee) VALUES (2,2,'2026-01-12 12:00','2026-01-12 13:25');
+-- =========================
+-- VOL INSTANCES
+-- =========================
+-- Vous devez insérer des instances de vol après avoir inséré les vols et les avions.
+INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES (1, 1, '2026-01-12 12:00', '2026-01-12 13:30'); -- Pour id_vol = 1 et id_avion = 1 existants
+INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES (2, 2, '2026-01-12 12:00', '2026-01-12 13:25'); -- Pour id_vol = 2 et id_avion = 2 existants
 
-INSERT INTO prix_vol(id_vol,classe,prix) VALUES (1,'ECONOMY',350000);
-INSERT INTO prix_vol(id_vol,classe,prix) VALUES (1,'BUSINESS',750000);
-INSERT INTO prix_vol(id_vol,classe,prix) VALUES (2,'ECONOMY',330000);
-INSERT INTO prix_vol(id_vol,classe,prix) VALUES (2,'BUSINESS',700000);
-INSERT INTO prix_vol(id_vol,classe,prix) VALUES (3,'ECONOMY',280000);
+-- =========================
+-- PRIX PAR CLASSE
+-- =========================
+INSERT INTO prix_vol (id_vol, classe, prix) VALUES (1, 'ECONOMY', 350000) ON CONFLICT (id_vol, classe) DO NOTHING;
+INSERT INTO prix_vol (id_vol, classe, prix) VALUES (1, 'BUSINESS', 750000) ON CONFLICT (id_vol, classe) DO NOTHING;
+INSERT INTO prix_vol (id_vol, classe, prix) VALUES (2, 'ECONOMY', 330000) ON CONFLICT (id_vol, classe) DO NOTHING;
+INSERT INTO prix_vol (id_vol, classe, prix) VALUES (2, 'BUSINESS', 700000) ON CONFLICT (id_vol, classe) DO NOTHING;
+INSERT INTO prix_vol (id_vol, classe, prix) VALUES (3, 'ECONOMY', 280000) ON CONFLICT (id_vol, classe) DO NOTHING;
