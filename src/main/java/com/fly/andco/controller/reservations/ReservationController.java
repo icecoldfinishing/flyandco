@@ -44,7 +44,7 @@ public class ReservationController {
     @GetMapping("/search")
     public String showSearchForm(Model model) {
         model.addAttribute("aeroports", aeroportRepository.findAll());
-        return "views/flights/search";
+        return "views/reservation/search";
     }
 
     @GetMapping("/results")
@@ -59,7 +59,7 @@ public class ReservationController {
         List<VolInstance> flights = volInstanceRepository.findFlights(origin, destination, startOfDay, endOfDay);
         model.addAttribute("flights", flights);
         model.addAttribute("searchDate", date);
-        return "views/flights/results";
+        return "views/reservation/results";
     }
 
     @GetMapping("/book/{id}")
@@ -73,7 +73,7 @@ public class ReservationController {
         // Simple hack to get prices for this flight's route
         model.addAttribute("prices", prices.stream().filter(p -> p.getVol().getIdVol().equals(vol.getVol().getIdVol())).toList());
         model.addAttribute("passenger", new Passager());
-        return "views/flights/book";
+        return "views/reservation/book";
     }
 
     @PostMapping("/purchase")
@@ -98,6 +98,6 @@ public class ReservationController {
         reservationRepository.save(reservation);
         
         model.addAttribute("reservation", reservation);
-        return "views/flights/confirmation";
+        return "views/reservation/confirmation";
     }
 }
