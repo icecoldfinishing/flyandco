@@ -55,7 +55,6 @@ CREATE TABLE vol (
     id_compagnie INT NOT NULL,
     id_aeroport_depart INT NOT NULL,
     id_aeroport_arrivee INT NOT NULL,
-    duree_minutes INT NOT NULL CHECK (duree_minutes > 0),
     FOREIGN KEY (id_compagnie) REFERENCES compagnie(id_compagnie),
     FOREIGN KEY (id_aeroport_depart) REFERENCES aeroport(id_aeroport),
     FOREIGN KEY (id_aeroport_arrivee) REFERENCES aeroport(id_aeroport),
@@ -185,11 +184,11 @@ VALUES
 -- =========================
 -- VOLS (trajets)
 -- =========================
-INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee, duree_minutes)
+INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee)
 VALUES
-(1, 1, 2, 90),
-(2, 1, 2, 85),
-(1, 1, 3, 120);
+(1, 1, 2),
+(2, 1, 2),
+(1, 1, 3);
 
 -- =========================
 -- VOL INSTANCES

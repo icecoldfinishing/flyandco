@@ -54,7 +54,6 @@
                                             <td th:text="${flight.vol.aeroportArrivee.codeIata}">NOS</td>
                                             <td th:text="${#temporals.format(flight.dateDepart, 'HH:mm')}">12:00</td>
                                             <td th:text="${#temporals.format(flight.dateArrivee, 'HH:mm')}">13:30</td>
-                                            <td th:text="${flight.vol.dureeMinutes} + ' min'">90 min</td>
                                             <td>
                                                 <a th:href="@{/flights/book/{id}(id=${flight.idVolInstance})}"
                                                     class="btn btn-sm btn-primary">Réserver</a>

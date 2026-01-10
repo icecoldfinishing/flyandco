@@ -26,8 +26,6 @@ public class Vol {
     @JoinColumn(name = "id_aeroport_arrivee", nullable = false)
     private Aeroport aeroportArrivee;
 
-    @Column(name = "duree_minutes", nullable = false)
-    private Integer dureeMinutes;
 
     // getters & setters
     public Long getIdVol() {
@@ -62,11 +60,4 @@ public class Vol {
         this.aeroportArrivee = aeroportArrivee;
     }
 
-    public Integer getDureeMinutes() {
-        return dureeMinutes;
-    }
-
-    public void setDureeMinutes(Integer dureeMinutes) {
-        this.dureeMinutes = dureeMinutes;
-    }
 }
