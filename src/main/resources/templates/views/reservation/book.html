@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réserver un Vol - Fly & Co</title>
+
+    <link rel="stylesheet" th:href="@{/assets/compiled/css/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/compiled/css/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/compiled/css/iconly.css}">
+</head>
+
+<body>
+    <script th:src="@{/assets/static/js/initTheme.js}"></script>
+    <div id="app">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <div id="main">
+            <header class="mb-3">
+                <a href="#" class="burger-btn d-block d-xl-none">
+                    <i class="bi bi-justify fs-3"></i>
+                </a>
+            </header>
+
+            <div class="page-heading">
+                <h3>Finaliser la réservation</h3>
+            </div>
+
+            <div class="page-content">
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Détails du vol</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Compagnie:</strong> <span th:text="${flight.avion.compagnie.nom}"></span>
+                                    </p>
+                                    <p><strong>Départ:</strong> <span
+                                            th:text="${flight.vol.aeroportDepart.ville} + ' (' + ${flight.vol.aeroportDepart.codeIata} + ')'"></span>
+                                    </p>
+                                    <p><strong>Date Départ:</strong> <span
+                                            th:text="${#temporals.format(flight.dateDepart, 'dd-MM-yyyy HH:mm')}"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Avion:</strong> <span th:text="${flight.avion.modele}"></span></p>
+                                    <p><strong>Arrivée:</strong> <span
+                                            th:text="${flight.vol.aeroportArrivee.ville} + ' (' + ${flight.vol.aeroportArrivee.codeIata} + ')'"></span>
+                                    </p>
+                                    <p><strong>Date Arrivée:</strong> <span
+                                            th:text="${#temporals.format(flight.dateArrivee, 'dd-MM-yyyy HH:mm')}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Informations Passager</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/flights/purchase" method="post" th:object="${passenger}">
+                                <input type="hidden" name="flightId" th:value="${flight.idVolInstance}" />
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nom">Nom</label>
+                                        <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="prenom">Prénom</label>
+                                        <input type="text" class="form-control" id="prenom" th:field="*{prenom}"
+                                            required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" th:field="*{email}"
+                                            required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="dateNaissance">Date de Naissance</label>
+                                        <input type="date" class="form-control" id="dateNaissance"
+                                            th:field="*{dateNaissance}" required>
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                                        <label>Classe & Prix</label>
+                                        <div class="form-check" th:each="price : ${prices}">
+                                            <input class="form-check-input" type="radio" name="priceId"
+                                                th:value="${price.idPrix}" th:id="'price_' + ${price.idPrix}" required>
+                                            <label class="form-check-label" th:for="'price_' + ${price.idPrix}">
+                                                <span th:text="${price.classe}"></span> - <span
+                                                    th:text="${price.prix} + ' MGA'"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">Confirmer Achat</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <footer>
+                <div class="footer clearfix mb-0 text-muted">
+                    <div class="float-start">
+                        <p>2023 &copy; Fly & Co</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script th:src="@{/assets/static/js/components/dark.js}"></script>
+    <script th:src="@{/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+    <script th:src="@{/assets/compiled/js/app.js}"></script>
+</body>
+
+</html>
