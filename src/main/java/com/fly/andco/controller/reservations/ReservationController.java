@@ -10,6 +10,7 @@ import com.fly.andco.repository.aeroports.AeroportRepository;
 import com.fly.andco.repository.reservations.ReservationRepository;
 import com.fly.andco.repository.passagers.PassagerRepository;
 import com.fly.andco.repository.prix.PrixVolRepository;
+import com.fly.andco.service.reservations.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,10 @@ import java.util.List;
 @Controller
 @RequestMapping("/flights")
 public class ReservationController {
+
+    
+    @Autowired
+    private ReservationService reservationService;
 
     @Autowired
     private VolInstanceRepository volInstanceRepository;
@@ -41,6 +46,12 @@ public class ReservationController {
     private PrixVolRepository prixVolRepository;
 
 
+    @GetMapping("/list")
+    public String listReservationss(Model model) {
+        List<Reservation> reservations = reservationService.getAll();
+        model.addAttribute("reservations", reservations);
+        return "views/reservations/list";
+    }
     @GetMapping("/search")
     public String showSearchForm(Model model) {
         model.addAttribute("aeroports", aeroportRepository.findAll());
