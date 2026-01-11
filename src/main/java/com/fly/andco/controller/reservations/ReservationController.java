@@ -44,6 +44,8 @@ public class ReservationController {
     @GetMapping("/search")
     public String showSearchForm(Model model) {
         model.addAttribute("aeroports", aeroportRepository.findAll());
+        List<VolInstance> flights = volInstanceRepository.findAll();
+        model.addAttribute("flights", flights);
         return "views/reservation/search";
     }
 
@@ -57,9 +59,10 @@ public class ReservationController {
         LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
         
         List<VolInstance> flights = volInstanceRepository.findFlights(origin, destination, startOfDay, endOfDay);
+        model.addAttribute("aeroports", aeroportRepository.findAll());
         model.addAttribute("flights", flights);
         model.addAttribute("searchDate", date);
-        return "views/reservation/results";
+        return "views/reservation/search";
     }
 
     @GetMapping("/book/{id}")
