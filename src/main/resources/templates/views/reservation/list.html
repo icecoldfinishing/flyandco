@@ -48,6 +48,46 @@
                         </div>
                     </div>
                 </div>
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Filtrer les réservations</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/flights/list/results" method="get">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="passagerId">Passager</label>
+                                            <select class="form-select" id="passagerId" name="passagerId" required>
+                                                <option value="" disabled selected>Choisir un passager</option>
+                                                <option th:each="passager : ${passagers}" 
+                                                        th:value="${passager.getIdPassager}" 
+                                                        th:text="${passager.getNom} + ' (ID: ' + ${passager.getIdPassager} + ')'">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="startDate">Date de début</label>
+                                            <input type="date" class="form-control" id="startDate" name="start">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="endDate">Date de fin</label>
+                                            <input type="date" class="form-control" id="endDate" name="end">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">Rechercher</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
 
                 <section class="section">
                     <div class="card">

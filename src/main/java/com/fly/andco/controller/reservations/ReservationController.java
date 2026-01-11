@@ -10,6 +10,7 @@ import com.fly.andco.repository.aeroports.AeroportRepository;
 import com.fly.andco.repository.reservations.ReservationRepository;
 import com.fly.andco.repository.passagers.PassagerRepository;
 import com.fly.andco.repository.prix.PrixVolRepository;
+import com.fly.andco.repository.passagers.PassagerRepository;
 import com.fly.andco.service.reservations.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -50,8 +51,26 @@ public class ReservationController {
     public String listReservationss(Model model) {
         List<Reservation> reservations = reservationService.getAll();
         model.addAttribute("reservations", reservations);
-        return "views/reservations/list";
+        model.addAttribute("passagers", passagerRepository.findAll());
+        return "views/reservation/list";
     }
+    @GetMapping("/list/results")
+    public String searchReservations(@RequestParam("passagerId") Long passagerId,
+                                    @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                    @RequestParam(value = "end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                    Model model) {
+        // Gestion des dates
+        LocalDateTime startOfDay = startDate.atStartOfDay();
+        LocalDateTime endOfDay = (endDate != null) ? endDate.atTime(LocalTime.MAX) : LocalDateTime.now();
+
+        List<Reservation> reservations = reservationService.findReservations(passagerId, startOfDay, endOfDay);
+        model.addAttribute("reservations", reservations);
+        model.addAttribute("searchDate", startDate);
+        model.addAttribute("passagerId", passagerId); // Ajout de l'ID du passager
+
+        return "views/reservation/list";
+    }
+
     @GetMapping("/search")
     public String showSearchForm(Model model) {
         model.addAttribute("aeroports", aeroportRepository.findAll());
