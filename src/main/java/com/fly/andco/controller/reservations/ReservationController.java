@@ -56,14 +56,16 @@ public class ReservationController {
     }
     @GetMapping("/list/results")
     public String searchReservations(@RequestParam("passagerId") Long passagerId,
-                                    @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                    @RequestParam(value = "start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                     @RequestParam(value = "end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                                     Model model) {
         // Gestion des dates
-        LocalDateTime startOfDay = startDate.atStartOfDay();
+        LocalDateTime startOfDay = (startDate != null) ? startDate.atStartOfDay() : null;
         LocalDateTime endOfDay = (endDate != null) ? endDate.atTime(LocalTime.MAX) : LocalDateTime.now();
 
-        List<Reservation> reservations = reservationService.findReservations(passagerId, startOfDay, endOfDay);
+        // Appel au service pour récupérer les réservations
+        List<Reservation> reservations = reservationRepository.findByPassager_IdPassagerAndDateReservationBetween(passagerId, startOfDay, endOfDay);
+        
         model.addAttribute("reservations", reservations);
         model.addAttribute("searchDate", startDate);
         model.addAttribute("passagerId", passagerId); // Ajout de l'ID du passager

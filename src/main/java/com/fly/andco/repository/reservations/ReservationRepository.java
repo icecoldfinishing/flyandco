@@ -11,13 +11,8 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    
-    @Query("SELECT r FROM Reservation r WHERE " +
-            "(r.passager.idPassager = :passagerId) " +
-            "AND (:start IS NULL OR r.dateReservation >= :start) " +
-            "AND (:end IS NULL OR r.dateReservation <= :end)")
-    List<Reservation> findReservationsByPassagerAndDate(
-            @Param("passagerId") Long passagerId,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end);
+        List<Reservation> findByPassager_IdPassager(Long passagerId);
+
+        List<Reservation> findByPassager_IdPassagerAndDateReservationBetween(
+                Long passagerId, LocalDateTime start, LocalDateTime end);
 }

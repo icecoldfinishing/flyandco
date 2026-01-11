@@ -10,6 +10,7 @@ public class Passager {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_passager")
     private Long idPassager;
 
     private String nom;

@@ -31,7 +31,4 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    public List<Reservation> findReservations(Long passagerId, LocalDateTime start, LocalDateTime end) {
-        return reservationRepository.findReservationsByPassagerAndDate(passagerId, start, end);
-    }
 }
