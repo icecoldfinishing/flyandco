@@ -69,6 +69,45 @@
                         </div>
                     </div>
                 </section>
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Résultats pour le <span th:text="${searchDate}"></span></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="table1">
+                                    <thead>
+                                        <tr>
+                                            <th>Compagnie</th>
+                                            <th>Départ</th>
+                                            <th>Arrivée</th>
+                                            <th>Heure Départ</th>
+                                            <th>Heure Arrivée</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="flight : ${flights}">
+                                            <td th:text="${flight.avion.compagnie.nom}">Air Madagascar</td>
+                                            <td th:text="${flight.vol.aeroportDepart.codeIata}">TNR</td>
+                                            <td th:text="${flight.vol.aeroportArrivee.codeIata}">NOS</td>
+                                            <td th:text="${#temporals.format(flight.dateDepart, 'HH:mm')}">12:00</td>
+                                            <td th:text="${#temporals.format(flight.dateArrivee, 'HH:mm')}">13:30</td>
+                                            <td>
+                                                <a th:href="@{/flights/book/{id}(id=${flight.idVolInstance})}"
+                                                    class="btn btn-sm btn-primary">Réserver</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div th:if="${flights.empty}" class="alert alert-warning">
+                                    Aucun vol trouvé pour cette date.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
 
             <footer>
