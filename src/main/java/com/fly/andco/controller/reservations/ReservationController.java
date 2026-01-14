@@ -7,7 +7,7 @@ import com.fly.andco.model.prix.PrixVol;
 import com.fly.andco.model.paiements.*;
 
 import com.fly.andco.repository.vols.VolRepository;
-import com.fly.andco.repository.VolInstanceRepository;
+import com.fly.andco.repository.vols.VolInstanceRepository;
 import com.fly.andco.repository.aeroports.AeroportRepository;
 import com.fly.andco.repository.reservations.ReservationRepository;
 import com.fly.andco.repository.passagers.PassagerRepository;

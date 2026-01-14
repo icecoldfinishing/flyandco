@@ -46,38 +46,142 @@
                         </div>
                     </div>
                 </div>
-
                 <section class="section">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title">Chiffre d'Affaire des Compagnies</h5>
+                            <h4 class="card-title">Filtrer les réservations / Chiffre d'affaires</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/compagnies/ca" method="get">
+                                <div class="row">
+
+                                    <!-- Filtrer par Compagnie -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="form-group">
+                                            <label for="compagnieId">Compagnie</label>
+                                            <select class="form-select" id="compagnieId" name="compagnieId">
+                                                <option value="" selected>Toutes les compagnies</option>
+                                                <option th:each="c : ${compagnies}" 
+                                                        th:value="${c.idCompagnie}" 
+                                                        th:text="${c.nom}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Filtrer par Avion -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="form-group">
+                                            <label for="avionId">Avion</label>
+                                            <select class="form-select" id="avionId" name="avionId">
+                                                <option value="" selected>Tous les avions</option>
+                                                <option th:each="a : ${avions}" 
+                                                        th:value="${a.idAvion}" 
+                                                        th:text="${a.modele} + ' (' + ${a.numeroImmatriculation} + ')'">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Filtrer par Vol -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="form-group">
+                                            <label for="volId">Vol</label>
+                                            <select class="form-select" id="volId" name="volId">
+                                                <option value="" selected>Tous les vols</option>
+                                                <option th:each="v : ${vols}" 
+                                                        th:value="${v.idVol}" 
+                                                        th:text="'Vol #' + ${v.idVol}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Filtrer par Vol Instance -->
+                                    <div class="col-md-3 mb-3">
+                                        <div class="form-group">
+                                            <label for="volInstanceId">Vol Instance</label>
+                                            <select class="form-select" id="volInstanceId" name="volInstanceId">
+                                                <option value="" selected>Toutes les instances</option>
+                                                <option th:each="vi : ${volInstances}" 
+                                                        th:value="${vi.idVolInstance}" 
+                                                        th:text="${vi.dateDepart} + ' -> ' + ${vi.dateArrivee}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Filtrer par Date Paiement -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="startDate">Date de début</label>
+                                            <input type="date" class="form-control" id="startDate" name="startDate">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="endDate">Date de fin</label>
+                                            <input type="date" class="form-control" id="endDate" name="endDate">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">Rechercher</button>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Détails des Chiffres d'Affaire</h5>
                         </div>
                         <div class="card-body">
                             <table class="table table-striped" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Nom</th>
-                                        <th>Pays</th>
-                                        <th>Code IATA</th>
-                                        <th>Code ICAO</th>
-                                        <th>Chiffre d'Affaire (MGA)</th>
+                                        <th>ID Paiement</th>
+                                        <th>ID Compagnie</th>
+                                        <th>Nom Compagnie</th>
+                                        <th>ID Avion</th>
+                                        <th>Modèle Avion</th>
+                                        <th>Numéro Immatriculation</th>
+                                        <th>ID Vol</th>
+                                        <th>ID Vol Instance</th>
+                                        <th>Date Départ</th>
+                                        <th>Date Arrivée</th>
+                                        <th>Montant Payé (MGA)</th>
+                                        <th>Date Paiement</th>
+                                        <th>Statut Paiement</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="compagnie : ${compagnies}">
-                                        <td th:text="${compagnie.idCompagnie}"></td>
-                                        <td th:text="${compagnie.nom}"></td>
-                                        <td th:text="${compagnie.pays}"></td>
-                                        <td th:text="${compagnie.codeIata}"></td>
-                                        <td th:text="${compagnie.codeIcao}"></td>
-                                        <td th:text="${caParCompagnie[compagnie.idCompagnie]} ?: 0"></td>
+                                    <tr th:each="ca : ${caList}">
+                                        <td th:text="${ca.idPaiement}"></td>
+                                        <td th:text="${ca.idCompagnie}"></td>
+                                        <td th:text="${ca.nomCompagnie}"></td>
+                                        <td th:text="${ca.idAvion}"></td>
+                                        <td th:text="${ca.avionModele}"></td>
+                                        <td th:text="${ca.numeroImmatriculation}"></td>
+                                        <td th:text="${ca.idVol}"></td>
+                                        <td th:text="${ca.idVolInstance}"></td>
+                                        <td th:text="${#temporals.format(ca.dateDepart, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td th:text="${#temporals.format(ca.dateArrivee, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td th:text="${ca.montantPaye}"></td>
+                                        <td th:text="${#temporals.format(ca.datePaiement, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td th:text="${ca.statutPaiement}"></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </section>
+
+
             </div>
 
             <footer>

@@ -1,4 +1,4 @@
-package com.fly.andco.repository;
+package com.fly.andco.repository.vols;
 
 import com.fly.andco.model.vols.VolInstance;
 import org.springframework.data.jpa.repository.JpaRepository;

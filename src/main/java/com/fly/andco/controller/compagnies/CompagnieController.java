@@ -1,8 +1,17 @@
 package com.fly.andco.controller.compagnies;
 
 import com.fly.andco.model.compagnies.Compagnie;
+import com.fly.andco.model.compagnies.ViewChiffreAffaire;
+import com.fly.andco.model.vols.VolInstance;
+
 import com.fly.andco.service.compagnies.CompagnieService;
 import com.fly.andco.service.paiements.PaiementService;
+import com.fly.andco.service.compagnies.ViewChiffreAffaireService;
+import com.fly.andco.service.vols.VolService;
+import com.fly.andco.service.avions.AvionService;
+
+import com.fly.andco.repository.vols.VolInstanceRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +35,18 @@ public class CompagnieController {
     @Autowired
     private PaiementService paiementService;
 
+    @Autowired
+    private ViewChiffreAffaireService viewChiffreAffaireService;
+
+    @Autowired
+    private VolInstanceRepository volInstanceRepository;
+
+    @Autowired
+    private VolService volService;
+
+    @Autowired
+    private AvionService avionService;
+
     @GetMapping
     public String listCompagnies(Model model) {
         List<Compagnie> compagnies = compagnieService.getAllCompagnies();
@@ -38,18 +59,16 @@ public class CompagnieController {
     // ===========================
     @GetMapping("/ca")
     public String chiffreAffaire(Model model) {
-        List<Compagnie> compagnies = compagnieService.getAllCompagnies();
-        Map<Long, BigDecimal> caParCompagnie = new HashMap<>();
+        List<ViewChiffreAffaire> caList = viewChiffreAffaireService.getAll();
 
-        for (Compagnie c : compagnies) {
-            // total des paiements pour cette compagnie
-            BigDecimal total = paiementService.getTotalPaiementsByCompagnie(c.getIdCompagnie());
-            caParCompagnie.put(c.getIdCompagnie(), total);
-        }
-
-        model.addAttribute("compagnies", compagnies);
-        model.addAttribute("caParCompagnie", caParCompagnie);
+        // Envoyer la liste des compagnies, avions, vols et vol_instances pour les filtres
+        model.addAttribute("caList", caList);
+        model.addAttribute("compagnies", compagnieService.getAllCompagnies());
+        model.addAttribute("avions", avionService.getAllAvions()); // à créer si nécessaire
+        model.addAttribute("vols", volService.getAll());       // à créer si nécessaire
+        model.addAttribute("volInstances", volInstanceRepository.findAll()); // idem
 
         return "views/compagnies/ca";
     }
+
 }
