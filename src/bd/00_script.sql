@@ -148,7 +148,7 @@ CREATE TABLE equipage (
 -- =========================
 CREATE TABLE moyen_paiement (
     id_moyen_paiement SERIAL PRIMARY KEY,
-    libelle VARCHAR(50) NOT NULL UNIQUE  -- ex: 'CB', 'Virement', 'Paypal'
+    libelle VARCHAR(50) NOT NULL UNIQUE
 );
 
 -- =========================
