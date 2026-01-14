@@ -142,6 +142,43 @@ CREATE TABLE equipage (
     UNIQUE (id_vol_instance, id_pilote)
 );
 
+
+-- =========================
+-- MODE PAIEMENT
+-- =========================
+CREATE TABLE moyen_paiement (
+    id_moyen_paiement SERIAL PRIMARY KEY,
+    libelle VARCHAR(50) NOT NULL UNIQUE  -- ex: 'CB', 'Virement', 'Paypal'
+);
+
+-- =========================
+-- PAIEMENT
+-- =========================
+CREATE TABLE paiement (
+    id_paiement SERIAL PRIMARY KEY,
+    id_reservation INT NOT NULL,
+    id_moyen_paiement INT NOT NULL,
+    montant NUMERIC(10,2) NOT NULL,
+    date_paiement TIMESTAMP DEFAULT NOW(),
+    statut VARCHAR(20) DEFAULT 'OK',
+    FOREIGN KEY (id_reservation) REFERENCES reservation(id_reservation),
+    FOREIGN KEY (id_moyen_paiement) REFERENCES moyen_paiement(id_moyen_paiement)
+);
+
+-- =========================
+-- SIEGE
+-- =========================
+CREATE TABLE siege (
+    id_siege SERIAL PRIMARY KEY,
+    id_vol_instance INT NOT NULL,         -- Vol spécifique
+    numero VARCHAR(5) NOT NULL,           -- Ex: '1A', '12C'
+    classe VARCHAR(20) NOT NULL CHECK (classe IN ('ECONOMY','BUSINESS','FIRST')),
+    statut VARCHAR(20) DEFAULT 'LIBRE',   -- LIBRE, RESERVE, OCCUPE
+    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
+    UNIQUE (id_vol_instance, numero)      -- Un numéro de siège unique par vol
+);
+
+
 -- =========================
 -- UTILISATEUR
 -- =========================
@@ -208,3 +245,31 @@ VALUES
 (2, 'ECONOMY', 330000),
 (2, 'BUSINESS', 700000),
 (3, 'ECONOMY', 280000);
+
+
+-- =========================
+-- INSERTION DES MODES DE PAIEMENT
+-- =========================
+INSERT INTO moyen_paiement (libelle)
+VALUES
+('CB'),        -- Carte Bancaire
+('Virement'),  -- Virement bancaire
+('Paypal'),    -- Paiement en ligne via Paypal
+('Espèces'),   -- Paiement en espèces
+('Chèque');    -- Paiement par chèque
+
+-- Classe Économie, rangée 1 à 3, sièges A à C
+INSERT INTO siege (id_vol_instance, numero, classe)
+VALUES
+(1, '1A', 'ECONOMY'),
+(1, '1B', 'ECONOMY'),
+(1, '1C', 'ECONOMY'),
+(1, '2A', 'ECONOMY'),
+(1, '2B', 'ECONOMY'),
+(1, '2C', 'ECONOMY');
+
+-- Classe Business, rangée 1 à 2, sièges D à E
+INSERT INTO siege (id_vol_instance, numero, classe)
+VALUES
+(1, '1D', 'BUSINESS'),
+(1, '1E', 'BUSINESS');
