@@ -1,17 +1,22 @@
-package com.fly.andco.controller.reservation;
+package com.fly.andco.controller.reservations;
 
 import com.fly.andco.model.reservations.Reservation;
 import com.fly.andco.model.vols.VolInstance;
 import com.fly.andco.model.passagers.Passager;
 import com.fly.andco.model.prix.PrixVol;
+import com.fly.andco.model.paiements.*;
+
 import com.fly.andco.repository.vols.VolRepository;
-import com.fly.andco.repository.VolInstanceRepository;
+import com.fly.andco.repository.vols.VolInstanceRepository;
 import com.fly.andco.repository.aeroports.AeroportRepository;
 import com.fly.andco.repository.reservations.ReservationRepository;
 import com.fly.andco.repository.passagers.PassagerRepository;
 import com.fly.andco.repository.prix.PrixVolRepository;
 import com.fly.andco.repository.passagers.PassagerRepository;
+import com.fly.andco.repository.paiements.MoyenPaiementRepository;
+import com.fly.andco.repository.paiements.PaiementRepository;
 import com.fly.andco.service.reservations.ReservationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -22,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/flights")
@@ -46,6 +52,11 @@ public class ReservationController {
     @Autowired
     private PrixVolRepository prixVolRepository;
 
+    @Autowired
+    private MoyenPaiementRepository moyenPaiementRepository;
+
+    @Autowired
+    private PaiementRepository paiementRepository;
 
     @GetMapping("/list")
     public String listReservationss(Model model) {
@@ -107,40 +118,67 @@ public class ReservationController {
 
     @GetMapping("/book/{id}")
     public String showBookingForm(@PathVariable("id") Long id, Model model) {
-        VolInstance vol = volInstanceRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid flight Id:" + id));
-        List<PrixVol> prices = prixVolRepository.findAll(); // Should filter by vol actually
-        // filtering locally for now or add method in repo
-        // Ideally: prixVolRepository.findByVol(vol.getVol());
-        
+        VolInstance vol = volInstanceRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid flight Id:" + id));
+
+        List<PrixVol> prices = prixVolRepository.findAll();
+        List<MoyenPaiement> moyensPaiement = moyenPaiementRepository.findAll();
+
         model.addAttribute("flight", vol);
-        // Simple hack to get prices for this flight's route
-        model.addAttribute("prices", prices.stream().filter(p -> p.getVol().getIdVol().equals(vol.getVol().getIdVol())).toList());
+        model.addAttribute(
+                "prices",
+                prices.stream()
+                    .filter(p -> p.getVol().getIdVol().equals(vol.getVol().getIdVol()))
+                    .toList()
+        );
+        model.addAttribute("moyensPaiement", moyensPaiement);
         model.addAttribute("passenger", new Passager());
+
         return "views/reservation/book";
     }
 
+
     @PostMapping("/purchase")
-    public String purchaseTicket(@RequestParam("flightId") Long flightId,
-                                    @RequestParam("priceId") Long priceId,
-                                    @ModelAttribute Passager passenger,
-                                    Model model) {
-        
-        // Save passenger if not exists (simplified logic)
+    public String purchaseTicket(
+            @RequestParam("flightId") Long flightId,
+            @RequestParam("priceId") Long priceId,
+            @RequestParam("moyenPaiementId") Long moyenPaiementId,
+            @ModelAttribute Passager passenger,
+            Model model) {
         Passager savedPassenger = passagerRepository.save(passenger);
+
         
-        VolInstance flight = volInstanceRepository.findById(flightId).get();
-        PrixVol price = prixVolRepository.findById(priceId).get();
-        
+        VolInstance flight = volInstanceRepository.findById(flightId)
+                .orElseThrow(() -> new IllegalArgumentException("Vol introuvable"));
+
+        PrixVol price = prixVolRepository.findById(priceId)
+                .orElseThrow(() -> new IllegalArgumentException("Prix introuvable"));
+
         Reservation reservation = new Reservation();
         reservation.setPassager(savedPassenger);
         reservation.setVolInstance(flight);
         reservation.setPrixVol(price);
         reservation.setDateReservation(LocalDateTime.now());
         reservation.setStatut("CONFIRMEE");
-        
-        reservationRepository.save(reservation);
-        
+
+        reservation = reservationRepository.save(reservation);
+
+        MoyenPaiement moyenPaiement = moyenPaiementRepository.findById(moyenPaiementId)
+                .orElseThrow(() -> new IllegalArgumentException("Moyen de paiement introuvable"));
+
+        Paiement paiement = new Paiement();
+        paiement.setReservation(reservation);
+        paiement.setMontant(BigDecimal.valueOf(price.getPrix()));
+        paiement.setMoyenPaiement(moyenPaiement);
+        paiement.setDatePaiement(LocalDateTime.now());
+        paiement.setStatut("OK");
+
+        paiementRepository.save(paiement);
+
         model.addAttribute("reservation", reservation);
+        model.addAttribute("paiement", paiement);
+
         return "views/reservation/confirmation";
     }
+
 }

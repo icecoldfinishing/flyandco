@@ -148,7 +148,7 @@ CREATE TABLE equipage (
 -- =========================
 CREATE TABLE moyen_paiement (
     id_moyen_paiement SERIAL PRIMARY KEY,
-    libelle VARCHAR(50) NOT NULL UNIQUE  -- ex: 'CB', 'Virement', 'Paypal'
+    libelle VARCHAR(50) NOT NULL UNIQUE
 );
 
 -- =========================
@@ -170,14 +170,21 @@ CREATE TABLE paiement (
 -- =========================
 CREATE TABLE siege (
     id_siege SERIAL PRIMARY KEY,
-    id_vol_instance INT NOT NULL,         -- Vol spécifique
-    numero VARCHAR(5) NOT NULL,           -- Ex: '1A', '12C'
+    id_avion  INT NOT NULL,         
+    numero VARCHAR(5) NOT NULL,           
     classe VARCHAR(20) NOT NULL CHECK (classe IN ('ECONOMY','BUSINESS','FIRST')),
-    statut VARCHAR(20) DEFAULT 'LIBRE',   -- LIBRE, RESERVE, OCCUPE
-    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
-    UNIQUE (id_vol_instance, numero)      -- Un numéro de siège unique par vol
+    FOREIGN KEY (id_avion) REFERENCES avion(id_avion)   
 );
 
+
+CREATE TABLE siege_vol (
+    id_siege_vol SERIAL PRIMARY KEY,
+    id_vol_instance INT NOT NULL,
+    id_siege INT NOT NULL,
+    statut VARCHAR(20) DEFAULT 'LIBRE',
+    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
+    FOREIGN KEY (id_siege) REFERENCES siege(id_siege)
+);
 
 -- =========================
 -- UTILISATEUR
@@ -258,18 +265,26 @@ VALUES
 ('Espèces'),   -- Paiement en espèces
 ('Chèque');    -- Paiement par chèque
 
--- Classe Économie, rangée 1 à 3, sièges A à C
-INSERT INTO siege (id_vol_instance, numero, classe)
-VALUES
-(1, '1A', 'ECONOMY'),
-(1, '1B', 'ECONOMY'),
-(1, '1C', 'ECONOMY'),
-(1, '2A', 'ECONOMY'),
-(1, '2B', 'ECONOMY'),
-(1, '2C', 'ECONOMY');
-
--- Classe Business, rangée 1 à 2, sièges D à E
-INSERT INTO siege (id_vol_instance, numero, classe)
-VALUES
-(1, '1D', 'BUSINESS'),
-(1, '1E', 'BUSINESS');
+-- CREATION DE LA VUE SIMPLIFIEE
+CREATE OR REPLACE VIEW view_chiffre_affaire AS
+SELECT 
+    c.id_compagnie,
+    c.nom AS nom_compagnie,
+    a.id_avion,
+    a.modele AS avion_modele,
+    a.numero_immatriculation,
+    v.id_vol,
+    vi.id_vol_instance,
+    vi.date_depart,
+    vi.date_arrivee,
+    py.id_paiement,
+    py.montant AS montant_paye,
+    py.date_paiement,
+    py.statut AS statut_paiement
+FROM paiement py
+JOIN reservation r ON py.id_reservation = r.id_reservation
+JOIN vol_instance vi ON r.id_vol_instance = vi.id_vol_instance
+JOIN vol v ON vi.id_vol = v.id_vol
+JOIN avion a ON vi.id_avion = a.id_avion
+JOIN compagnie c ON a.id_compagnie = c.id_compagnie
+ORDER BY c.id_compagnie, vi.date_depart, v.id_vol;
