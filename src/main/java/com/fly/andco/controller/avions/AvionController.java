@@ -27,17 +27,29 @@ public class AvionController {
         return "views/avions/list";
     }
 
-    // Afficher le formulaire pour créer un nouvel avion
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("avion", new Avion());
-        return "views/avions/create";
+    @Autowired
+    private com.fly.andco.service.avions.SiegeService siegeService;
+
+    @Autowired
+    private com.fly.andco.service.vols.VolService volService;
+
+    @GetMapping("/place")
+    public String showRevenueForm(Model model) { // Modified to serve as the revenue calc page as requested
+        model.addAttribute("avions", avionService.getAllAvions());
+        model.addAttribute("vols", volService.getAll());
+        return "views/avions/place";
     }
 
-    // Traiter le formulaire de création d'un avion
-    @PostMapping("/create")
-    public String createAvion(@ModelAttribute("avion") Avion avion) {
-        avionService.saveAvion(avion);
-        return "redirect:/avions"; // redirige vers la liste des avions
+    @PostMapping("/revenue")
+    public String calculateRevenue(@org.springframework.web.bind.annotation.RequestParam("idAvion") Long idAvion,
+                                   @org.springframework.web.bind.annotation.RequestParam("idVol") Long idVol,
+                                   Model model) {
+        Double revenue = siegeService.calculateMaxRevenue(idAvion, idVol);
+        model.addAttribute("revenue", revenue);
+        model.addAttribute("avions", avionService.getAllAvions());
+        model.addAttribute("vols", volService.getAll());
+        model.addAttribute("selectedAvionId", idAvion);
+        model.addAttribute("selectedVolId", idVol);
+        return "views/avions/place";
     }
 }

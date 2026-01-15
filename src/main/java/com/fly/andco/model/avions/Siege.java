@@ -55,4 +55,12 @@ public class Siege {
     public void setClasse(String classe) {
         this.classe = classe;
     }
+
+    // =====================
+    // Helper pour Spring Data JPA Repository
+    // =====================
+    // Ceci permet de faire findByAvion_IdAvion(Long id) correctement
+    public Long getAvionId() {
+        return avion != null ? avion.getIdAvion() : null;
+    }
 }
