@@ -41,14 +41,17 @@ public class AvionController {
     }
 
     @PostMapping("/revenue")
-    public String calculateRevenue(@org.springframework.web.bind.annotation.RequestParam("idAvion") Long idAvion,
-                                   @org.springframework.web.bind.annotation.RequestParam("idVol") Long idVol,
+    public String calculateRevenue(@org.springframework.web.bind.annotation.RequestParam("idVol") Long idVol,
                                    Model model) {
-        Double revenue = siegeService.calculateMaxRevenue(idAvion, idVol);
-        model.addAttribute("revenue", revenue);
-        model.addAttribute("avions", avionService.getAllAvions());
+        java.util.List<com.fly.andco.dto.RevenueDetail> details = siegeService.calculateMaxRevenue(idVol);
+        
+        double grandTotal = details.stream().mapToDouble(com.fly.andco.dto.RevenueDetail::getTotal).sum();
+
+        model.addAttribute("revenueDetails", details);
+        model.addAttribute("grandTotal", grandTotal);
+        // model.addAttribute("avions", avionService.getAllAvions()); // Removed as per refactor plan
         model.addAttribute("vols", volService.getAll());
-        model.addAttribute("selectedAvionId", idAvion);
+        // model.addAttribute("selectedAvionId", idAvion); // Removed
         model.addAttribute("selectedVolId", idVol);
         return "views/avions/place";
     }

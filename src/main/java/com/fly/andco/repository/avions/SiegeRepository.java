@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface SiegeRepository extends JpaRepository<Siege, Long> {
 
-    // Correct: utiliser le nom du champ de l'objet Avion + son id
-    List<Siege> findByAvion_IdAvion(Long idAvion);
+    // Correct: utiliser le nom du champ de l'objet Vol + son id
+    List<Siege> findByVol_IdVol(Long idVol);
 
 }
