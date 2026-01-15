@@ -1,6 +1,7 @@
 package com.fly.andco.controller.avions;
 
 import com.fly.andco.model.avions.Avion;
+import com.fly.andco.dto.RevenueDetail;
 import com.fly.andco.service.avions.AvionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.List;
 
@@ -41,11 +44,11 @@ public class AvionController {
     }
 
     @PostMapping("/revenue")
-    public String calculateRevenue(@org.springframework.web.bind.annotation.RequestParam("idVol") Long idVol,
+    public String calculateRevenue(@RequestParam("idVol") Long idVol,
                                    Model model) {
-        java.util.List<com.fly.andco.dto.RevenueDetail> details = siegeService.calculateMaxRevenue(idVol);
+        List<RevenueDetail> details = siegeService.calculateMaxRevenue(idVol);
         
-        double grandTotal = details.stream().mapToDouble(com.fly.andco.dto.RevenueDetail::getTotal).sum();
+        double grandTotal = details.stream().mapToDouble(RevenueDetail::getTotal).sum();
 
         model.addAttribute("revenueDetails", details);
         model.addAttribute("grandTotal", grandTotal);

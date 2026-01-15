@@ -1,6 +1,7 @@
 package com.fly.andco.service.avions;
 
 import com.fly.andco.model.avions.Siege;
+import com.fly.andco.dto.RevenueDetail;
 import com.fly.andco.repository.avions.SiegeRepository;
 import com.fly.andco.repository.prix.PrixVolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class SiegeService {
         return siegeRepository.findAll();
     }
 
-    public java.util.List<com.fly.andco.dto.RevenueDetail> calculateMaxRevenue(Long volId) {
+    public List<RevenueDetail> calculateMaxRevenue(Long volId) {
         // Fetch seats for the specific vol (now that Siege is linked to Vol)
         List<Siege> sieges = siegeRepository.findByVol_IdVol(volId);
         
