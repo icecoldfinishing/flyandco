@@ -383,6 +383,7 @@ INSERT INTO siege (id_vol, numero, classe) VALUES
 (3,'9A','FIRST'),(3,'9B','FIRST'),
 (3,'10A','FIRST'),(3,'10B','FIRST');
 
+
 -- =========================
 -- ECONOMY pour le vol 3 (11A → 70B = 120 sièges)
 -- =========================
