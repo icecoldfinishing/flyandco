@@ -248,7 +248,7 @@ VALUES
 -- =========================
 INSERT INTO prix_vol (id_vol, classe, prix)
 VALUES
-(1, 'ECONOMY', 700000),
+(1, 'ECONOMY', 800000),
 (1, 'FIRST', 1200000),
 (1, 'PREMIUM', 1000000),
 (2, 'ECONOMY', 330000),
