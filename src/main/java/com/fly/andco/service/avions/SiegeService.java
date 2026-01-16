@@ -17,10 +17,18 @@ public class SiegeService {
 
     private final PrixVolRepository prixVolRepository;
 
+    private final com.fly.andco.repository.reservations.ReservationRepository reservationRepository;
+    private final com.fly.andco.repository.prix.PromotionRepository promotionRepository;
+
     @Autowired
-    public SiegeService(SiegeRepository siegeRepository, PrixVolRepository prixVolRepository) {
+    public SiegeService(SiegeRepository siegeRepository, 
+                        PrixVolRepository prixVolRepository,
+                        com.fly.andco.repository.reservations.ReservationRepository reservationRepository,
+                        com.fly.andco.repository.prix.PromotionRepository promotionRepository) {
         this.siegeRepository = siegeRepository;
         this.prixVolRepository = prixVolRepository;
+        this.reservationRepository = reservationRepository;
+        this.promotionRepository = promotionRepository;
     }
 
     // Lister tous les sièges
@@ -66,6 +74,56 @@ public class SiegeService {
     // Lister les sièges d’un vol
     public List<Siege> getSiegesByVol(Long volId) {
         return siegeRepository.findByVol_IdVol(volId);
+    }
+
+
+    public List<RevenueDetail> calculateActualRevenue(Long volId) {
+        List<com.fly.andco.model.reservations.Reservation> reservations = reservationRepository.findByVolInstance_Vol_IdVol(volId);
+        List<com.fly.andco.model.prix.Promotion> allPromotions = promotionRepository.findAll();
+
+        java.util.Map<String, List<com.fly.andco.model.reservations.Reservation>> grouped = reservations.stream()
+                .collect(java.util.stream.Collectors.groupingBy(res -> {
+                    String classe = res.getPrixVol().getClasse();
+                    boolean isEnfant = res.getPassager().isEstEnfant();
+                    return classe + ":" + isEnfant;
+                }));
+
+        java.util.List<RevenueDetail> details = new java.util.ArrayList<>();
+
+        for (java.util.Map.Entry<String, List<com.fly.andco.model.reservations.Reservation>> entry : grouped.entrySet()) {
+            List<com.fly.andco.model.reservations.Reservation> resList = entry.getValue();
+            if (resList.isEmpty()) continue;
+
+            com.fly.andco.model.reservations.Reservation sample = resList.get(0);
+            com.fly.andco.model.prix.PrixVol prixVol = sample.getPrixVol();
+            boolean isEnfant = sample.getPassager().isEstEnfant();
+            String classeName = prixVol.getClasse();
+
+            double basePrice = prixVol.getPrix();
+
+            Optional<com.fly.andco.model.prix.Promotion> promoOpt = allPromotions.stream()
+                    .filter(p -> p.getPrixVol().getIdPrix().equals(prixVol.getIdPrix()) && p.getEstEnfant() == isEnfant)
+                    .findFirst();
+
+            double finalPrice;
+            if (promoOpt.isPresent()) {
+                finalPrice = promoOpt.get().getMontant();
+            } else {
+                finalPrice = basePrice;
+            }
+
+            String displayClass = classeName;
+            if (isEnfant) {
+                displayClass += " (Enfant)";
+            }
+
+            long count = resList.size();
+            double total = finalPrice * count;
+
+            details.add(new RevenueDetail(displayClass, finalPrice, count, total));
+        }
+
+        return details;
     }
 
 }

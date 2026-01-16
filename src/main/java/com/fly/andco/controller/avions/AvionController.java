@@ -46,7 +46,7 @@ public class AvionController {
     @PostMapping("/revenue")
     public String calculateRevenue(@RequestParam("idVol") Long idVol,
                                    Model model) {
-        List<RevenueDetail> details = siegeService.calculateMaxRevenue(idVol);
+        List<RevenueDetail> details = siegeService.calculateActualRevenue(idVol);
         
         double grandTotal = details.stream().mapToDouble(RevenueDetail::getTotal).sum();
 
@@ -54,7 +54,7 @@ public class AvionController {
         model.addAttribute("grandTotal", grandTotal);
         model.addAttribute("vols", volService.getAll());
         model.addAttribute("selectedVolId", idVol);
-        return "views/avions/place";
+        return "views/avions/ca";
     }
     @GetMapping("/ca")
     public String showCaForm(Model model) { 
