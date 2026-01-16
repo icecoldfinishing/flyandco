@@ -381,17 +381,17 @@ INSERT INTO siege (id_vol, numero, classe) VALUES
 INSERT INTO promotion (id_prix, type_passager, montant) VALUES
 (1, 'ADULTE', 700000), 
 (1, 'ENFANT', 500000),
-(1, 'BEBE', 70000);   -- 10% of 700,000
+(1, 'BEBE', 70000);  
 
 -- Vol 1, classe PREMIUM (1,000,000)
 INSERT INTO promotion (id_prix, type_passager, montant) VALUES
 (3, 'ADULTE', 1000000),
-(3, 'ENFANT', 1000000), -- Pas de remise
-(3, 'BEBE', 100000);    -- 10% of 1,000,000
+(3, 'ENFANT', 1000000),
+(3, 'BEBE', 100000);    
 
 -- Vol 1, classe FIRST (1,200,000)
 INSERT INTO promotion (id_prix, type_passager, montant) VALUES
 (2, 'ADULTE', 1200000), 
-(2, 'ENFANT', 1200000), -- Pas de remise
-(2, 'BEBE', 120000);    -- 10% of 1,200,000
+(2, 'ENFANT', 1200000),
+(2, 'BEBE', 120000);    
 
