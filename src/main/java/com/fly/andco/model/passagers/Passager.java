@@ -24,8 +24,8 @@ public class Passager {
     @Column(unique = true, length = 100)
     private String email;
 
-    @Column(name = "est_enfant", nullable = false)
-    private boolean estEnfant = false; // par défaut FALSE
+    @Column(name = "type_passager", nullable = false)
+    private String typePassager = "ADULTE"; 
 
     // =====================
     // Getters & Setters
@@ -71,11 +71,11 @@ public class Passager {
         this.email = email;
     }
 
-    public boolean isEstEnfant() {
-        return estEnfant;
+    public String getTypePassager() {
+        return typePassager;
     }
 
-    public void setEstEnfant(boolean estEnfant) {
-        this.estEnfant = estEnfant;
+    public void setTypePassager(String typePassager) {
+        this.typePassager = typePassager;
     }
 }

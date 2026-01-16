@@ -79,6 +79,20 @@
                                                     th:field="*{items[__${stat.index}__].promoCount}">
                                             </div>
                                         </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Prix Bebe</label>
+                                                <input type="number" step="0.01" class="form-control"
+                                                    th:field="*{items[__${stat.index}__].prixBebe}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label>Nb Bebe</label>
+                                                <input type="number" class="form-control"
+                                                    th:field="*{items[__${stat.index}__].bebeCount}">
+                                            </div>
+                                        </div>
                                         <!-- Only show total if calculated (after submit) -->
                                         <div class="col-md-1 d-flex align-items-center" th:if="${grandTotal != null}">
                                             <span class="badge bg-success" th:text="${item.total}"></span>
@@ -157,6 +171,16 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         <input type="number" class="form-control" name="items[${nextIndex}].promoCount" value="0">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                     <div class="form-group">
+                        <input type="number" step="0.01" class="form-control" name="items[${nextIndex}].prixBebe" value="0.0">
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <input type="number" class="form-control" name="items[${nextIndex}].bebeCount" value="0">
                     </div>
                 </div>
             </div>`;
