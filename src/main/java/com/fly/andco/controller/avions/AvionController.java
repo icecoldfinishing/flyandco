@@ -36,12 +36,6 @@ public class AvionController {
     @Autowired
     private com.fly.andco.service.vols.VolService volService;
 
-    @GetMapping("/place")
-    public String showRevenueForm(Model model) { 
-        model.addAttribute("avions", avionService.getAllAvions());
-        model.addAttribute("vols", volService.getAll());
-        return "views/avions/place";
-    }
 
     @PostMapping("/revenue")
     public String calculateRevenue(@RequestParam("idVol") Long idVol,
@@ -61,5 +55,29 @@ public class AvionController {
         model.addAttribute("avions", avionService.getAllAvions());
         model.addAttribute("vols", volService.getAll());
         return "views/avions/ca";
+    }
+
+    @GetMapping("/placeSimulation")
+    public String showSimulationForm(Model model) {
+        if (!model.containsAttribute("simulationRequest")) {
+            com.fly.andco.dto.SimulationRequest request = new com.fly.andco.dto.SimulationRequest();
+            // Pre-populate with some default rows for better UX
+            request.getItems().add(new com.fly.andco.dto.SimulationRequest.SimulationItem());
+            model.addAttribute("simulationRequest", request);
+        }
+        return "views/avions/place_test";
+    }
+
+    @PostMapping("/simulation")
+    public String calculateSimulation(@ModelAttribute com.fly.andco.dto.SimulationRequest request, Model model) {
+        double grandTotal = 0.0;
+        if (request.getItems() != null) {
+            for (com.fly.andco.dto.SimulationRequest.SimulationItem item : request.getItems()) {
+                 grandTotal += item.getTotal();
+            }
+        }
+        model.addAttribute("grandTotal", grandTotal);
+        model.addAttribute("simulationRequest", request);
+        return "views/avions/place_test";
     }
 }
