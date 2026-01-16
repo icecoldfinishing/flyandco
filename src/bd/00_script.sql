@@ -97,7 +97,7 @@ CREATE TABLE passager (
     prenom VARCHAR(50) NOT NULL,
     date_naissance DATE,
     email VARCHAR(100) UNIQUE,
-    est_enfant BOOLEAN NOT NULL DEFAULT FALSE
+    type_passager VARCHAR(20) NOT NULL DEFAULT 'ADULTE' CHECK (type_passager IN ('ADULTE', 'ENFANT', 'BEBE'))
 );
 
 
@@ -194,7 +194,7 @@ CREATE TABLE siege_vol (
 CREATE TABLE promotion (
     id_promotion SERIAL PRIMARY KEY,
     id_prix INT NOT NULL,             
-    est_enfant BOOLEAN NOT NULL DEFAULT FALSE, 
+    type_passager VARCHAR(20) NOT NULL CHECK (type_passager IN ('ADULTE', 'ENFANT', 'BEBE')), 
     montant NUMERIC(10,2), 
     FOREIGN KEY (id_prix) REFERENCES prix_vol(id_prix)
 );
@@ -378,17 +378,21 @@ INSERT INTO siege (id_vol, numero, classe) VALUES
 (1,'59A','ECONOMY'), (1,'59B','ECONOMY'),
 (1,'60A','ECONOMY'), (1,'60B','ECONOMY');
 
-INSERT INTO promotion (id_prix, est_enfant, montant) VALUES
-(1, FALSE, 700000),  -- adulte
-(1, TRUE, 500000);   -- enfant
+--economy
+INSERT INTO promotion (id_prix, type_passager, montant) VALUES
+(1, 'ADULTE', 900000), 
+(1, 'ENFANT', 600000),
+(1, 'BEBE', 90000);  
 
--- Vol 1, classe PREMIUM
-INSERT INTO promotion (id_prix, est_enfant, montant) VALUES
-(3, FALSE, 1000000), -- adulte
-(3, TRUE, 1000000);  -- enfant, pas de remise
+-- Vol 1, classe PREMIUM (1,000,000)
+INSERT INTO promotion (id_prix, type_passager, montant) VALUES
+(3, 'ADULTE', 1000000),
+(3, 'ENFANT', 700000),
+(3, 'BEBE', 100000);    
 
--- Vol 1, classe FIRST
-INSERT INTO promotion (id_prix, est_enfant, montant) VALUES
-(2, FALSE, 1200000), -- adulte
-(2, TRUE, 1200000);  -- enfant, pas de remise
+-- Vol 1, classe FIRST (1,200,000)
+INSERT INTO promotion (id_prix, type_passager, montant) VALUES
+(2, 'ADULTE', 2000000), 
+(2, 'ENFANT', 800000),
+(2, 'BEBE', 200000);    
 

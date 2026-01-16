@@ -14,8 +14,8 @@ public class Promotion {
     @JoinColumn(name = "id_prix", nullable = false)
     private PrixVol prixVol;
 
-    @Column(name = "est_enfant", nullable = false)
-    private Boolean estEnfant = false;
+    @Column(name = "type_passager", nullable = false)
+    private String typePassager;
 
     private Double montant;
 
@@ -39,12 +39,12 @@ public class Promotion {
         this.prixVol = prixVol;
     }
 
-    public Boolean getEstEnfant() {
-        return estEnfant;
+    public String getTypePassager() {
+        return typePassager;
     }
 
-    public void setEstEnfant(Boolean estEnfant) {
-        this.estEnfant = estEnfant;
+    public void setTypePassager(String typePassager) {
+        this.typePassager = typePassager;
     }
 
     public Double getMontant() {

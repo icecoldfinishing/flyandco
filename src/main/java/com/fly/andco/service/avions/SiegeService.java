@@ -84,8 +84,8 @@ public class SiegeService {
         java.util.Map<String, List<com.fly.andco.model.reservations.Reservation>> grouped = reservations.stream()
                 .collect(java.util.stream.Collectors.groupingBy(res -> {
                     String classe = res.getPrixVol().getClasse();
-                    boolean isEnfant = res.getPassager().isEstEnfant();
-                    return classe + ":" + isEnfant;
+                    String typePassager = res.getPassager().getTypePassager();
+                    return classe + ":" + typePassager;
                 }));
 
         java.util.List<RevenueDetail> details = new java.util.ArrayList<>();
@@ -96,13 +96,14 @@ public class SiegeService {
 
             com.fly.andco.model.reservations.Reservation sample = resList.get(0);
             com.fly.andco.model.prix.PrixVol prixVol = sample.getPrixVol();
-            boolean isEnfant = sample.getPassager().isEstEnfant();
+            String typePassager = sample.getPassager().getTypePassager();
             String classeName = prixVol.getClasse();
 
             double basePrice = prixVol.getPrix();
 
             Optional<com.fly.andco.model.prix.Promotion> promoOpt = allPromotions.stream()
-                    .filter(p -> p.getPrixVol().getIdPrix().equals(prixVol.getIdPrix()) && p.getEstEnfant() == isEnfant)
+                    .filter(p -> p.getPrixVol().getIdPrix().equals(prixVol.getIdPrix()) 
+                              && p.getTypePassager().equalsIgnoreCase(typePassager))
                     .findFirst();
 
             double finalPrice;
@@ -112,10 +113,7 @@ public class SiegeService {
                 finalPrice = basePrice;
             }
 
-            String displayClass = classeName;
-            if (isEnfant) {
-                displayClass += " (Enfant)";
-            }
+            String displayClass = classeName + " (" + typePassager + ")";
 
             long count = resList.size();
             double total = finalPrice * count;
