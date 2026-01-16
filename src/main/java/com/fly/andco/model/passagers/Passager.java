@@ -1,7 +1,6 @@
 package com.fly.andco.model.passagers;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 
 @Entity
@@ -13,14 +12,25 @@ public class Passager {
     @Column(name = "id_passager")
     private Long idPassager;
 
+    @Column(nullable = false, length = 50)
     private String nom;
+
+    @Column(nullable = false, length = 50)
     private String prenom;
+
+    @Column(name = "date_naissance")
     private LocalDate dateNaissance;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 100)
     private String email;
 
-    // getters & setters
+    @Column(name = "est_enfant", nullable = false)
+    private boolean estEnfant = false; // par défaut FALSE
+
+    // =====================
+    // Getters & Setters
+    // =====================
+
     public Long getIdPassager() {
         return idPassager;
     }
@@ -59,5 +69,13 @@ public class Passager {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isEstEnfant() {
+        return estEnfant;
+    }
+
+    public void setEstEnfant(boolean estEnfant) {
+        this.estEnfant = estEnfant;
     }
 }

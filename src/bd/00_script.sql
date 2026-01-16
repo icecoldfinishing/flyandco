@@ -189,6 +189,18 @@ CREATE TABLE siege_vol (
 );
 
 -- =========================
+-- TABLE PROMOTION
+-- =========================
+CREATE TABLE promotion (
+    id_promotion SERIAL PRIMARY KEY,
+    id_prix INT NOT NULL,             
+    est_enfant BOOLEAN NOT NULL DEFAULT FALSE, 
+    montant NUMERIC(10,2), 
+    FOREIGN KEY (id_prix) REFERENCES prix_vol(id_prix)
+);
+
+
+-- =========================
 -- UTILISATEUR
 -- =========================
 INSERT INTO utilisateur (username, mot_de_passe, role)
@@ -366,112 +378,17 @@ INSERT INTO siege (id_vol, numero, classe) VALUES
 (1,'59A','ECONOMY'), (1,'59B','ECONOMY'),
 (1,'60A','ECONOMY'), (1,'60B','ECONOMY');
 
-INSERT INTO passager (nom, prenom, date_naissance, email, est_enfant) VALUES
--- ================= ENFANTS (1 à 30) =================
-('Nom1','Prenom1','2017-01-10','passager1@mail.com',TRUE),
-('Nom2','Prenom2','2017-02-10','passager2@mail.com',TRUE),
-('Nom3','Prenom3','2017-03-10','passager3@mail.com',TRUE),
-('Nom4','Prenom4','2017-04-10','passager4@mail.com',TRUE),
-('Nom5','Prenom5','2017-05-10','passager5@mail.com',TRUE),
-('Nom6','Prenom6','2017-06-10','passager6@mail.com',TRUE),
-('Nom7','Prenom7','2017-07-10','passager7@mail.com',TRUE),
-('Nom8','Prenom8','2017-08-10','passager8@mail.com',TRUE),
-('Nom9','Prenom9','2017-09-10','passager9@mail.com',TRUE),
-('Nom10','Prenom10','2017-10-10','passager10@mail.com',TRUE),
-('Nom11','Prenom11','2016-01-10','passager11@mail.com',TRUE),
-('Nom12','Prenom12','2016-02-10','passager12@mail.com',TRUE),
-('Nom13','Prenom13','2016-03-10','passager13@mail.com',TRUE),
-('Nom14','Prenom14','2016-04-10','passager14@mail.com',TRUE),
-('Nom15','Prenom15','2016-05-10','passager15@mail.com',TRUE),
-('Nom16','Prenom16','2016-06-10','passager16@mail.com',TRUE),
-('Nom17','Prenom17','2016-07-10','passager17@mail.com',TRUE),
-('Nom18','Prenom18','2016-08-10','passager18@mail.com',TRUE),
-('Nom19','Prenom19','2016-09-10','passager19@mail.com',TRUE),
-('Nom20','Prenom20','2016-10-10','passager20@mail.com',TRUE),
-('Nom21','Prenom21','2015-01-10','passager21@mail.com',TRUE),
-('Nom22','Prenom22','2015-02-10','passager22@mail.com',TRUE),
-('Nom23','Prenom23','2015-03-10','passager23@mail.com',TRUE),
-('Nom24','Prenom24','2015-04-10','passager24@mail.com',TRUE),
-('Nom25','Prenom25','2015-05-10','passager25@mail.com',TRUE),
-('Nom26','Prenom26','2015-06-10','passager26@mail.com',TRUE),
-('Nom27','Prenom27','2015-07-10','passager27@mail.com',TRUE),
-('Nom28','Prenom28','2015-08-10','passager28@mail.com',TRUE),
-('Nom29','Prenom29','2015-09-10','passager29@mail.com',TRUE),
-('Nom30','Prenom30','2015-10-10','passager30@mail.com',TRUE),
+INSERT INTO promotion (id_prix, est_enfant, montant) VALUES
+(1, FALSE, 700000),  -- adulte
+(1, TRUE, 500000);   -- enfant
 
--- ================= ADULTES (31 à 100) =================
-('Nom31','Prenom31','1980-01-10','passager31@mail.com',FALSE),
-('Nom32','Prenom32','1981-02-10','passager32@mail.com',FALSE),
-('Nom33','Prenom33','1982-03-10','passager33@mail.com',FALSE),
-('Nom34','Prenom34','1983-04-10','passager34@mail.com',FALSE),
-('Nom35','Prenom35','1984-05-10','passager35@mail.com',FALSE),
-('Nom36','Prenom36','1985-06-10','passager36@mail.com',FALSE),
-('Nom37','Prenom37','1986-07-10','passager37@mail.com',FALSE),
-('Nom38','Prenom38','1987-08-10','passager38@mail.com',FALSE),
-('Nom39','Prenom39','1988-09-10','passager39@mail.com',FALSE),
-('Nom40','Prenom40','1989-10-10','passager40@mail.com',FALSE),
-('Nom41','Prenom41','1990-01-10','passager41@mail.com',FALSE),
-('Nom42','Prenom42','1991-02-10','passager42@mail.com',FALSE),
-('Nom43','Prenom43','1992-03-10','passager43@mail.com',FALSE),
-('Nom44','Prenom44','1993-04-10','passager44@mail.com',FALSE),
-('Nom45','Prenom45','1994-05-10','passager45@mail.com',FALSE),
-('Nom46','Prenom46','1995-06-10','passager46@mail.com',FALSE),
-('Nom47','Prenom47','1996-07-10','passager47@mail.com',FALSE),
-('Nom48','Prenom48','1997-08-10','passager48@mail.com',FALSE),
-('Nom49','Prenom49','1998-09-10','passager49@mail.com',FALSE),
-('Nom50','Prenom50','1999-10-10','passager50@mail.com',FALSE),
+-- Vol 1, classe PREMIUM
+INSERT INTO promotion (id_prix, est_enfant, montant) VALUES
+(3, FALSE, 1000000), -- adulte
+(3, TRUE, 1000000);  -- enfant, pas de remise
 
-('Nom51','Prenom51','1980-01-10','passager51@mail.com',FALSE),
-('Nom52','Prenom52','1981-02-10','passager52@mail.com',FALSE),
-('Nom53','Prenom53','1982-03-10','passager53@mail.com',FALSE),
-('Nom54','Prenom54','1983-04-10','passager54@mail.com',FALSE),
-('Nom55','Prenom55','1984-05-10','passager55@mail.com',FALSE),
-('Nom56','Prenom56','1985-06-10','passager56@mail.com',FALSE),
-('Nom57','Prenom57','1986-07-10','passager57@mail.com',FALSE),
-('Nom58','Prenom58','1987-08-10','passager58@mail.com',FALSE),
-('Nom59','Prenom59','1988-09-10','passager59@mail.com',FALSE),
-('Nom60','Prenom60','1989-10-10','passager60@mail.com',FALSE),
+-- Vol 1, classe FIRST
+INSERT INTO promotion (id_prix, est_enfant, montant) VALUES
+(2, FALSE, 1200000), -- adulte
+(2, TRUE, 1200000);  -- enfant, pas de remise
 
-('Nom61','Prenom61','1990-01-10','passager61@mail.com',FALSE),
-('Nom62','Prenom62','1991-02-10','passager62@mail.com',FALSE),
-('Nom63','Prenom63','1992-03-10','passager63@mail.com',FALSE),
-('Nom64','Prenom64','1993-04-10','passager64@mail.com',FALSE),
-('Nom65','Prenom65','1994-05-10','passager65@mail.com',FALSE),
-('Nom66','Prenom66','1995-06-10','passager66@mail.com',FALSE),
-('Nom67','Prenom67','1996-07-10','passager67@mail.com',FALSE),
-('Nom68','Prenom68','1997-08-10','passager68@mail.com',FALSE),
-('Nom69','Prenom69','1998-09-10','passager69@mail.com',FALSE),
-('Nom70','Prenom70','1999-10-10','passager70@mail.com',FALSE),
-
-('Nom71','Prenom71','1980-01-10','passager71@mail.com',FALSE),
-('Nom72','Prenom72','1981-02-10','passager72@mail.com',FALSE),
-('Nom73','Prenom73','1982-03-10','passager73@mail.com',FALSE),
-('Nom74','Prenom74','1983-04-10','passager74@mail.com',FALSE),
-('Nom75','Prenom75','1984-05-10','passager75@mail.com',FALSE),
-('Nom76','Prenom76','1985-06-10','passager76@mail.com',FALSE),
-('Nom77','Prenom77','1986-07-10','passager77@mail.com',FALSE),
-('Nom78','Prenom78','1987-08-10','passager78@mail.com',FALSE),
-('Nom79','Prenom79','1988-09-10','passager79@mail.com',FALSE),
-('Nom80','Prenom80','1989-10-10','passager80@mail.com',FALSE),
-
-('Nom81','Prenom81','1990-01-10','passager81@mail.com',FALSE),
-('Nom82','Prenom82','1991-02-10','passager82@mail.com',FALSE),
-('Nom83','Prenom83','1992-03-10','passager83@mail.com',FALSE),
-('Nom84','Prenom84','1993-04-10','passager84@mail.com',FALSE),
-('Nom85','Prenom85','1994-05-10','passager85@mail.com',FALSE),
-('Nom86','Prenom86','1995-06-10','passager86@mail.com',FALSE),
-('Nom87','Prenom87','1996-07-10','passager87@mail.com',FALSE),
-('Nom88','Prenom88','1997-08-10','passager88@mail.com',FALSE),
-('Nom89','Prenom89','1998-09-10','passager89@mail.com',FALSE),
-('Nom90','Prenom90','1999-10-10','passager90@mail.com',FALSE),
-
-('Nom91','Prenom91','1980-01-10','passager91@mail.com',FALSE),
-('Nom92','Prenom92','1981-02-10','passager92@mail.com',FALSE),
-('Nom93','Prenom93','1982-03-10','passager93@mail.com',FALSE),
-('Nom94','Prenom94','1983-04-10','passager94@mail.com',FALSE),
-('Nom95','Prenom95','1984-05-10','passager95@mail.com',FALSE),
-('Nom96','Prenom96','1985-06-10','passager96@mail.com',FALSE),
-('Nom97','Prenom97','1986-07-10','passager97@mail.com',FALSE),
-('Nom98','Prenom98','1987-08-10','passager98@mail.com',FALSE),
-('Nom99','Prenom99','1988-09-10','passager99@mail.com',FALSE),
-('Nom100','Prenom100','1989-10-10','passager100@mail.com',FALSE);
