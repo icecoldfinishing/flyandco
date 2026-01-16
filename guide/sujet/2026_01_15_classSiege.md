@@ -1,3 +1,2 @@
 Une avion possède des places premieres classe et des places economiques
 Pour un vol tana-Nosy Be, Une place premiere classe coute 1200 000 et une place economique 700 000 Donner la valeur maximal qu un avion peut generer pour un vol
-

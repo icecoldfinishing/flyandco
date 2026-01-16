@@ -37,7 +37,7 @@ public class AvionController {
     private com.fly.andco.service.vols.VolService volService;
 
     @GetMapping("/place")
-    public String showRevenueForm(Model model) { // Modified to serve as the revenue calc page as requested
+    public String showRevenueForm(Model model) { 
         model.addAttribute("avions", avionService.getAllAvions());
         model.addAttribute("vols", volService.getAll());
         return "views/avions/place";
@@ -52,10 +52,14 @@ public class AvionController {
 
         model.addAttribute("revenueDetails", details);
         model.addAttribute("grandTotal", grandTotal);
-        // model.addAttribute("avions", avionService.getAllAvions()); // Removed as per refactor plan
         model.addAttribute("vols", volService.getAll());
-        // model.addAttribute("selectedAvionId", idAvion); // Removed
         model.addAttribute("selectedVolId", idVol);
         return "views/avions/place";
+    }
+    @GetMapping("/ca")
+    public String showCaForm(Model model) { 
+        model.addAttribute("avions", avionService.getAllAvions());
+        model.addAttribute("vols", volService.getAll());
+        return "views/avions/ca";
     }
 }
