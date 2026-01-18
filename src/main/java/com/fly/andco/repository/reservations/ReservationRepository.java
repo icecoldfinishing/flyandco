@@ -16,4 +16,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
         List<Reservation> findByPassager_IdPassagerAndDateReservationBetween(
                 Long passagerId, LocalDateTime start, LocalDateTime end);
+
+        boolean existsBySiegeVol_IdSiegeVol(Long idSiegeVol);
 }

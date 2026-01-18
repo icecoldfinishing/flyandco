@@ -120,20 +120,23 @@ public class ReservationController {
 
     @GetMapping("/book/{id}")
     public String showBookingForm(@PathVariable("id") Long id, Model model) {
-        VolInstance vol = volInstanceRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid flight Id:" + id));
+        populateBookingModel(id, model);
+        model.addAttribute("passenger", new Passager());
+        return "views/reservation/book";
+    }
 
-        List<com.fly.andco.model.prix.TarifVol> tarifs = tarifVolRepository.findByVolInstance_IdVolInstance(id);
+    private void populateBookingModel(Long flightId, Model model) {
+        VolInstance vol = volInstanceRepository.findById(flightId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid flight Id:" + flightId));
+
+        List<com.fly.andco.model.prix.TarifVol> tarifs = tarifVolRepository.findByVolInstance_IdVolInstance(flightId);
         List<MoyenPaiement> moyensPaiement = moyenPaiementRepository.findAll();
-        List<com.fly.andco.model.vols.SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstanceAndStatut(id, "LIBRE");
+        List<com.fly.andco.model.vols.SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstanceAndStatut(flightId, "LIBRE");
 
         model.addAttribute("flight", vol);
         model.addAttribute("prices", tarifs);
         model.addAttribute("moyensPaiement", moyensPaiement);
         model.addAttribute("siegeVols", siegeVols);
-        model.addAttribute("passenger", new Passager());
-
-        return "views/reservation/book";
     }
 
 
@@ -146,57 +149,74 @@ public class ReservationController {
             @ModelAttribute Passager passenger,
             Model model) {
         
-        Passager savedPassenger = passagerRepository.save(passenger);
-        
-        VolInstance flight = volInstanceRepository.findById(flightId)
-                .orElseThrow(() -> new IllegalArgumentException("Vol introuvable"));
+        try {
+            Passager savedPassenger = passagerRepository.save(passenger);
+            
+            VolInstance flight = volInstanceRepository.findById(flightId)
+                    .orElseThrow(() -> new IllegalArgumentException("Vol introuvable"));
 
-        com.fly.andco.model.prix.TarifVol tarif = tarifVolRepository.findById(tarifId)
-                .orElseThrow(() -> new IllegalArgumentException("Tarif introuvable"));
+            com.fly.andco.model.prix.TarifVol tarif = tarifVolRepository.findById(tarifId)
+                    .orElseThrow(() -> new IllegalArgumentException("Tarif introuvable"));
 
-        // Validate Seat validity
-        com.fly.andco.model.vols.SiegeVol selectedSiege = siegeVolRepository.findById(siegeVolId)
-                .orElseThrow(() -> new IllegalArgumentException("Siège introuvable"));
+            // Validate Seat validity
+            com.fly.andco.model.vols.SiegeVol selectedSiege = siegeVolRepository.findById(siegeVolId)
+                    .orElseThrow(() -> new IllegalArgumentException("Siège introuvable"));
 
-        if (!selectedSiege.getStatut().equals("LIBRE")) {
-             throw new IllegalStateException("Ce siège est déjà occupé.");
+            if (!selectedSiege.getStatut().equals("LIBRE")) {
+                 throw new IllegalStateException("Ce siège est déjà occupé.");
+            }
+
+            // Double check: ensure no other reservation exists for this seat (Data Consistency)
+            if (reservationRepository.existsBySiegeVol_IdSiegeVol(siegeVolId)) {
+                 throw new IllegalStateException("Une réservation existe déjà pour ce siège.");
+            }
+
+            // Verify class match
+            if (!selectedSiege.getSiege().getClasse().equalsIgnoreCase(tarif.getClasse())) {
+                 throw new IllegalArgumentException("Le siège sélectionné ne correspond pas à la classe du tarif (" + tarif.getClasse() + ")");
+            }
+
+            // Mark seat determined
+            selectedSiege.setStatut("OCCUPE");
+            siegeVolRepository.save(selectedSiege);
+
+            Reservation reservation = new Reservation();
+            reservation.setPassager(savedPassenger);
+            reservation.setVolInstance(flight);
+            reservation.setTarifVol(tarif);
+            reservation.setSiegeVol(selectedSiege);
+            reservation.setDateReservation(LocalDateTime.now());
+            reservation.setStatut("CONFIRMEE");
+
+            reservation = reservationRepository.save(reservation);
+
+            MoyenPaiement moyenPaiement = moyenPaiementRepository.findById(moyenPaiementId)
+                    .orElseThrow(() -> new IllegalArgumentException("Moyen de paiement introuvable"));
+
+            Paiement paiement = new Paiement();
+            paiement.setReservation(reservation);
+            paiement.setMontant(tarif.getMontant());
+            paiement.setMoyenPaiement(moyenPaiement);
+            paiement.setDatePaiement(LocalDateTime.now());
+            paiement.setStatut("OK");
+
+            paiementRepository.save(paiement);
+
+            model.addAttribute("reservation", reservation);
+            model.addAttribute("paiement", paiement);
+
+            return "views/reservation/confirmation";
+
+        } catch (Exception e) {
+            // Reload model data for the form
+            populateBookingModel(flightId, model);
+            // Add error message
+            model.addAttribute("errorMessage", e.getMessage());
+            // Preserve entered passenger data
+            model.addAttribute("passenger", passenger);
+            
+            return "views/reservation/book";
         }
-
-        // Verify class match
-        if (!selectedSiege.getSiege().getClasse().equalsIgnoreCase(tarif.getClasse())) {
-             throw new IllegalArgumentException("Le siège sélectionné ne correspond pas à la classe du tarif (" + tarif.getClasse() + ")");
-        }
-
-        // Mark seat determined
-        selectedSiege.setStatut("OCCUPE");
-        siegeVolRepository.save(selectedSiege);
-
-        Reservation reservation = new Reservation();
-        reservation.setPassager(savedPassenger);
-        reservation.setVolInstance(flight);
-        reservation.setTarifVol(tarif);
-        reservation.setSiegeVol(selectedSiege);
-        reservation.setDateReservation(LocalDateTime.now());
-        reservation.setStatut("CONFIRMEE");
-
-        reservation = reservationRepository.save(reservation);
-
-        MoyenPaiement moyenPaiement = moyenPaiementRepository.findById(moyenPaiementId)
-                .orElseThrow(() -> new IllegalArgumentException("Moyen de paiement introuvable"));
-
-        Paiement paiement = new Paiement();
-        paiement.setReservation(reservation);
-        paiement.setMontant(tarif.getMontant());
-        paiement.setMoyenPaiement(moyenPaiement);
-        paiement.setDatePaiement(LocalDateTime.now());
-        paiement.setStatut("OK");
-
-        paiementRepository.save(paiement);
-
-        model.addAttribute("reservation", reservation);
-        model.addAttribute("paiement", paiement);
-
-        return "views/reservation/confirmation";
     }
 
 }

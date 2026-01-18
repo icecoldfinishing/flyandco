@@ -61,9 +61,9 @@
                                             <label for="passagerId">Passager</label>
                                             <select class="form-select" id="passagerId" name="passagerId" required>
                                                 <option value="" disabled selected>Choisir un passager</option>
-                                                <option th:each="passager : ${passagers}" 
-                                                        th:value="${passager.getIdPassager}" 
-                                                        th:text="${passager.getNom} + ' (ID: ' + ${passager.getIdPassager} + ')'">
+                                                <option th:each="passager : ${passagers}"
+                                                    th:value="${passager.getIdPassager}"
+                                                    th:text="${passager.getNom} + ' (ID: ' + ${passager.getIdPassager} + ')'">
                                                 </option>
                                             </select>
                                         </div>
@@ -116,32 +116,40 @@
                                     <tr th:each="reservation : ${reservations}">
                                         <td th:text="${reservation.idReservation}"></td>
 
-                                        <td th:text="${reservation.passager.nom + ' ' + reservation.passager.prenom}"></td>
+                                        <td th:text="${reservation.passager.nom + ' ' + reservation.passager.prenom}">
+                                        </td>
                                         <td th:text="${reservation.passager.email}"></td>
 
                                         <td>
-                                            <span class="badge bg-light-info" th:text="${reservation.volInstance.vol.compagnie.nom}">
+                                            <span class="badge bg-light-info"
+                                                th:text="${reservation.volInstance.vol.compagnie.nom}">
                                             </span>
                                         </td>
 
                                         <td th:text="${reservation.volInstance.vol.aeroportDepart.codeIata}"></td>
                                         <td th:text="${reservation.volInstance.vol.aeroportArrivee.codeIata}"></td>
-                                        <td th:text="${#temporals.format(reservation.volInstance.dateDepart, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td
+                                            th:text="${#temporals.format(reservation.volInstance.dateDepart, 'dd/MM/yyyy HH:mm')}">
+                                        </td>
+                                        <td>
+                                            <span th:class="${reservation.tarifVol.classe == 'PREMIUM' ? 'badge bg-light-primary' : 
+                                                            reservation.tarifVol.classe == 'FIRST' ? 'badge bg-light-warning' : 
+                                                            reservation.tarifVol.classe == 'ECONOMY' ? 'badge bg-light-secondary' : 
+                                                            'badge bg-default'}"
+                                                th:text="${reservation.tarifVol.classe}"></span>
+                                        </td>
+                                        <td th:text="${reservation.tarifVol.montant} + ' Ar'"></td>
+
+                                        <td
+                                            th:text="${reservation.siegeVol.siege.numero} + ' (' + ${reservation.siegeVol.siege.classe} + ')'">
+                                        </td>
+
+                                        <td
+                                            th:text="${#temporals.format(reservation.dateReservation, 'dd/MM/yyyy HH:mm')}">
+                                        </td>
                                         <td>
                                             <span
-                                                th:class="${reservation.prixVol.classe == 'PREMIUM' ? 'badge bg-light-primary' : 
-                                                            reservation.prixVol.classe == 'FIRST' ? 'badge bg-light-warning' : 
-                                                            reservation.prixVol.classe == 'ECONOMY' ? 'badge bg-light-secondary' : 
-                                                            'badge bg-default'}" 
-                                                th:text="${reservation.prixVol.classe}"></span>
-                                        </td>
-                                        <td th:text="${reservation.prixVol.prix}"></td>
-
-                                        <td th:text="${reservation.siege}"></td>
-
-                                        <td th:text="${#temporals.format(reservation.dateReservation, 'dd/MM/yyyy HH:mm')}"></td>
-                                        <td>
-                                            <span th:class="${reservation.statut == 'CONFIRMEE' ? 'badge bg-success' : 'badge bg-danger'}" 
+                                                th:class="${reservation.statut == 'CONFIRMEE' ? 'badge bg-success' : 'badge bg-danger'}"
                                                 th:text="${reservation.statut}"></span>
                                         </td>
                                     </tr>

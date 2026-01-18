@@ -63,6 +63,9 @@
                             <h4 class="card-title">Informations Passager</h4>
                         </div>
                         <div class="card-body">
+                            <div th:if="${errorMessage}" class="alert alert-danger" role="alert"
+                                th:text="${errorMessage}">
+                            </div>
                             <form action="/flights/purchase" method="post" th:object="${passenger}">
                                 <input type="hidden" name="flightId" th:value="${flight.idVolInstance}" />
 

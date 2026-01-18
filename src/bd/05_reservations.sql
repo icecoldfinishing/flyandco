@@ -116,12 +116,3 @@ INSERT INTO reservation (id_passager, id_vol_instance, id_tarif, id_siege_vol) V
 -- =========================
 UPDATE siege_vol SET statut = 'OCCUPE' WHERE id_siege_vol IN (SELECT id_siege_vol FROM reservation);
 
-
-
-INSERT INTO reservation (id_passager, id_vol_instance, id_tarif, id_siege_vol) VALUES
-(90, 1, 4, 1),  -- 1A
-(91, 1, 4, 2),  -- 1B
-(101, 1, 4, 3), -- 2A
-(102, 1, 4, 4), -- 2B
-(103, 1, 4, 5), -- 3A
-(104, 1, 4, 6);

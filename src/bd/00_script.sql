@@ -121,7 +121,7 @@ CREATE TABLE passager (
     nom VARCHAR(50) NOT NULL,
     prenom VARCHAR(50) NOT NULL,
     date_naissance DATE,
-    email VARCHAR(100) UNIQUE,
+    email VARCHAR(100) ,
     type_passager VARCHAR(20) NOT NULL DEFAULT 'ADULTE' CHECK (type_passager IN ('ADULTE', 'ENFANT', 'BEBE'))
 );
 

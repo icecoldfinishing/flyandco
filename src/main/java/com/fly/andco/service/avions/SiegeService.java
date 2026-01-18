@@ -3,6 +3,7 @@ package com.fly.andco.service.avions;
 import com.fly.andco.model.avions.Siege;
 import com.fly.andco.dto.RevenueDetail;
 import com.fly.andco.repository.avions.SiegeRepository;
+import com.fly.andco.repository.reservations.ReservationRepository;
 import com.fly.andco.model.prix.TarifVol;
 import com.fly.andco.model.reservations.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class SiegeService {
 
     private final SiegeRepository siegeRepository;
+    private final ReservationRepository reservationRepository;
     private final com.fly.andco.repository.prix.TarifVolRepository tarifVolRepository;
 
     @Autowired
