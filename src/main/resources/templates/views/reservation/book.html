@@ -91,20 +91,22 @@
                                         <label>Classe & Prix</label>
                                         <div class="form-check" th:each="price : ${prices}">
                                             <input class="form-check-input" type="radio" name="priceId"
-                                                th:value="${price.idPrix}" th:id="'price_' + ${price.idPrix}" required>
-                                            <label class="form-check-label" th:for="'price_' + ${price.idPrix}">
-                                                <span th:text="${price.classe}"></span> - <span
-                                                    th:text="${price.prix} + ' MGA'"></span>
+                                                th:value="${price.idTarif}" th:id="'price_' + ${price.idTarif}"
+                                                required>
+                                            <label class="form-check-label" th:for="'price_' + ${price.idTarif}">
+                                                <span th:text="${price.classe}"></span> (<span
+                                                    th:text="${price.typePassager}"></span>) - <span
+                                                    th:text="${price.montant} + ' MGA'"></span>
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="moyenPaiement">Moyen de paiement</label>
                                         <select class="form-select" id="moyenPaiement" name="moyenPaiementId" required>
-                                            <option value="" disabled selected>-- Choisir un moyen de paiement --</option>
-                                            <option th:each="mp : ${moyensPaiement}"
-                                                    th:value="${mp.idMoyenPaiement}"
-                                                    th:text="${mp.libelle}">
+                                            <option value="" disabled selected>-- Choisir un moyen de paiement --
+                                            </option>
+                                            <option th:each="mp : ${moyensPaiement}" th:value="${mp.idMoyenPaiement}"
+                                                th:text="${mp.libelle}">
                                             </option>
                                         </select>
                                     </div>

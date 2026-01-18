@@ -11,8 +11,8 @@ public class Siege {
     private Long idSiege;
 
     @ManyToOne
-    @JoinColumn(name = "id_vol", nullable = false)
-    private com.fly.andco.model.vols.Vol vol;
+    @JoinColumn(name = "id_avion", nullable = false)
+    private Avion avion;
 
     @Column(nullable = false, length = 5)
     private String numero;
@@ -32,12 +32,12 @@ public class Siege {
         this.idSiege = idSiege;
     }
 
-    public com.fly.andco.model.vols.Vol getVol() {
-        return vol;
+    public Avion getAvion() {
+        return avion;
     }
 
-    public void setVol(com.fly.andco.model.vols.Vol vol) {
-        this.vol = vol;
+    public void setAvion(Avion avion) {
+        this.avion = avion;
     }
 
     public String getNumero() {
@@ -54,13 +54,5 @@ public class Siege {
 
     public void setClasse(String classe) {
         this.classe = classe;
-    }
-
-    // =====================
-    // Helper pour Spring Data JPA Repository
-    // =====================
-    // Ceci permet de faire findByVol_IdVol(Long id) correctement
-    public Long getVolId() {
-        return vol != null ? vol.getIdVol() : null;
     }
 }

@@ -10,6 +10,6 @@ import java.util.List;
 public interface SiegeRepository extends JpaRepository<Siege, Long> {
 
     // Correct: utiliser le nom du champ de l'objet Vol + son id
-    List<Siege> findByVol_IdVol(Long idVol);
+    List<Siege> findByAvion_IdAvion(Long idAvion);
 
 }

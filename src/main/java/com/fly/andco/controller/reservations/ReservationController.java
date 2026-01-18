@@ -3,7 +3,6 @@ package com.fly.andco.controller.reservations;
 import com.fly.andco.model.reservations.Reservation;
 import com.fly.andco.model.vols.VolInstance;
 import com.fly.andco.model.passagers.Passager;
-import com.fly.andco.model.prix.PrixVol;
 import com.fly.andco.model.paiements.*;
 
 import com.fly.andco.repository.vols.VolRepository;
@@ -11,11 +10,11 @@ import com.fly.andco.repository.vols.VolInstanceRepository;
 import com.fly.andco.repository.aeroports.AeroportRepository;
 import com.fly.andco.repository.reservations.ReservationRepository;
 import com.fly.andco.repository.passagers.PassagerRepository;
-import com.fly.andco.repository.prix.PrixVolRepository;
-import com.fly.andco.repository.passagers.PassagerRepository;
 import com.fly.andco.repository.paiements.MoyenPaiementRepository;
 import com.fly.andco.repository.paiements.PaiementRepository;
 import com.fly.andco.service.reservations.ReservationService;
+import com.fly.andco.repository.prix.TarifVolRepository;
+import com.fly.andco.repository.vols.SiegeVolRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,7 +32,6 @@ import java.math.BigDecimal;
 @RequestMapping("/flights")
 public class ReservationController {
 
-    
     @Autowired
     private ReservationService reservationService;
 
@@ -50,7 +48,10 @@ public class ReservationController {
     private PassagerRepository passagerRepository;
     
     @Autowired
-    private PrixVolRepository prixVolRepository;
+    private TarifVolRepository tarifVolRepository;
+
+    @Autowired
+    private SiegeVolRepository siegeVolRepository;
 
     @Autowired
     private MoyenPaiementRepository moyenPaiementRepository;
@@ -121,16 +122,11 @@ public class ReservationController {
         VolInstance vol = volInstanceRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid flight Id:" + id));
 
-        List<PrixVol> prices = prixVolRepository.findAll();
+        List<com.fly.andco.model.prix.TarifVol> tarifs = tarifVolRepository.findByVolInstance_IdVolInstance(id);
         List<MoyenPaiement> moyensPaiement = moyenPaiementRepository.findAll();
 
         model.addAttribute("flight", vol);
-        model.addAttribute(
-                "prices",
-                prices.stream()
-                    .filter(p -> p.getVol().getIdVol().equals(vol.getVol().getIdVol()))
-                    .toList()
-        );
+        model.addAttribute("prices", tarifs);
         model.addAttribute("moyensPaiement", moyensPaiement);
         model.addAttribute("passenger", new Passager());
 
@@ -141,23 +137,37 @@ public class ReservationController {
     @PostMapping("/purchase")
     public String purchaseTicket(
             @RequestParam("flightId") Long flightId,
-            @RequestParam("priceId") Long priceId,
+            @RequestParam("priceId") Long tarifId,
             @RequestParam("moyenPaiementId") Long moyenPaiementId,
             @ModelAttribute Passager passenger,
             Model model) {
+        
         Passager savedPassenger = passagerRepository.save(passenger);
-
         
         VolInstance flight = volInstanceRepository.findById(flightId)
                 .orElseThrow(() -> new IllegalArgumentException("Vol introuvable"));
 
-        PrixVol price = prixVolRepository.findById(priceId)
-                .orElseThrow(() -> new IllegalArgumentException("Prix introuvable"));
+        com.fly.andco.model.prix.TarifVol tarif = tarifVolRepository.findById(tarifId)
+                .orElseThrow(() -> new IllegalArgumentException("Tarif introuvable"));
+
+        // Auto-assign Seat
+        List<com.fly.andco.model.vols.SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstanceAndStatut(flightId, "LIBRE");
+        
+        // Filter by class matching the tarif
+        com.fly.andco.model.vols.SiegeVol selectedSiege = siegeVols.stream()
+            .filter(sv -> sv.getSiege().getClasse().equalsIgnoreCase(tarif.getClasse()))
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("Aucun siège disponible pour la classe " + tarif.getClasse()));
+
+        // Mark seat determined
+        selectedSiege.setStatut("OCCUPE");
+        siegeVolRepository.save(selectedSiege);
 
         Reservation reservation = new Reservation();
         reservation.setPassager(savedPassenger);
         reservation.setVolInstance(flight);
-        reservation.setPrixVol(price);
+        reservation.setTarifVol(tarif);
+        reservation.setSiegeVol(selectedSiege);
         reservation.setDateReservation(LocalDateTime.now());
         reservation.setStatut("CONFIRMEE");
 
@@ -168,7 +178,7 @@ public class ReservationController {
 
         Paiement paiement = new Paiement();
         paiement.setReservation(reservation);
-        paiement.setMontant(BigDecimal.valueOf(price.getPrix()));
+        paiement.setMontant(tarif.getMontant());
         paiement.setMoyenPaiement(moyenPaiement);
         paiement.setDatePaiement(LocalDateTime.now());
         paiement.setStatut("OK");

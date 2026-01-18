@@ -24,11 +24,15 @@ public class Reservation {
     private com.fly.andco.model.vols.VolInstance volInstance;
 
     @ManyToOne
-    @JoinColumn(name = "id_prix", nullable = false)
-    private PrixVol prixVol;
+    @JoinColumn(name = "id_tarif", nullable = false)
+    private com.fly.andco.model.prix.TarifVol tarifVol;
+
+    // Lien vers le siège spécifique (dépend now de siege_vol)
+    @OneToOne
+    @JoinColumn(name = "id_siege_vol", nullable = false, unique = true)
+    private com.fly.andco.model.vols.SiegeVol siegeVol;
 
     private LocalDateTime dateReservation;
-    private String siege;
     private String statut;
 
     // getters & setters
@@ -56,12 +60,20 @@ public class Reservation {
         this.volInstance = volInstance;
     }
 
-    public PrixVol getPrixVol() {
-        return prixVol;
+    public com.fly.andco.model.prix.TarifVol getTarifVol() {
+        return tarifVol;
     }
 
-    public void setPrixVol(PrixVol prixVol) {
-        this.prixVol = prixVol;
+    public void setTarifVol(com.fly.andco.model.prix.TarifVol tarifVol) {
+        this.tarifVol = tarifVol;
+    }
+
+    public com.fly.andco.model.vols.SiegeVol getSiegeVol() {
+        return siegeVol;
+    }
+
+    public void setSiegeVol(com.fly.andco.model.vols.SiegeVol siegeVol) {
+        this.siegeVol = siegeVol;
     }
 
     public LocalDateTime getDateReservation() {
@@ -70,14 +82,6 @@ public class Reservation {
 
     public void setDateReservation(LocalDateTime dateReservation) {
         this.dateReservation = dateReservation;
-    }
-
-    public String getSiege() {
-        return siege;
-    }
-
-    public void setSiege(String siege) {
-        this.siege = siege;
     }
 
     public String getStatut() {
