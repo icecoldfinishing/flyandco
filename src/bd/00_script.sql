@@ -48,6 +48,18 @@ CREATE TABLE avion (
 );
 
 -- =========================
+-- SIEGE (Lié à Avion maintenant)
+-- =========================
+CREATE TABLE siege (
+    id_siege SERIAL PRIMARY KEY,
+    id_avion INT NOT NULL,    
+    numero VARCHAR(5) NOT NULL,           
+    classe VARCHAR(20) NOT NULL CHECK (classe IN ('ECONOMY','PREMIUM','FIRST')),
+    FOREIGN KEY (id_avion) REFERENCES avion(id_avion),
+    UNIQUE (id_avion, numero)
+);
+
+-- =========================
 -- VOL (trajet théorique)
 -- =========================
 CREATE TABLE vol (
@@ -76,16 +88,29 @@ CREATE TABLE vol_instance (
 );
 
 -- =========================
--- PRIX PAR CLASSE
+-- SIEGE_VOL (Instance de siège pour un vol donné)
 -- =========================
-CREATE TABLE prix_vol (
-    id_prix SERIAL PRIMARY KEY,
-    id_vol INT NOT NULL,
+CREATE TABLE siege_vol (
+    id_siege_vol SERIAL PRIMARY KEY,
+    id_vol_instance INT NOT NULL,
+    id_siege INT NOT NULL,
+    statut VARCHAR(20) DEFAULT 'LIBRE', -- LIBRE, OCCUPE
+    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
+    FOREIGN KEY (id_siege) REFERENCES siege(id_siege),
+    UNIQUE (id_vol_instance, id_siege)
+);
+
+-- =========================
+-- TARIF VOL (Fusion PrixVol + Promotion, lié à VolInstance)
+-- =========================
+CREATE TABLE tarif_vol (
+    id_tarif SERIAL PRIMARY KEY,
+    id_vol_instance INT NOT NULL,
     classe VARCHAR(20) NOT NULL CHECK (classe IN ('ECONOMY','PREMIUM','FIRST')),
-    prix NUMERIC(10,2) NOT NULL CHECK (prix > 0),
-    date_maj TIMESTAMP DEFAULT NOW(),
-    FOREIGN KEY (id_vol) REFERENCES vol(id_vol),
-    UNIQUE (id_vol, classe)
+    type_passager VARCHAR(20) NOT NULL CHECK (type_passager IN ('ADULTE', 'ENFANT', 'BEBE')),
+    montant NUMERIC(10,2) NOT NULL CHECK (montant >= 0),
+    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
+    UNIQUE (id_vol_instance, classe, type_passager)
 );
 
 -- =========================
@@ -108,14 +133,16 @@ CREATE TABLE reservation (
     id_reservation SERIAL PRIMARY KEY,
     id_passager INT NOT NULL,
     id_vol_instance INT NOT NULL,
-    id_prix INT NOT NULL,
-    siege VARCHAR(5),
+    id_tarif INT NOT NULL,
+    id_siege_vol INT NOT NULL, -- Référence au siège spécifique du vol
     date_reservation TIMESTAMP DEFAULT NOW(),
     statut VARCHAR(20) DEFAULT 'CONFIRMEE',
     FOREIGN KEY (id_passager) REFERENCES passager(id_passager),
     FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
-    FOREIGN KEY (id_prix) REFERENCES prix_vol(id_prix),
-    UNIQUE (id_passager, id_vol_instance)
+    FOREIGN KEY (id_tarif) REFERENCES tarif_vol(id_tarif),
+    FOREIGN KEY (id_siege_vol) REFERENCES siege_vol(id_siege_vol),
+    UNIQUE (id_passager, id_vol_instance),
+    UNIQUE (id_siege_vol) -- Un siège ne peut être réservé qu'une fois (si confirmé)
 );
 
 -- =========================
@@ -167,119 +194,10 @@ CREATE TABLE paiement (
     FOREIGN KEY (id_moyen_paiement) REFERENCES moyen_paiement(id_moyen_paiement)
 );
 
--- =========================
--- SIEGE
--- =========================
-CREATE TABLE siege (
-    id_siege SERIAL PRIMARY KEY,
-    id_vol INT NOT NULL,    
-    numero VARCHAR(5) NOT NULL,           
-    classe VARCHAR(20) NOT NULL CHECK (classe IN ('ECONOMY','PREMIUM','FIRST')),
-    FOREIGN KEY (id_vol) REFERENCES vol(id_vol)   
-);
-
-
-CREATE TABLE siege_vol (
-    id_siege_vol SERIAL PRIMARY KEY,
-    id_vol_instance INT NOT NULL,
-    id_siege INT NOT NULL,
-    statut VARCHAR(20) DEFAULT 'LIBRE',
-    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
-    FOREIGN KEY (id_siege) REFERENCES siege(id_siege)
-);
 
 -- =========================
--- TABLE PROMOTION
+-- VUE CHIFFRE D'AFFAIRE
 -- =========================
-CREATE TABLE promotion (
-    id_promotion SERIAL PRIMARY KEY,
-    id_prix INT NOT NULL,             
-    type_passager VARCHAR(20) NOT NULL CHECK (type_passager IN ('ADULTE', 'ENFANT', 'BEBE')), 
-    montant NUMERIC(10,2), 
-    FOREIGN KEY (id_prix) REFERENCES prix_vol(id_prix)
-);
-
-
--- =========================
--- UTILISATEUR
--- =========================
-INSERT INTO utilisateur (username, mot_de_passe, role)
-VALUES
-('admin', 'admin', 'admin');
-
--- =========================
--- AEROPORTS
--- =========================
-INSERT INTO aeroport (nom, ville, pays, code_iata, code_icao)
-VALUES
-('Ivato International Airport', 'Antananarivo', 'Madagascar', 'TNR', 'FMMI'),
-('Fascene Airport', 'Nosy Be', 'Madagascar', 'NOS', 'FMNN'),
-('Arrachart Airport', 'Antsiranana', 'Madagascar', 'DIE', 'FMNA'),
-('Toliara Airport', 'Toliara', 'Madagascar', 'TLE', 'FMST'),
-('Marillac Airport', 'Fort Dauphin', 'Madagascar', 'FTU', 'FMSD');
-
--- =========================
--- COMPAGNIES
--- =========================
-INSERT INTO compagnie (nom, pays, code_iata, code_icao)
-VALUES
-('Air Madagascar', 'Madagascar', 'MD', 'MDG'),
-('Tsaradia', 'Madagascar', 'TZ', 'TSD'),
-('Madagascar Airlines', 'Madagascar', 'MA', 'MDA'),
-('Ewa Air', 'Comores', 'ZW', 'EWR');
-
--- =========================
--- AVIONS
--- =========================
-INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation)
-VALUES
-(1, 'ATR 72', 70, '5R-MJG'),
-(2, 'ATR 42', 48, '5R-TSA'),
-(3, 'Boeing 737', 140, '5R-MDL'),
-(1, 'Dash 8 Q400', 78, '5R-DQ4'),
-(4, 'Embraer 190', 100, 'D2-EWA');
-
--- =========================
--- VOLS (trajets)
--- =========================
-INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee)
-VALUES
-(1, 1, 2),
-(2, 1, 2),
-(1, 1, 3);
-
--- =========================
--- VOL INSTANCES
--- =========================
-INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee)
-VALUES
-(1, 1, '2026-01-12 12:00', '2026-01-12 13:30'),
-(2, 2, '2026-01-12 12:00', '2026-01-12 13:25'),
-(3, 3, '2026-01-15 02:00', '2026-01-15 08:25');
-
--- =========================
--- PRIX PAR CLASSE
--- =========================
-INSERT INTO prix_vol (id_vol, classe, prix)
-VALUES
-(1, 'ECONOMY', 700000),
-(1, 'FIRST', 1200000),
-(1, 'PREMIUM', 1000000);
-
-
-
--- =========================
--- INSERTION DES MODES DE PAIEMENT
--- =========================
-INSERT INTO moyen_paiement (libelle)
-VALUES
-('CB'),        -- Carte Bancaire
-('Virement'),  -- Virement bancaire
-('Paypal'),    -- Paiement en ligne via Paypal
-('Espèces'),   -- Paiement en espèces
-('Chèque');    -- Paiement par chèque
-
--- CREATION DE LA VUE SIMPLIFIEE
 CREATE OR REPLACE VIEW view_chiffre_affaire AS
 SELECT 
     c.id_compagnie,
@@ -303,10 +221,61 @@ JOIN avion a ON vi.id_avion = a.id_avion
 JOIN compagnie c ON a.id_compagnie = c.id_compagnie
 ORDER BY c.id_compagnie, vi.date_depart, v.id_vol;
 
+
+-- =============================================================
+-- INSERTIONS DE DONNEES DE TEST
+-- =============================================================
+
+-- UTILISATEUR
+INSERT INTO utilisateur (username, mot_de_passe, role) VALUES
+('admin', 'admin', 'admin');
+
+-- AEROPORTS
+INSERT INTO aeroport (nom, ville, pays, code_iata, code_icao) VALUES
+('Ivato International Airport', 'Antananarivo', 'Madagascar', 'TNR', 'FMMI'),
+('Fascene Airport', 'Nosy Be', 'Madagascar', 'NOS', 'FMNN'),
+('Arrachart Airport', 'Antsiranana', 'Madagascar', 'DIE', 'FMNA'),
+('Toliara Airport', 'Toliara', 'Madagascar', 'TLE', 'FMST'),
+('Marillac Airport', 'Fort Dauphin', 'Madagascar', 'FTU', 'FMSD');
+
+-- COMPAGNIES
+INSERT INTO compagnie (nom, pays, code_iata, code_icao) VALUES
+('Air Madagascar', 'Madagascar', 'MD', 'MDG'),
+('Tsaradia', 'Madagascar', 'TZ', 'TSD'),
+('Madagascar Airlines', 'Madagascar', 'MA', 'MDA'),
+('Ewa Air', 'Comores', 'ZW', 'EWR');
+
+-- AVIONS
+INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation) VALUES
+(1, 'ATR 72', 70, '5R-MJG'),     -- id_avion = 1
+(2, 'ATR 42', 48, '5R-TSA'),     -- id_avion = 2
+(3, 'Boeing 737', 140, '5R-MDL'),-- id_avion = 3
+(1, 'Dash 8 Q400', 78, '5R-DQ4'),
+(4, 'Embraer 190', 100, 'D2-EWA');
+
+-- VOLS (trajets)
+INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee) VALUES
+(1, 1, 2), -- id_vol = 1 (Tana -> Nosy Be)
+(2, 1, 2),
+(1, 1, 3);
+
+-- VOL INSTANCES
+INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES
+(1, 1, '2026-01-12 12:00', '2026-01-12 13:30'), -- id_vol_instance = 1 uses id_avion = 1
+(2, 2, '2026-01-12 12:00', '2026-01-12 13:25'),
+(3, 3, '2026-01-15 02:00', '2026-01-15 08:25');
+
+-- MOYENS PAIEMENT
+INSERT INTO moyen_paiement (libelle) VALUES
+('CB'), ('Virement'), ('Paypal'), ('Espèces'), ('Chèque');
+
+
 -- =========================
--- FIRST CLASS pour le vol 1 (30 sièges)
+-- SIEGES pour AVION 1 (lié à id_avion = 1, utilisé par Vol Instance 1)
 -- =========================
-INSERT INTO siege (id_vol, numero, classe) VALUES
+
+-- FIRST CLASS (30 sièges)
+INSERT INTO siege (id_avion, numero, classe) VALUES
 (1,'1A','FIRST'), (1,'1B','FIRST'),
 (1,'2A','FIRST'), (1,'2B','FIRST'),
 (1,'3A','FIRST'), (1,'3B','FIRST'),
@@ -323,10 +292,8 @@ INSERT INTO siege (id_vol, numero, classe) VALUES
 (1,'14A','FIRST'), (1,'14B','FIRST'),
 (1,'15A','FIRST'), (1,'15B','FIRST');
 
--- =========================
--- PREMIUM CLASS pour le vol 1 (40 sièges)
--- =========================
-INSERT INTO siege (id_vol, numero, classe) VALUES
+-- PREMIUM CLASS (40 sièges)
+INSERT INTO siege (id_avion, numero, classe) VALUES
 (1,'16A','PREMIUM'), (1,'16B','PREMIUM'),
 (1,'17A','PREMIUM'), (1,'17B','PREMIUM'),
 (1,'18A','PREMIUM'), (1,'18B','PREMIUM'),
@@ -348,10 +315,8 @@ INSERT INTO siege (id_vol, numero, classe) VALUES
 (1,'34A','PREMIUM'), (1,'34B','PREMIUM'),
 (1,'35A','PREMIUM'), (1,'35B','PREMIUM');
 
--- =========================
--- ECONOMY CLASS pour le vol 1 (50 sièges)
--- =========================
-INSERT INTO siege (id_vol, numero, classe) VALUES
+-- ECONOMY CLASS (50 sièges)
+INSERT INTO siege (id_avion, numero, classe) VALUES
 (1,'36A','ECONOMY'), (1,'36B','ECONOMY'),
 (1,'37A','ECONOMY'), (1,'37B','ECONOMY'),
 (1,'38A','ECONOMY'), (1,'38B','ECONOMY'),
@@ -378,21 +343,33 @@ INSERT INTO siege (id_vol, numero, classe) VALUES
 (1,'59A','ECONOMY'), (1,'59B','ECONOMY'),
 (1,'60A','ECONOMY'), (1,'60B','ECONOMY');
 
---economy
-INSERT INTO promotion (id_prix, type_passager, montant) VALUES
-(1, 'ADULTE', 900000), 
-(1, 'ENFANT', 600000),
-(1, 'BEBE', 90000);  
 
--- Vol 1, classe PREMIUM (1,000,000)
-INSERT INTO promotion (id_prix, type_passager, montant) VALUES
-(3, 'ADULTE', 1000000),
-(3, 'ENFANT', 700000),
-(3, 'BEBE', 100000);    
+-- =========================
+-- INITIALISATION SIEGE_VOL pour VOL INSTANCE 1
+-- (On insère tous les sièges de l'avion 1 comme LIBRE pour l'instance 1)
+-- =========================
+INSERT INTO siege_vol (id_vol_instance, id_siege)
+SELECT 1, id_siege FROM siege WHERE id_avion = 1 ORDER BY id_siege;
 
--- Vol 1, classe FIRST (1,200,000)
-INSERT INTO promotion (id_prix, type_passager, montant) VALUES
-(2, 'ADULTE', 2000000), 
-(2, 'ENFANT', 800000),
-(2, 'BEBE', 200000);    
+
+-- =========================
+-- TARIFS pour VOL INSTANCE 1
+-- =========================
+-- ECONOMY
+INSERT INTO tarif_vol (id_vol_instance, classe, type_passager, montant) VALUES
+(1, 'ECONOMY', 'ADULTE', 900000), 
+(1, 'ECONOMY', 'ENFANT', 600000),
+(1, 'ECONOMY', 'BEBE', 90000);  
+
+-- FIRST
+INSERT INTO tarif_vol (id_vol_instance, classe, type_passager, montant) VALUES
+(1, 'FIRST', 'ADULTE', 2000000), 
+(1, 'FIRST', 'ENFANT', 800000),
+(1, 'FIRST', 'BEBE', 200000);    
+
+-- PREMIUM
+INSERT INTO tarif_vol (id_vol_instance, classe, type_passager, montant) VALUES
+(1, 'PREMIUM', 'ADULTE', 1000000),
+(1, 'PREMIUM', 'ENFANT', 700000),
+(1, 'PREMIUM', 'BEBE', 100000);    
 
