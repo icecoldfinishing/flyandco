@@ -1,7 +1,6 @@
 package com.fly.andco.model.reservations;
 
 import com.fly.andco.model.passagers.Passager;
-import com.fly.andco.model.prix.PrixVol;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

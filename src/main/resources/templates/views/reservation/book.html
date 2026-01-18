@@ -100,6 +100,17 @@
                                             </label>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="siegeVol">Choisir un Siège</label>
+                                        <select class="form-select" id="siegeVol" name="siegeVolId" required>
+                                            <option value="" disabled selected>-- Choisir un siège --</option>
+                                            <option th:each="siege : ${siegeVols}" th:value="${siege.idSiegeVol}"
+                                                th:text="${siege.siege.numero} + ' - ' + ${siege.siege.classe}">
+                                            </option>
+                                        </select>
+                                    </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="moyenPaiement">Moyen de paiement</label>
                                         <select class="form-select" id="moyenPaiement" name="moyenPaiementId" required>

@@ -117,6 +117,7 @@ public class ReservationController {
         return "views/reservation/search";
     }
 
+
     @GetMapping("/book/{id}")
     public String showBookingForm(@PathVariable("id") Long id, Model model) {
         VolInstance vol = volInstanceRepository.findById(id)
@@ -124,10 +125,12 @@ public class ReservationController {
 
         List<com.fly.andco.model.prix.TarifVol> tarifs = tarifVolRepository.findByVolInstance_IdVolInstance(id);
         List<MoyenPaiement> moyensPaiement = moyenPaiementRepository.findAll();
+        List<com.fly.andco.model.vols.SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstanceAndStatut(id, "LIBRE");
 
         model.addAttribute("flight", vol);
         model.addAttribute("prices", tarifs);
         model.addAttribute("moyensPaiement", moyensPaiement);
+        model.addAttribute("siegeVols", siegeVols);
         model.addAttribute("passenger", new Passager());
 
         return "views/reservation/book";
@@ -139,6 +142,7 @@ public class ReservationController {
             @RequestParam("flightId") Long flightId,
             @RequestParam("priceId") Long tarifId,
             @RequestParam("moyenPaiementId") Long moyenPaiementId,
+            @RequestParam("siegeVolId") Long siegeVolId,
             @ModelAttribute Passager passenger,
             Model model) {
         
@@ -150,14 +154,18 @@ public class ReservationController {
         com.fly.andco.model.prix.TarifVol tarif = tarifVolRepository.findById(tarifId)
                 .orElseThrow(() -> new IllegalArgumentException("Tarif introuvable"));
 
-        // Auto-assign Seat
-        List<com.fly.andco.model.vols.SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstanceAndStatut(flightId, "LIBRE");
-        
-        // Filter by class matching the tarif
-        com.fly.andco.model.vols.SiegeVol selectedSiege = siegeVols.stream()
-            .filter(sv -> sv.getSiege().getClasse().equalsIgnoreCase(tarif.getClasse()))
-            .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Aucun siège disponible pour la classe " + tarif.getClasse()));
+        // Validate Seat validity
+        com.fly.andco.model.vols.SiegeVol selectedSiege = siegeVolRepository.findById(siegeVolId)
+                .orElseThrow(() -> new IllegalArgumentException("Siège introuvable"));
+
+        if (!selectedSiege.getStatut().equals("LIBRE")) {
+             throw new IllegalStateException("Ce siège est déjà occupé.");
+        }
+
+        // Verify class match
+        if (!selectedSiege.getSiege().getClasse().equalsIgnoreCase(tarif.getClasse())) {
+             throw new IllegalArgumentException("Le siège sélectionné ne correspond pas à la classe du tarif (" + tarif.getClasse() + ")");
+        }
 
         // Mark seat determined
         selectedSiege.setStatut("OCCUPE");

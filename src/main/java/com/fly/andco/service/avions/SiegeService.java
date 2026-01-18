@@ -3,32 +3,29 @@ package com.fly.andco.service.avions;
 import com.fly.andco.model.avions.Siege;
 import com.fly.andco.dto.RevenueDetail;
 import com.fly.andco.repository.avions.SiegeRepository;
-import com.fly.andco.repository.prix.PrixVolRepository;
+import com.fly.andco.model.prix.TarifVol;
+import com.fly.andco.model.reservations.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SiegeService {
 
     private final SiegeRepository siegeRepository;
-
-    private final PrixVolRepository prixVolRepository;
-
-    private final com.fly.andco.repository.reservations.ReservationRepository reservationRepository;
-    private final com.fly.andco.repository.prix.PromotionRepository promotionRepository;
+    private final com.fly.andco.repository.prix.TarifVolRepository tarifVolRepository;
 
     @Autowired
-    public SiegeService(SiegeRepository siegeRepository, 
-                        PrixVolRepository prixVolRepository,
+    public SiegeService(SiegeRepository siegeRepository,
                         com.fly.andco.repository.reservations.ReservationRepository reservationRepository,
-                        com.fly.andco.repository.prix.PromotionRepository promotionRepository) {
+                        com.fly.andco.repository.prix.TarifVolRepository tarifVolRepository) {
         this.siegeRepository = siegeRepository;
-        this.prixVolRepository = prixVolRepository;
         this.reservationRepository = reservationRepository;
-        this.promotionRepository = promotionRepository;
+        this.tarifVolRepository = tarifVolRepository;
     }
 
     // Lister tous les sièges
@@ -36,92 +33,58 @@ public class SiegeService {
         return siegeRepository.findAll();
     }
 
-    public List<RevenueDetail> calculateMaxRevenue(Long volId) {
-        // Fetch seats for the specific vol (now that Siege is linked to Vol)
-        List<Siege> sieges = siegeRepository.findByVol_IdVol(volId);
-        
-        List<com.fly.andco.model.prix.PrixVol> prixVols = prixVolRepository.findAll(); 
-
-        // Filter prices for the specific Vol
-        List<com.fly.andco.model.prix.PrixVol> prixForVol = prixVols.stream()
-                .filter(p -> p.getVol().getIdVol().equals(volId))
-                .toList();
-
-        // Group seats by class
-        java.util.Map<String, Long> seatsByClass = sieges.stream()
-                .collect(java.util.stream.Collectors.groupingBy(Siege::getClasse, java.util.stream.Collectors.counting()));
-
-        java.util.List<com.fly.andco.dto.RevenueDetail> details = new java.util.ArrayList<>();
-
-        for (java.util.Map.Entry<String, Long> entry : seatsByClass.entrySet()) {
-            String classe = entry.getKey();
-            Long count = entry.getValue();
-
-            // Find price for this class
-            Optional<com.fly.andco.model.prix.PrixVol> prixOpt = prixForVol.stream()
-                    .filter(p -> p.getClasse().equalsIgnoreCase(classe))
-                    .findFirst();
-
-            double price = prixOpt.map(com.fly.andco.model.prix.PrixVol::getPrix).orElse(0.0);
-            double total = count * price;
-
-            details.add(new com.fly.andco.dto.RevenueDetail(classe, price, count, total));
-        }
-
-        return details;
-    }
-
-    // Lister les sièges d’un vol
-    public List<Siege> getSiegesByVol(Long volId) {
-        return siegeRepository.findByVol_IdVol(volId);
-    }
-
 
     public List<RevenueDetail> calculateActualRevenue(Long volId) {
-        List<com.fly.andco.model.reservations.Reservation> reservations = reservationRepository.findByVolInstance_Vol_IdVol(volId);
-        List<com.fly.andco.model.prix.Promotion> allPromotions = promotionRepository.findAll();
+        List<Reservation> reservations = reservationRepository.findByVolInstance_Vol_IdVol(volId);
 
-        java.util.Map<String, List<com.fly.andco.model.reservations.Reservation>> grouped = reservations.stream()
-                .collect(java.util.stream.Collectors.groupingBy(res -> {
-                    String classe = res.getPrixVol().getClasse();
+        // Group by (Class + PassagerType) based on ACTUAL Passenger and Seat info
+        Map<String, List<Reservation>> grouped = reservations.stream()
+                .collect(Collectors.groupingBy(res -> {
+                    String classe = res.getSiegeVol().getSiege().getClasse();
                     String typePassager = res.getPassager().getTypePassager();
                     return classe + ":" + typePassager;
                 }));
 
-        java.util.List<RevenueDetail> details = new java.util.ArrayList<>();
+        List<RevenueDetail> details = new java.util.ArrayList<>();
 
-        for (java.util.Map.Entry<String, List<com.fly.andco.model.reservations.Reservation>> entry : grouped.entrySet()) {
-            List<com.fly.andco.model.reservations.Reservation> resList = entry.getValue();
+        for (Map.Entry<String, List<Reservation>> entry : grouped.entrySet()) {
+            List<Reservation> resList = entry.getValue();
             if (resList.isEmpty()) continue;
 
-            com.fly.andco.model.reservations.Reservation sample = resList.get(0);
-            com.fly.andco.model.prix.PrixVol prixVol = sample.getPrixVol();
+            // Representative reservation to get context (Class, Type)
+            Reservation sample = resList.get(0);
+            String classe = sample.getSiegeVol().getSiege().getClasse();
             String typePassager = sample.getPassager().getTypePassager();
-            String classeName = prixVol.getClasse();
 
-            double basePrice = prixVol.getPrix();
+            // Calculate total for this group
+            BigDecimal totalGroupRevenue = BigDecimal.ZERO;
 
-            Optional<com.fly.andco.model.prix.Promotion> promoOpt = allPromotions.stream()
-                    .filter(p -> p.getPrixVol().getIdPrix().equals(prixVol.getIdPrix()) 
-                              && p.getTypePassager().equalsIgnoreCase(typePassager))
-                    .findFirst();
+            for (Reservation res : resList) {
+                // Find correct tariff for this specific reservation's flight instance, class, and passenger type
+                com.fly.andco.model.prix.TarifVol correctTarif = tarifVolRepository
+                        .findByVolInstance_IdVolInstanceAndClasseAndTypePassager(
+                                res.getVolInstance().getIdVolInstance(),
+                                classe,
+                                typePassager
+                        ).orElse(null);
 
-            double finalPrice;
-            if (promoOpt.isPresent()) {
-                finalPrice = promoOpt.get().getMontant();
-            } else {
-                finalPrice = basePrice;
+                // If found, use its amount. If not (data inconsistency), fallback to stored tarif or 0
+                if (correctTarif != null) {
+                    totalGroupRevenue = totalGroupRevenue.add(correctTarif.getMontant());
+                } else if (res.getTarifVol() != null) {
+                    totalGroupRevenue = totalGroupRevenue.add(res.getTarifVol().getMontant());
+                }
             }
-
-            String displayClass = classeName + " (" + typePassager + ")";
-
+            
             long count = resList.size();
-            double total = finalPrice * count;
+            double avgPrice = count > 0 ? totalGroupRevenue.doubleValue() / count : 0.0;
+            double total = totalGroupRevenue.doubleValue();
 
-            details.add(new RevenueDetail(displayClass, finalPrice, count, total));
+            String displayClass = classe + " (" + typePassager + ")";
+
+            details.add(new RevenueDetail(displayClass, avgPrice, count, total));
         }
 
         return details;
     }
-
 }
