@@ -36,8 +36,8 @@ public class SiegeService {
     }
 
 
-    public List<RevenueDetail> calculateActualRevenue(Long volId) {
-        List<Reservation> reservations = reservationRepository.findByVolInstance_Vol_IdVol(volId);
+    public List<RevenueDetail> calculateActualRevenue(Long idVolInstance) {
+        List<Reservation> reservations = reservationRepository.findByVolInstance_IdVolInstance(idVolInstance);
 
         // Group by (Class + PassagerType) based on ACTUAL Passenger and Seat info
         Map<String, List<Reservation>> grouped = reservations.stream()

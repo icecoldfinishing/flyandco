@@ -140,9 +140,7 @@ CREATE TABLE reservation (
     FOREIGN KEY (id_passager) REFERENCES passager(id_passager),
     FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
     FOREIGN KEY (id_tarif) REFERENCES tarif_vol(id_tarif),
-    FOREIGN KEY (id_siege_vol) REFERENCES siege_vol(id_siege_vol),
-    UNIQUE (id_passager, id_vol_instance),
-    UNIQUE (id_siege_vol) -- Un siège ne peut être réservé qu'une fois (si confirmé)
+    FOREIGN KEY (id_siege_vol) REFERENCES siege_vol(id_siege_vol)
 );
 
 -- =========================
@@ -264,6 +262,7 @@ INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES
 (1, 1, '2026-01-12 12:00', '2026-01-12 13:30'), -- id_vol_instance = 1 uses id_avion = 1
 (2, 2, '2026-01-12 12:00', '2026-01-12 13:25'),
 (3, 3, '2026-01-15 02:00', '2026-01-15 08:25');
+
 
 -- MOYENS PAIEMENT
 INSERT INTO moyen_paiement (libelle) VALUES

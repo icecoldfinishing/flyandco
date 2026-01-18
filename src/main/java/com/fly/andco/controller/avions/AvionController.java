@@ -36,24 +36,30 @@ public class AvionController {
     @Autowired
     private com.fly.andco.service.vols.VolService volService;
 
+    @Autowired
+    private com.fly.andco.repository.vols.VolInstanceRepository volInstanceRepository;
+
+
 
     @PostMapping("/revenue")
-    public String calculateRevenue(@RequestParam("idVol") Long idVol,
+    public String calculateRevenue(@RequestParam("idVolInstance") Long idVolInstance,
                                    Model model) {
-        List<RevenueDetail> details = siegeService.calculateActualRevenue(idVol);
+        List<RevenueDetail> details = siegeService.calculateActualRevenue(idVolInstance);
         
         double grandTotal = details.stream().mapToDouble(RevenueDetail::getTotal).sum();
 
         model.addAttribute("revenueDetails", details);
         model.addAttribute("grandTotal", grandTotal);
         model.addAttribute("vols", volService.getAll());
-        model.addAttribute("selectedVolId", idVol);
+        model.addAttribute("volInstances", volInstanceRepository.findAll());
+        model.addAttribute("selectedVolInstanceId", idVolInstance);
         return "views/avions/ca";
     }
     @GetMapping("/ca")
     public String showCaForm(Model model) { 
         model.addAttribute("avions", avionService.getAllAvions());
         model.addAttribute("vols", volService.getAll());
+        model.addAttribute("volInstances", volInstanceRepository.findAll());
         return "views/avions/ca";
     }
 

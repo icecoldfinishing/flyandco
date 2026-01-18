@@ -65,13 +65,13 @@
                                                         <div class="row">
                                                             <div class="col-12">
                                                                 <div class="form-group">
-                                                                    <label for="vol-column">Vol</label>
+                                                                    <label for="vol-column">Vol Instance</label>
                                                                     <select id="vol-column" class="form-select"
-                                                                        name="idVol">
-                                                                        <option th:each="vol : ${vols}"
-                                                                            th:value="${vol.idVol}"
-                                                                            th:text="${vol.compagnie.nom} + ' : ' + ${vol.aeroportDepart.ville} + ' -> ' + ${vol.aeroportArrivee.ville}"
-                                                                            th:selected="${vol.idVol == selectedVolId}">
+                                                                        name="idVolInstance">
+                                                                        <option th:each="instance : ${volInstances}"
+                                                                            th:value="${instance.idVolInstance}"
+                                                                            th:text="${instance.vol.compagnie.nom} + ' : ' + ${instance.vol.aeroportDepart.ville} + ' -> ' + ${instance.vol.aeroportArrivee.ville} + ' (' + ${#temporals.format(instance.dateDepart, 'dd/MM/yyyy HH:mm')} + ')'"
+                                                                            th:selected="${instance.idVolInstance == selectedVolInstanceId}">
                                                                         </option>
                                                                     </select>
                                                                 </div>
