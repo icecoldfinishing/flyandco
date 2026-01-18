@@ -119,20 +119,31 @@
                                         <td th:text="${reservation.passager.nom + ' ' + reservation.passager.prenom}"></td>
                                         <td th:text="${reservation.passager.email}"></td>
 
-                                        <td th:text="${reservation.volInstance.vol.compagnie.nom}"></td>
+                                        <td>
+                                            <span class="badge bg-light-info" th:text="${reservation.volInstance.vol.compagnie.nom}">
+                                            </span>
+                                        </td>
 
                                         <td th:text="${reservation.volInstance.vol.aeroportDepart.codeIata}"></td>
                                         <td th:text="${reservation.volInstance.vol.aeroportArrivee.codeIata}"></td>
-
                                         <td th:text="${#temporals.format(reservation.volInstance.dateDepart, 'dd/MM/yyyy HH:mm')}"></td>
-
-                                        <td th:text="${reservation.prixVol.classe}"></td>
+                                        <td>
+                                            <span
+                                                th:class="${reservation.prixVol.classe == 'PREMIUM' ? 'badge bg-light-primary' : 
+                                                            reservation.prixVol.classe == 'FIRST' ? 'badge bg-light-warning' : 
+                                                            reservation.prixVol.classe == 'ECONOMY' ? 'badge bg-light-secondary' : 
+                                                            'badge bg-default'}" 
+                                                th:text="${reservation.prixVol.classe}"></span>
+                                        </td>
                                         <td th:text="${reservation.prixVol.prix}"></td>
 
                                         <td th:text="${reservation.siege}"></td>
 
                                         <td th:text="${#temporals.format(reservation.dateReservation, 'dd/MM/yyyy HH:mm')}"></td>
-                                        <td th:text="${reservation.statut}"></td>
+                                        <td>
+                                            <span th:class="${reservation.statut == 'CONFIRMEE' ? 'badge bg-success' : 'badge bg-danger'}" 
+                                                th:text="${reservation.statut}"></span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
