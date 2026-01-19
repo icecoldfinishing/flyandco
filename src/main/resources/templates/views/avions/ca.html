@@ -60,33 +60,6 @@
                             </h5>
                         </div>
                         <div class="card-body">
-<<<<<<< Updated upstream
-                            <!-- Contenu ici -->
-                            <section id="multiple-column-form">
-                                <div class="row match-height">
-                                    <div class="col-12">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h4 class="card-title">Calcul Recette Max</h4>
-                                            </div>
-                                            <div class="card-content">
-                                                <div class="card-body">
-                                                    <form class="form" th:action="@{/avions/revenue}" method="post">
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <div class="form-group">
-                                                                    <label for="vol-column">Vol</label>
-                                                                    <select id="vol-column" class="form-select"
-                                                                        name="idVol">
-                                                                        <option th:each="vol : ${vols}"
-                                                                            th:value="${vol.idVol}"
-                                                                            th:text="${vol.compagnie.nom} + ' : ' + ${vol.aeroportDepart.ville} + ' -> ' + ${vol.aeroportArrivee.ville}"
-                                                                            th:selected="${vol.idVol == selectedVolId}">
-                                                                        </option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-=======
                             <div class="table-responsive">
                                 <table class="table table-striped" id="table1">
                                     <thead>
@@ -106,7 +79,6 @@
                                                     th:text="${vi.vol.compagnie.nom}">
                                                 </span>
                                             </td>
->>>>>>> Stashed changes
 
                                             <td th:text="${vi.avion.modele + ' (' + vi.avion.numeroImmatriculation + ')'}"></td>
                                             
@@ -163,7 +135,6 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </div>
