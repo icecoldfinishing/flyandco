@@ -1,11 +1,11 @@
-    // Endpoint AJAX pour fragment chiffre d'affaires
-    
 package com.fly.andco.controller.avions;
 
 import com.fly.andco.model.avions.Avion;
 import com.fly.andco.model.vols.VolInstance;
+import com.fly.andco.model.vols.SiegeVol;
 import com.fly.andco.dto.RevenueDetail;
 import com.fly.andco.service.avions.AvionService;
+import com.fly.andco.repository.vols.SiegeVolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,15 +42,19 @@ public class AvionController {
     @Autowired
     private com.fly.andco.repository.vols.VolInstanceRepository volInstanceRepository;
 
+    @Autowired
+    private SiegeVolRepository siegeVolRepository;
+
 
 
     @PostMapping("/revenue")
     public String calculateRevenue(@RequestParam("idVolInstance") Long idVolInstance,
-                                   Model model) {
+                                    Model model) {
         List<RevenueDetail> details = siegeService.calculateActualRevenue(idVolInstance);
         
         double grandTotal = details.stream().mapToDouble(RevenueDetail::getTotal).sum();
         VolInstance volInstance = volInstanceRepository.findById(idVolInstance).orElse(null);
+        List<SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstance(idVolInstance);
 
         model.addAttribute("revenueDetails", details);
         model.addAttribute("grandTotal", grandTotal);
@@ -58,6 +62,7 @@ public class AvionController {
         model.addAttribute("volInstances", volInstanceRepository.findAll());
         model.addAttribute("selectedVolInstanceId", idVolInstance);
         model.addAttribute("selectedVolInstance", volInstance);
+        model.addAttribute("siegeVols", siegeVols);
         return "views/avions/revenue";
     }
     @GetMapping("/ca")
