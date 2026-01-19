@@ -11,4 +11,5 @@ public interface SiegeVolRepository extends JpaRepository<SiegeVol, Long> {
     List<SiegeVol> findByVolInstance_IdVolInstance(Long idVolInstance);
     // Find free seats for a generic booking query
     List<SiegeVol> findByVolInstance_IdVolInstanceAndStatut(Long idVolInstance, String statut);
+    List<SiegeVol> findByVolInstance_IdVolInstanceAndSiege_ClasseAndStatut(Long idVolInstance, String classe, String statut);
 }

@@ -55,6 +55,10 @@ public class AvionController {
         double grandTotal = details.stream().mapToDouble(RevenueDetail::getTotal).sum();
         VolInstance volInstance = volInstanceRepository.findById(idVolInstance).orElse(null);
         List<SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstance(idVolInstance);
+        List<SiegeVol> siegeVolsLibres = siegeVolRepository.findByVolInstance_IdVolInstanceAndStatut(idVolInstance, "LIBRE");
+        List<SiegeVol> siegeVolsEconomy = siegeVolRepository.findByVolInstance_IdVolInstanceAndSiege_ClasseAndStatut(idVolInstance, "ECONOMY", "LIBRE");
+        List<SiegeVol> siegeVolsPremium = siegeVolRepository.findByVolInstance_IdVolInstanceAndSiege_ClasseAndStatut(idVolInstance, "PREMIUM", "LIBRE");
+        List<SiegeVol> siegeVolsFirst = siegeVolRepository.findByVolInstance_IdVolInstanceAndSiege_ClasseAndStatut(idVolInstance, "FIRST", "LIBRE");
 
         model.addAttribute("revenueDetails", details);
         model.addAttribute("grandTotal", grandTotal);
@@ -63,6 +67,10 @@ public class AvionController {
         model.addAttribute("selectedVolInstanceId", idVolInstance);
         model.addAttribute("selectedVolInstance", volInstance);
         model.addAttribute("siegeVols", siegeVols);
+        model.addAttribute("siegeVolsLibres", siegeVolsLibres);
+        model.addAttribute("siegeVolsEconomy", siegeVolsEconomy);
+        model.addAttribute("siegeVolsPremium", siegeVolsPremium);
+        model.addAttribute("siegeVolsFirst", siegeVolsFirst);
         return "views/avions/revenue";
     }
     @GetMapping("/ca")
@@ -89,7 +97,7 @@ public class AvionController {
         double grandTotal = 0.0;
         if (request.getItems() != null) {
             for (com.fly.andco.dto.SimulationRequest.SimulationItem item : request.getItems()) {
-                 grandTotal += item.getTotal();
+                    grandTotal += item.getTotal();
             }
         }
         model.addAttribute("grandTotal", grandTotal);

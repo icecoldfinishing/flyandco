@@ -89,14 +89,17 @@
                                     </thead>
                                     <tbody>
                                         <tr th:each="flight : ${flights}">
-                                            <td th:text="${flight.avion.compagnie.nom}">Air Madagascar</td>
-                                            <td th:text="${flight.vol.aeroportDepart.codeIata}">TNR</td>
-                                            <td th:text="${flight.vol.aeroportArrivee.codeIata}">NOS</td>
-                                            <td th:text="${#temporals.format(flight.dateDepart, 'HH:mm')}">12:00</td>
-                                            <td th:text="${#temporals.format(flight.dateArrivee, 'HH:mm')}">13:30</td>
+                                            <td>
+                                                <span class="badge bg-light-primary" th:text="${flight.avion.compagnie.nom}">
+                                                </span>    
+                                            </td>
+                                            <td th:text="${flight.vol.aeroportDepart.codeIata}"></td>
+                                            <td th:text="${flight.vol.aeroportArrivee.codeIata}"></td>
+                                            <td th:text="${#temporals.format(flight.dateDepart, 'HH:mm')}"></td>
+                                            <td th:text="${#temporals.format(flight.dateArrivee, 'HH:mm')}"></td>
                                             <td>
                                                 <a th:href="@{/flights/book/{id}(id=${flight.idVolInstance})}"
-                                                    class="btn btn-sm btn-primary">Réserver</a>
+                                                    class="btn btn-sm btn-outline-primary">Réserver</a>
                                             </td>
                                         </tr>
                                     </tbody>
