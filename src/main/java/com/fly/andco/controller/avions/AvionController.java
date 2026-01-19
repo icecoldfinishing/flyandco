@@ -3,6 +3,7 @@
 package com.fly.andco.controller.avions;
 
 import com.fly.andco.model.avions.Avion;
+import com.fly.andco.model.vols.VolInstance;
 import com.fly.andco.dto.RevenueDetail;
 import com.fly.andco.service.avions.AvionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,21 +50,15 @@ public class AvionController {
         List<RevenueDetail> details = siegeService.calculateActualRevenue(idVolInstance);
         
         double grandTotal = details.stream().mapToDouble(RevenueDetail::getTotal).sum();
+        VolInstance volInstance = volInstanceRepository.findById(idVolInstance).orElse(null);
 
         model.addAttribute("revenueDetails", details);
         model.addAttribute("grandTotal", grandTotal);
         model.addAttribute("vols", volService.getAll());
         model.addAttribute("volInstances", volInstanceRepository.findAll());
         model.addAttribute("selectedVolInstanceId", idVolInstance);
-        return "views/avions/ca";
-    }
-    @PostMapping("/revenue/fragment")
-    public String revenueFragment(@RequestParam("idVolInstance") Long idVolInstance, Model model) {
-        List<RevenueDetail> details = siegeService.calculateActualRevenue(idVolInstance);
-        double grandTotal = details.stream().mapToDouble(RevenueDetail::getTotal).sum();
-        model.addAttribute("revenueDetails", details);
-        model.addAttribute("grandTotal", grandTotal);
-        return "views/avions/ca :: revenueTable";
+        model.addAttribute("selectedVolInstance", volInstance);
+        return "views/avions/revenue";
     }
     @GetMapping("/ca")
     public String showCaForm(Model model) { 

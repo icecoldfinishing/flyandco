@@ -35,8 +35,12 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Avion</h3>
-                            <p class="text-subtitle text-muted">Vous pouvez voir vos communes</p>
+                            <h3 th:text="${selectedVolInstance.avion.modele + ' : ' 
+                                + selectedVolInstance.vol.aeroportDepart.ville 
+                                + ' -> ' 
+                                + selectedVolInstance.vol.aeroportArrivee.ville}">
+                            </h3>
+                            <a href="/avions/ca">< Revenir en arrière</a>
                         </div>
                         <div class="col-12 col-md-6 order-md-2 order-first">
                             <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -54,36 +58,13 @@
                             <!-- Contenu ici -->
                             <section id="multiple-column-form">
                                 <div class="row match-height">
-                                    <div class="col-12">
+                                    <div class="col-6">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h4 class="card-title">Calcul Recette Max</h4>
                                             </div>
                                             <div class="card-content">
                                                 <div class="card-body">
-                                                    <form class="form" th:action="@{/avions/revenue}" method="post">
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <div class="form-group">
-                                                                    <label for="vol-column">Vol</label>
-                                                                    <select id="vol-column" class="form-select"
-                                                                        name="idVol">
-                                                                        <option th:each="vol : ${vols}"
-                                                                            th:value="${vol.idVol}"
-                                                                            th:text="${vol.compagnie.nom} + ' : ' + ${vol.aeroportDepart.ville} + ' -> ' + ${vol.aeroportArrivee.ville}"
-                                                                            th:selected="${vol.idVol == selectedVolId}">
-                                                                        </option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-12 d-flex justify-content-end mt-3">
-                                                                <button type="submit"
-                                                                    class="btn btn-primary me-1 mb-1">Calculer</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-
                                                     <div th:if="${revenueDetails != null}" class="mt-4">
                                                         <h5 class="card-title">Details Recette</h5>
                                                         <div class="table-responsive">
@@ -92,7 +73,7 @@
                                                                     <tr>
                                                                         <th>Classe</th>
                                                                         <th>Prix Unitaire</th>
-                                                                        <th>Nombre de Sieges</th>
+                                                                        <th>Nombre de Reservations</th>
                                                                         <th>Total</th>
                                                                     </tr>
                                                                 </thead>
