@@ -1,3 +1,5 @@
+    // Endpoint AJAX pour fragment chiffre d'affaires
+    
 package com.fly.andco.controller.avions;
 
 import com.fly.andco.model.avions.Avion;
@@ -54,6 +56,14 @@ public class AvionController {
         model.addAttribute("volInstances", volInstanceRepository.findAll());
         model.addAttribute("selectedVolInstanceId", idVolInstance);
         return "views/avions/ca";
+    }
+    @PostMapping("/revenue/fragment")
+    public String revenueFragment(@RequestParam("idVolInstance") Long idVolInstance, Model model) {
+        List<RevenueDetail> details = siegeService.calculateActualRevenue(idVolInstance);
+        double grandTotal = details.stream().mapToDouble(RevenueDetail::getTotal).sum();
+        model.addAttribute("revenueDetails", details);
+        model.addAttribute("grandTotal", grandTotal);
+        return "views/avions/ca :: revenueTable";
     }
     @GetMapping("/ca")
     public String showCaForm(Model model) { 
