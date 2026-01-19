@@ -175,9 +175,9 @@
                                                         <tr th:each="detail : ${revenueDetails}">
                                                             <td>
                                                                 <span th:class="
-                                                                    ${detail.classe.startsWith('FIRST') ? 'badge bg-light-primary' :
-                                                                    detail.classe.startsWith('PREMIUM') ? 'badge bg-light-secondary' :
-                                                                    detail.classe.startsWith('ECONOMY') ? 'badge bg-light-dark' :
+                                                                    ${detail.classe.startsWith('FIRST') ? 'badge bg-light-info' :
+                                                                    detail.classe.startsWith('PREMIUM') ? 'badge bg-light-primary' :
+                                                                    detail.classe.startsWith('ECONOMY') ? 'badge bg-light-secondary' :
                                                                     'badge bg-default'}"
                                                                     th:text="${detail.classe}">
                                                                 </span>
