@@ -131,7 +131,7 @@ public class ReservationController {
 
         List<com.fly.andco.model.prix.TarifVol> tarifs = tarifVolRepository.findByVolInstance_IdVolInstance(flightId);
         List<MoyenPaiement> moyensPaiement = moyenPaiementRepository.findAll();
-        List<com.fly.andco.model.vols.SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstanceAndStatut(flightId, "LIBRE");
+        List<com.fly.andco.model.vols.SiegeVol> siegeVols = siegeVolRepository.findByVolInstance_IdVolInstance(flightId);
 
         model.addAttribute("flight", vol);
         model.addAttribute("prices", tarifs);

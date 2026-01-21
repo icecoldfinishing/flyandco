@@ -327,6 +327,9 @@
         /*<![CDATA[*/
         const siegeVols = /*[[${siegeVols}]]*/ [];
         const prices = /*[[${prices}]]*/ [];
+        
+        console.log('Total sièges reçus:', siegeVols.length);
+        console.log('Sièges:', siegeVols);
         /*]]>*/
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -364,6 +367,7 @@
                 ECONOMY: []
             };
 
+            // Afficher TOUS les sièges (libres ET réservés)
             siegeVols.forEach(sv => {
                 const classe = sv.siege.classe.toUpperCase();
                 if (seatsByClass[classe]) {
