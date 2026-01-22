@@ -114,7 +114,7 @@ INSERT INTO reservation (id_passager, id_vol_instance, id_tarif, id_siege_vol) V
 -- =========================
 -- MISE A JOUR STATUS SIEGES
 -- =========================
-UPDATE siege_vol SET statut = 'OCCUPE' WHERE id_siege_vol IN (SELECT id_siege_vol FROM reservation);
+UPDATE siege_vol SET statut = 'RESERVE' WHERE id_siege_vol IN (SELECT id_siege_vol FROM reservation);
 
 
 
