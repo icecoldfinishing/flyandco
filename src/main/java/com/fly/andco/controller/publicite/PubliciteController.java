@@ -51,8 +51,8 @@ public class PubliciteController {
         return "views/publicite/index";
     }
 
-    @GetMapping("/vol/{id}")
-    public String revenueByVol(@PathVariable("id") Integer idVolInstance, Model model) {
+    @GetMapping("/vol")
+    public String revenueByVol(@RequestParam("id") Integer idVolInstance, Model model) {
         VolInstance volInstance = volInstanceRepository
             .findById(idVolInstance.longValue())
             .orElse(null);

@@ -312,8 +312,7 @@ INSERT INTO societe (nom) VALUES ('Vaniala'), ('Lewis');
 -- TARIF PUBLICITAIRE
 -- Air Madagascar (id_compagnie = 1) : 400.000 Ar par diffusion
 INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES 
-(1, 400000),
-(1, 200000);
+(1, 400000);
 
 -- DIFFUSIONS
 -- Décembre 2025 : Vaniala (20), Lewis (10)
@@ -321,10 +320,10 @@ INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES
 -- id_tarif_pub = 1 (Air Madagascar)
 -- Vaniala : 20 diffusions
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
-(1, 4, 1, '2025-12-01', 10), (1, 5, 1, '2025-12-15', 10); 
+(1, 4, 1, '2025-12-01', 10), (1, 4, 1, '2025-12-15', 10); 
 -- Lewis : 10 diffusions
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
-(2, 4, 2, '2025-12-01', 5), (2, 5, 1, '2025-12-15', 5);
+(2, 4, 1, '2025-12-01', 5), (2, 4, 1, '2025-12-15', 5);
 
 
 

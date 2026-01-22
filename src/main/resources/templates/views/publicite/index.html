@@ -73,16 +73,20 @@
                                             <tr>
                                                 <th>Société</th>
                                                 <th>Nombre de diffusions</th>
+                                                <th>Prix Unitaire (Ar)</th>
                                                 <th>Montant Total (Ar)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr th:each="revenue : ${revenues}">
-                                                <td th:text="${revenue.societeNom}">Vaniala</td>
-                                                <td th:text="${revenue.totalDiffusions}">20</td>
+                                                <td th:text="${revenue.societeNom}"></td>
+                                                <td th:text="${revenue.totalDiffusions}"></td>
+                                                <td
+                                                    th:text="${#numbers.formatDecimal(revenue.montantUnitaire, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                </td>
                                                 <td
                                                     th:text="${#numbers.formatDecimal(revenue.totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
-                                                    8 000 000 Ar</td>
+                                                </td>
                                             </tr>
                                             <tr th:if="${#lists.isEmpty(revenues)}">
                                                 <td colspan="3" class="text-center">Aucune donnée trouvée pour cette
@@ -94,7 +98,7 @@
                                                 <th colspan="2" class="text-end">Total Global :</th>
                                                 <th
                                                     th:text="${#numbers.formatDecimal(totalGlobal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
-                                                    12 000 000 Ar</th>
+                                                </th>
                                             </tr>
                                         </tfoot>
                                     </table>

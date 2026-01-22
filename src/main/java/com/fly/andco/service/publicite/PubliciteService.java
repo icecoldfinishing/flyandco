@@ -58,13 +58,26 @@ public class PubliciteService {
 
             revenueMap.merge(diffusion.getSociete(), revenue, BigDecimal::add);
             countMap.merge(diffusion.getSociete(), diffusion.getNombre(), Integer::sum);
+            
+            // Note: If multiple rates exist for the same societe in the same period, 
+            // this simple map approach might need refinement if we want to show varying unit prices.
+            // For now, we'll store the unit price from the diffusion record.
         }
 
         List<RevenuePublicite> results = new ArrayList<>();
         for (Map.Entry<Societe, BigDecimal> entry : revenueMap.entrySet()) {
+            Societe societe = entry.getKey();
+            // Get unit price from first diffusion found (assuming parity for the group)
+            BigDecimal unitPrice = diffusions.stream()
+                .filter(d -> d.getSociete().equals(societe))
+                .findFirst()
+                .map(d -> d.getTarifPublicitaire().getMontant())
+                .orElse(BigDecimal.ZERO);
+
             results.add(new RevenuePublicite(
-                entry.getKey().getNom(),
-                countMap.get(entry.getKey()),
+                societe.getNom(),
+                countMap.get(societe),
+                unitPrice,
                 entry.getValue()
             ));
         }
@@ -74,11 +87,13 @@ public class PubliciteService {
     public static class RevenuePublicite {
         private String societeNom;
         private int totalDiffusions;
+        private BigDecimal montantUnitaire;
         private BigDecimal totalRevenue;
 
-        public RevenuePublicite(String societeNom, int totalDiffusions, BigDecimal totalRevenue) {
+        public RevenuePublicite(String societeNom, int totalDiffusions, BigDecimal montantUnitaire, BigDecimal totalRevenue) {
             this.societeNom = societeNom;
             this.totalDiffusions = totalDiffusions;
+            this.montantUnitaire = montantUnitaire;
             this.totalRevenue = totalRevenue;
         }
 
@@ -96,6 +111,14 @@ public class PubliciteService {
 
         public void setTotalDiffusions(int totalDiffusions) {
             this.totalDiffusions = totalDiffusions;
+        }
+
+        public BigDecimal getMontantUnitaire() {
+            return montantUnitaire;
+        }
+
+        public void setMontantUnitaire(BigDecimal montantUnitaire) {
+            this.montantUnitaire = montantUnitaire;
         }
 
         public BigDecimal getTotalRevenue() {
