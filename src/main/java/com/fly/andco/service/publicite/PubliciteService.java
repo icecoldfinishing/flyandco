@@ -2,10 +2,12 @@ package com.fly.andco.service.publicite;
 
 import com.fly.andco.model.compagnies.Compagnie;
 import com.fly.andco.model.publicite.Diffusion;
+import com.fly.andco.model.publicite.PaiementPublicite;
 import com.fly.andco.model.publicite.Societe;
 import com.fly.andco.model.publicite.TarifPublicitaire;
 import com.fly.andco.model.vols.VolInstance;
 import com.fly.andco.repository.publicite.DiffusionRepository;
+import com.fly.andco.repository.publicite.PaiementPubliciteRepository;
 import com.fly.andco.repository.publicite.TarifPublicitaireRepository;
 import com.fly.andco.repository.vols.VolInstanceRepository;
 import org.springframework.stereotype.Service;
@@ -20,14 +22,17 @@ import java.util.Map;
 public class PubliciteService {
     private final DiffusionRepository diffusionRepository;
     private final TarifPublicitaireRepository tarifPublicitaireRepository;
-    private final VolInstanceRepository volInstanceRepository; // Assuming this exists or needs to be injected
+    private final VolInstanceRepository volInstanceRepository;
+    private final PaiementPubliciteRepository paiementPubliciteRepository;
 
     public PubliciteService(DiffusionRepository diffusionRepository, 
                             TarifPublicitaireRepository tarifPublicitaireRepository,
-                            VolInstanceRepository volInstanceRepository) {
+                            VolInstanceRepository volInstanceRepository,
+                            PaiementPubliciteRepository paiementPubliciteRepository) {
         this.diffusionRepository = diffusionRepository;
         this.tarifPublicitaireRepository = tarifPublicitaireRepository;
         this.volInstanceRepository = volInstanceRepository;
+        this.paiementPubliciteRepository = paiementPubliciteRepository;
     }
 
     public List<RevenuePublicite> getRevenueForMonth(int month, int year) {
@@ -58,27 +63,34 @@ public class PubliciteService {
 
             revenueMap.merge(diffusion.getSociete(), revenue, BigDecimal::add);
             countMap.merge(diffusion.getSociete(), diffusion.getNombre(), Integer::sum);
-            
-            // Note: If multiple rates exist for the same societe in the same period, 
-            // this simple map approach might need refinement if we want to show varying unit prices.
-            // For now, we'll store the unit price from the diffusion record.
         }
 
         List<RevenuePublicite> results = new ArrayList<>();
         for (Map.Entry<Societe, BigDecimal> entry : revenueMap.entrySet()) {
             Societe societe = entry.getKey();
-            // Get unit price from first diffusion found (assuming parity for the group)
             BigDecimal unitPrice = diffusions.stream()
                 .filter(d -> d.getSociete().equals(societe))
                 .findFirst()
                 .map(d -> d.getTarifPublicitaire().getMontant())
                 .orElse(BigDecimal.ZERO);
 
+            // Fetch payments for each diffusion pertaining to this societe
+            BigDecimal totalPaye = diffusions.stream()
+                .filter(d -> d.getSociete().equals(societe))
+                .flatMap(d -> paiementPubliciteRepository.findByDiffusion(d).stream())
+                .map(PaiementPublicite::getMontant)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal totalDu = entry.getValue();
+            BigDecimal resteAPayer = totalDu.subtract(totalPaye);
+
             results.add(new RevenuePublicite(
                 societe.getNom(),
                 countMap.get(societe),
                 unitPrice,
-                entry.getValue()
+                totalDu,
+                totalPaye,
+                resteAPayer
             ));
         }
         return results;
@@ -89,12 +101,16 @@ public class PubliciteService {
         private int totalDiffusions;
         private BigDecimal montantUnitaire;
         private BigDecimal totalRevenue;
+        private BigDecimal totalPaye;
+        private BigDecimal resteAPayer;
 
-        public RevenuePublicite(String societeNom, int totalDiffusions, BigDecimal montantUnitaire, BigDecimal totalRevenue) {
+        public RevenuePublicite(String societeNom, int totalDiffusions, BigDecimal montantUnitaire, BigDecimal totalRevenue, BigDecimal totalPaye, BigDecimal resteAPayer) {
             this.societeNom = societeNom;
             this.totalDiffusions = totalDiffusions;
             this.montantUnitaire = montantUnitaire;
             this.totalRevenue = totalRevenue;
+            this.totalPaye = totalPaye;
+            this.resteAPayer = resteAPayer;
         }
 
         public String getSocieteNom() {
@@ -127,6 +143,22 @@ public class PubliciteService {
 
         public void setTotalRevenue(BigDecimal totalRevenue) {
             this.totalRevenue = totalRevenue;
+        }
+
+        public BigDecimal getTotalPaye() {
+            return totalPaye;
+        }
+
+        public void setTotalPaye(BigDecimal totalPaye) {
+            this.totalPaye = totalPaye;
+        }
+
+        public BigDecimal getResteAPayer() {
+            return resteAPayer;
+        }
+
+        public void setResteAPayer(BigDecimal resteAPayer) {
+            this.resteAPayer = resteAPayer;
         }
     }
 }

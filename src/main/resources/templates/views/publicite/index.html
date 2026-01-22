@@ -75,6 +75,8 @@
                                                 <th>Nombre de diffusions</th>
                                                 <th>Prix Unitaire (Ar)</th>
                                                 <th>Montant Total (Ar)</th>
+                                                <th>Déjà Payé (Ar)</th>
+                                                <th>Reste à Payer (Ar)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -87,17 +89,29 @@
                                                 <td
                                                     th:text="${#numbers.formatDecimal(revenue.totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
                                                 </td>
+                                                <td
+                                                    th:text="${#numbers.formatDecimal(revenue.totalPaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                </td>
+                                                <td
+                                                    th:text="${#numbers.formatDecimal(revenue.resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                </td>
                                             </tr>
                                             <tr th:if="${#lists.isEmpty(revenues)}">
-                                                <td colspan="3" class="text-center">Aucune donnée trouvée pour cette
+                                                <td colspan="6" class="text-center">Aucune donnée trouvée pour cette
                                                     période.</td>
                                             </tr>
                                         </tbody>
                                         <tfoot th:if="${not #lists.isEmpty(revenues)}">
                                             <tr>
-                                                <th colspan="2" class="text-end">Total Global :</th>
+                                                <th colspan="3" class="text-end">Total Global :</th>
                                                 <th
                                                     th:text="${#numbers.formatDecimal(totalGlobal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                </th>
+                                                <th
+                                                    th:text="${#numbers.formatDecimal(totalPayeGlobal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                </th>
+                                                <th
+                                                    th:text="${#numbers.formatDecimal(totalResteGlobal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
                                                 </th>
                                             </tr>
                                         </tfoot>

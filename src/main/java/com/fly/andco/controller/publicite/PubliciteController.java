@@ -36,9 +36,17 @@ public class PubliciteController {
 
         List<PubliciteService.RevenuePublicite> revenues = publiciteService.getRevenueForMonth(month, year);
         
-        // Calculate total global revenue
+        // Calculate global totals
         java.math.BigDecimal totalGlobal = revenues.stream()
             .map(PubliciteService.RevenuePublicite::getTotalRevenue)
+            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+        java.math.BigDecimal totalPayeGlobal = revenues.stream()
+            .map(PubliciteService.RevenuePublicite::getTotalPaye)
+            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+        java.math.BigDecimal totalResteGlobal = revenues.stream()
+            .map(PubliciteService.RevenuePublicite::getResteAPayer)
             .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
 
 
@@ -46,6 +54,8 @@ public class PubliciteController {
         model.addAttribute("selectedMonth", month);
         model.addAttribute("selectedYear", year);
         model.addAttribute("totalGlobal", totalGlobal);
+        model.addAttribute("totalPayeGlobal", totalPayeGlobal);
+        model.addAttribute("totalResteGlobal", totalResteGlobal);
         model.addAttribute("pageTitle", "Revenus Publicitaires - " + month + "/" + year);
         
         return "views/publicite/index";
@@ -63,8 +73,18 @@ public class PubliciteController {
             .map(PubliciteService.RevenuePublicite::getTotalRevenue)
             .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
 
+        java.math.BigDecimal totalPayeGlobal = revenues.stream()
+            .map(PubliciteService.RevenuePublicite::getTotalPaye)
+            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+        java.math.BigDecimal totalResteGlobal = revenues.stream()
+            .map(PubliciteService.RevenuePublicite::getResteAPayer)
+            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
         model.addAttribute("revenues", revenues);
         model.addAttribute("totalGlobal", totalGlobal);
+        model.addAttribute("totalPayeGlobal", totalPayeGlobal);
+        model.addAttribute("totalResteGlobal", totalResteGlobal);
         model.addAttribute("pageTitle", "Revenus Publicitaires - Vol " + volInstance.getVol().getCompagnie().getNom() + " (" + volInstance.getDateDepart().toString() + ")");
         // Hide filters for this view or adjust them
         model.addAttribute("hideFilters", true); 

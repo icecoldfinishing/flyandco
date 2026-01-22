@@ -253,6 +253,17 @@ CREATE TABLE diffusion (
     FOREIGN KEY (id_tarif_pub) REFERENCES tarif_publicitaire(id_tarif_pub)
 );
 
+-- =========================
+-- PAIEMENT PUBLICITE
+-- =========================
+CREATE TABLE paiement_publicite (
+    id_paiement SERIAL PRIMARY KEY,
+    id_diffusion INT NOT NULL,
+    date_paiement DATE NOT NULL,
+    montant NUMERIC(15,2) NOT NULL CHECK (montant > 0),
+    FOREIGN KEY (id_diffusion) REFERENCES diffusion(id_diffusion)
+);
+
 -- =============================================================
 -- INSERTIONS DE DONNEES DE TEST
 -- =============================================================
@@ -306,6 +317,10 @@ INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES
 INSERT INTO moyen_paiement (libelle) VALUES
 ('CB'), ('Virement'), ('Paypal'), ('Espèces'), ('Chèque');
 
+
+--societe 1 vaniala
+--societe 2 lewis
+
 -- SOCIETES
 INSERT INTO societe (nom) VALUES ('Vaniala'), ('Lewis');
 
@@ -314,16 +329,15 @@ INSERT INTO societe (nom) VALUES ('Vaniala'), ('Lewis');
 INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES 
 (1, 400000);
 
--- DIFFUSIONS
--- Décembre 2025 : Vaniala (20), Lewis (10)
--- On répartit sur les vols de décembre (id_vol_instance 4 et 5)
--- id_tarif_pub = 1 (Air Madagascar)
--- Vaniala : 20 diffusions
+--dif vaniala
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
 (1, 4, 1, '2025-12-01', 10), (1, 4, 1, '2025-12-15', 10); 
--- Lewis : 10 diffusions
+--dif lewis
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
 (2, 4, 1, '2025-12-01', 5), (2, 4, 1, '2025-12-15', 5);
+
+INSERT INTO paiement_publicite (id_diffusion, date_paiement, montant) VALUES 
+(1, '2025-12-15', 1000000);
 
 
 
@@ -429,4 +443,14 @@ INSERT INTO tarif_vol (id_vol_instance, classe, type_passager, montant) VALUES
 (1, 'PREMIUM', 'ADULTE', 1000000),
 (1, 'PREMIUM', 'ENFANT', 700000),
 (1, 'PREMIUM', 'BEBE', 100000);    
+
+-- =========================
+-- PAIEMENTS PUBLICITE
+-- =========================
+-- Vaniala (id_societe = 1) : 1.000.000 Ar le 15/12/2025
+-- On le lie à la première diffusion de Vaniala (id_societe=1, id_vol_instance=4)
+-- NOTE: id_diffusion SERIAL might start at 1, but to be safe in SQL script, 
+-- we link to a diffusion that we know exists for Vaniala.
+-- In the script, Vaniala's first diffusion is: (1, 4, 1, '2025-12-01', 10)
+
 
