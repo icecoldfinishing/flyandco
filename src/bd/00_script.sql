@@ -331,11 +331,13 @@ INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES
 
 --dif vaniala
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
-(1, 4, 1, '2025-12-01', 10), (1, 4, 1, '2025-12-15', 10); 
+(1, 4, 1, '2025-12-01', 20); 
 --dif lewis
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
-(2, 4, 1, '2025-12-01', 5), (2, 4, 1, '2025-12-15', 5);
+(2, 4, 1, '2025-12-01', 10);
 
+--paiement id1 vaniala
+--paiement id2 lewis
 INSERT INTO paiement_publicite (id_diffusion, date_paiement, montant) VALUES 
 (1, '2025-12-15', 1000000);
 
