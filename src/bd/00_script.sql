@@ -246,6 +246,7 @@ CREATE TABLE diffusion (
     id_diffusion SERIAL PRIMARY KEY,
     id_societe INT NOT NULL,
     id_vol_instance INT NOT NULL,
+    date_diffusion DATE NOT NULL,
     nombre INT NOT NULL CHECK (nombre >= 0),
     FOREIGN KEY (id_societe) REFERENCES societe(id_societe),
     FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance)
@@ -315,11 +316,12 @@ INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES (1, 400000);
 -- Décembre 2025 : Vaniala (20), Lewis (10)
 -- On répartit sur les vols de décembre (id_vol_instance 4 et 5)
 -- Vaniala : 20 diffusions
-INSERT INTO diffusion (id_societe, id_vol_instance, nombre) VALUES 
-(1, 4, 10), (1, 5, 10); 
+INSERT INTO diffusion (id_societe, id_vol_instance, date_diffusion, nombre) VALUES 
+(1, 4, '2025-12-01', 10), (1, 5, '2025-12-15', 10); 
 -- Lewis : 10 diffusions
-INSERT INTO diffusion (id_societe, id_vol_instance, nombre) VALUES 
-(2, 4, 5), (2, 5, 5);
+INSERT INTO diffusion (id_societe, id_vol_instance, date_diffusion, nombre) VALUES 
+(2, 4, '2025-12-01', 5), (2, 5, '2025-12-15', 5);
+
 
 
 -- =========================

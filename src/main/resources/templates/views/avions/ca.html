@@ -56,7 +56,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h5 class="card-title">
-                                Liste des vols 
+                                Liste des vols
                             </h5>
                         </div>
                         <div class="card-body">
@@ -74,14 +74,15 @@
                                     </thead>
                                     <tbody>
                                         <tr th:each="vi : ${volInstances}">
-                                            <td> 
-                                                <span class="badge bg-light-primary"
-                                                    th:text="${vi.vol.compagnie.nom}">
+                                            <td>
+                                                <span class="badge bg-light-primary" th:text="${vi.vol.compagnie.nom}">
                                                 </span>
                                             </td>
 
-                                            <td th:text="${vi.avion.modele + ' (' + vi.avion.numeroImmatriculation + ')'}"></td>
-                                            
+                                            <td
+                                                th:text="${vi.avion.modele + ' (' + vi.avion.numeroImmatriculation + ')'}">
+                                            </td>
+
 
                                             <td>
                                                 <span class="badge bg-light-info"
@@ -95,11 +96,16 @@
 
                                             <td>
                                                 <form class="form" th:action="@{/avions/revenue}" method="post">
-                                                    <input type="hidden" name="idVolInstance" th:value="${vi.idVolInstance}" />
+                                                    <input type="hidden" name="idVolInstance"
+                                                        th:value="${vi.idVolInstance}" />
                                                     <button type="submit" class="btn btn-outline-warning">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
                                                 </form>
+                                                <a th:href="@{/publicite/vol/{id}(id=${vi.idVolInstance})}"
+                                                    class="btn btn-outline-success ms-1">
+                                                    <i class="bi bi-megaphone"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -109,7 +115,7 @@
                         </div>
                     </div>
                     <div class="me-1 mb-1 d-inline-block">
-                </section>              
+                </section>
             </div>
 
             <footer>
