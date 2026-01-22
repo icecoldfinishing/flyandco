@@ -1,12 +1,11 @@
-package com.fly.andco.service;
+package com.fly.andco.service.publicite;
 
 import com.fly.andco.model.compagnies.Compagnie;
-import com.fly.andco.model.Diffusion;
-import com.fly.andco.model.Societe;
-import com.fly.andco.model.TarifPublicitaire;
-import com.fly.andco.repository.DiffusionRepository;
-import com.fly.andco.repository.TarifPublicitaireRepository;
-import lombok.Data;
+import com.fly.andco.model.publicite.Diffusion;
+import com.fly.andco.model.publicite.Societe;
+import com.fly.andco.model.publicite.TarifPublicitaire;
+import com.fly.andco.repository.publicite.DiffusionRepository;
+import com.fly.andco.repository.publicite.TarifPublicitaireRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -33,7 +32,7 @@ public class PubliciteService {
         for (Diffusion diffusion : diffusions) {
             Compagnie compagnie = diffusion.getVolInstance().getVol().getCompagnie();
              TarifPublicitaire tarif = tarifPublicitaireRepository.findByCompagnie(compagnie)
-                 .orElse(new TarifPublicitaire()); // Or handle missing tarif appropriately
+                 .orElse(new TarifPublicitaire());
             
             BigDecimal montant = tarif.getMontant() != null ? tarif.getMontant() : BigDecimal.ZERO;
             BigDecimal revenue = montant.multiply(BigDecimal.valueOf(diffusion.getNombre()));
@@ -53,7 +52,6 @@ public class PubliciteService {
         return results;
     }
 
-    @Data
     public static class RevenuePublicite {
         private String societeNom;
         private int totalDiffusions;
@@ -62,6 +60,30 @@ public class PubliciteService {
         public RevenuePublicite(String societeNom, int totalDiffusions, BigDecimal totalRevenue) {
             this.societeNom = societeNom;
             this.totalDiffusions = totalDiffusions;
+            this.totalRevenue = totalRevenue;
+        }
+
+        public String getSocieteNom() {
+            return societeNom;
+        }
+
+        public void setSocieteNom(String societeNom) {
+            this.societeNom = societeNom;
+        }
+
+        public int getTotalDiffusions() {
+            return totalDiffusions;
+        }
+
+        public void setTotalDiffusions(int totalDiffusions) {
+            this.totalDiffusions = totalDiffusions;
+        }
+
+        public BigDecimal getTotalRevenue() {
+            return totalRevenue;
+        }
+
+        public void setTotalRevenue(BigDecimal totalRevenue) {
             this.totalRevenue = totalRevenue;
         }
     }

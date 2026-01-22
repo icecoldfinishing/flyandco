@@ -1,6 +1,6 @@
-package com.fly.andco.controller;
+package com.fly.andco.controller.publicite;
 
-import com.fly.andco.service.PubliciteService;
+import com.fly.andco.service.publicite.PubliciteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ public class PubliciteController {
                         @RequestParam(required = false) Integer year,
                         Model model) {
         if (month == null) {
-            month = 12; // Default to Dec for the test case, or LocalDate.now().getMonthValue()
+            month = 12; // Default to Dec for the test case
         }
         if (year == null) {
             year = 2025; // Default to 2025 for the test case

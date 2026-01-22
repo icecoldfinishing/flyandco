@@ -1,6 +1,6 @@
-package com.fly.andco.repository;
+package com.fly.andco.repository.publicite;
 
-import com.fly.andco.model.Diffusion;
+import com.fly.andco.model.publicite.Diffusion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
