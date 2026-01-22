@@ -220,6 +220,37 @@ JOIN compagnie c ON a.id_compagnie = c.id_compagnie
 ORDER BY c.id_compagnie, vi.date_depart, v.id_vol;
 
 
+-- =========================
+-- SOCIETE (Publicité)
+-- =========================
+CREATE TABLE societe (
+    id_societe SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- =========================
+-- TARIF PUBLICITAIRE
+-- =========================
+CREATE TABLE tarif_publicitaire (
+    id_tarif_pub SERIAL PRIMARY KEY,
+    id_compagnie INT NOT NULL,
+    montant NUMERIC(10,2) NOT NULL,
+    FOREIGN KEY (id_compagnie) REFERENCES compagnie(id_compagnie),
+    UNIQUE (id_compagnie)
+);
+
+-- =========================
+-- DIFFUSION (Publicité)
+-- =========================
+CREATE TABLE diffusion (
+    id_diffusion SERIAL PRIMARY KEY,
+    id_societe INT NOT NULL,
+    id_vol_instance INT NOT NULL,
+    nombre INT NOT NULL CHECK (nombre >= 0),
+    FOREIGN KEY (id_societe) REFERENCES societe(id_societe),
+    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance)
+);
+
 -- =============================================================
 -- INSERTIONS DE DONNEES DE TEST
 -- =============================================================
@@ -248,8 +279,8 @@ INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation) VALUE
 (1, 'ATR 72', 70, '5R-MJG'),     -- id_avion = 1
 (2, 'ATR 42', 48, '5R-TSA'),     -- id_avion = 2
 (3, 'Boeing 737', 140, '5R-MDL'),-- id_avion = 3
-(1, 'Dash 8 Q400', 78, '5R-DQ4'),
-(4, 'Embraer 190', 100, 'D2-EWA');
+(1, 'Dash 8 Q400', 78, '5R-DQ4'), -- id_avion = 4
+(4, 'Embraer 190', 100, 'D2-EWA'); -- id_avion = 5
 
 -- VOLS (trajets)
 INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee) VALUES
@@ -263,10 +294,32 @@ INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES
 (2, 2, '2026-01-12 12:00', '2026-01-12 13:25'),
 (3, 3, '2026-01-15 02:00', '2026-01-15 08:25');
 
+-- VOL INSTANCES (Décembre 2025 pour le test Publicité)
+-- On utilise l'avion 1 et le vol 1 (Air Madagascar)
+INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES
+(1, 1, '2025-12-01 08:00', '2025-12-01 09:30'), -- id_vol_instance = 4
+(1, 1, '2025-12-15 08:00', '2025-12-15 09:30'); -- id_vol_instance = 5
 
 -- MOYENS PAIEMENT
 INSERT INTO moyen_paiement (libelle) VALUES
 ('CB'), ('Virement'), ('Paypal'), ('Espèces'), ('Chèque');
+
+-- SOCIETES
+INSERT INTO societe (nom) VALUES ('Vaniala'), ('Lewis');
+
+-- TARIF PUBLICITAIRE
+-- Air Madagascar (id_compagnie = 1) : 400.000 Ar par diffusion
+INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES (1, 400000);
+
+-- DIFFUSIONS
+-- Décembre 2025 : Vaniala (20), Lewis (10)
+-- On répartit sur les vols de décembre (id_vol_instance 4 et 5)
+-- Vaniala : 20 diffusions
+INSERT INTO diffusion (id_societe, id_vol_instance, nombre) VALUES 
+(1, 4, 10), (1, 5, 10); 
+-- Lewis : 10 diffusions
+INSERT INTO diffusion (id_societe, id_vol_instance, nombre) VALUES 
+(2, 4, 5), (2, 5, 5);
 
 
 -- =========================
