@@ -235,8 +235,7 @@ CREATE TABLE tarif_publicitaire (
     id_tarif_pub SERIAL PRIMARY KEY,
     id_compagnie INT NOT NULL,
     montant NUMERIC(10,2) NOT NULL,
-    FOREIGN KEY (id_compagnie) REFERENCES compagnie(id_compagnie),
-    UNIQUE (id_compagnie)
+    FOREIGN KEY (id_compagnie) REFERENCES compagnie(id_compagnie)
 );
 
 -- =========================
@@ -246,10 +245,12 @@ CREATE TABLE diffusion (
     id_diffusion SERIAL PRIMARY KEY,
     id_societe INT NOT NULL,
     id_vol_instance INT NOT NULL,
+    id_tarif_pub INT NOT NULL,
     date_diffusion DATE NOT NULL,
     nombre INT NOT NULL CHECK (nombre >= 0),
     FOREIGN KEY (id_societe) REFERENCES societe(id_societe),
-    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance)
+    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
+    FOREIGN KEY (id_tarif_pub) REFERENCES tarif_publicitaire(id_tarif_pub)
 );
 
 -- =============================================================
@@ -310,17 +311,20 @@ INSERT INTO societe (nom) VALUES ('Vaniala'), ('Lewis');
 
 -- TARIF PUBLICITAIRE
 -- Air Madagascar (id_compagnie = 1) : 400.000 Ar par diffusion
-INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES (1, 400000);
+INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES 
+(1, 400000),
+(1, 200000);
 
 -- DIFFUSIONS
 -- Décembre 2025 : Vaniala (20), Lewis (10)
 -- On répartit sur les vols de décembre (id_vol_instance 4 et 5)
+-- id_tarif_pub = 1 (Air Madagascar)
 -- Vaniala : 20 diffusions
-INSERT INTO diffusion (id_societe, id_vol_instance, date_diffusion, nombre) VALUES 
-(1, 4, '2025-12-01', 10), (1, 5, '2025-12-15', 10); 
+INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
+(1, 4, 1, '2025-12-01', 10), (1, 5, 1, '2025-12-15', 10); 
 -- Lewis : 10 diffusions
-INSERT INTO diffusion (id_societe, id_vol_instance, date_diffusion, nombre) VALUES 
-(2, 4, '2025-12-01', 5), (2, 5, '2025-12-15', 5);
+INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
+(2, 4, 2, '2025-12-01', 5), (2, 5, 1, '2025-12-15', 5);
 
 
 

@@ -20,6 +20,10 @@ public class Diffusion {
     @JoinColumn(name = "id_vol_instance", nullable = false)
     private VolInstance volInstance;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tarif_pub", nullable = false)
+    private TarifPublicitaire tarifPublicitaire;
+
     @Column(name = "date_diffusion", nullable = false)
     private LocalDate dateDiffusion;
 
@@ -50,6 +54,14 @@ public class Diffusion {
 
     public void setVolInstance(VolInstance volInstance) {
         this.volInstance = volInstance;
+    }
+
+    public TarifPublicitaire getTarifPublicitaire() {
+        return tarifPublicitaire;
+    }
+
+    public void setTarifPublicitaire(TarifPublicitaire tarifPublicitaire) {
+        this.tarifPublicitaire = tarifPublicitaire;
     }
 
     public LocalDate getDateDiffusion() {

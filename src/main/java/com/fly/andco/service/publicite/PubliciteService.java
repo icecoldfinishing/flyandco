@@ -48,11 +48,12 @@ public class PubliciteService {
         Map<Societe, Integer> countMap = new HashMap<>();
 
         for (Diffusion diffusion : diffusions) {
-            Compagnie compagnie = diffusion.getVolInstance().getVol().getCompagnie();
-             TarifPublicitaire tarif = tarifPublicitaireRepository.findByCompagnie(compagnie)
-                 .orElse(new TarifPublicitaire());
+            BigDecimal montant = BigDecimal.ZERO;
+            if (diffusion.getTarifPublicitaire() != null) {
+                montant = diffusion.getTarifPublicitaire().getMontant() != null ? 
+                          diffusion.getTarifPublicitaire().getMontant() : BigDecimal.ZERO;
+            }
             
-            BigDecimal montant = tarif.getMontant() != null ? tarif.getMontant() : BigDecimal.ZERO;
             BigDecimal revenue = montant.multiply(BigDecimal.valueOf(diffusion.getNombre()));
 
             revenueMap.merge(diffusion.getSociete(), revenue, BigDecimal::add);
