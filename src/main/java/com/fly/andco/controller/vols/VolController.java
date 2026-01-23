@@ -94,7 +94,28 @@ public class VolController {
             ));
         }
 
+        // Calculer les totaux généraux
+        BigDecimal totalTicketsVendus = totalRevenues.stream()
+            .map(TotalRevenueDTO::getMontantTicketsVendus)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        BigDecimal totalTicketsPayes = totalRevenues.stream()
+            .map(TotalRevenueDTO::getMontantTicketsPayes)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        BigDecimal totalPublicite = totalRevenues.stream()
+            .map(TotalRevenueDTO::getMontantPublicite)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        BigDecimal totalGeneral = totalRevenues.stream()
+            .map(TotalRevenueDTO::getMontantTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         model.addAttribute("totalRevenues", totalRevenues);
+        model.addAttribute("totalTicketsVendus", totalTicketsVendus);
+        model.addAttribute("totalTicketsPayes", totalTicketsPayes);
+        model.addAttribute("totalPublicite", totalPublicite);
+        model.addAttribute("totalGeneral", totalGeneral);
         return "views/vols/ca-total";
     }
 }

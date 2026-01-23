@@ -112,10 +112,10 @@
                                     <tfoot>
                                         <tr class="table-primary">
                                             <th colspan="4" class="text-end">TOTAL GÉNÉRAL</th>
-                                            <th th:text="${#numbers.formatDecimal(#aggregates.sum(totalRevenues.![montantTicketsVendus]), 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
-                                            <th th:text="${#numbers.formatDecimal(#aggregates.sum(totalRevenues.![montantTicketsPayes]), 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
-                                            <th th:text="${#numbers.formatDecimal(#aggregates.sum(totalRevenues.![montantPublicite]), 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
-                                            <th class="fs-5" th:text="${#numbers.formatDecimal(#aggregates.sum(totalRevenues.![montantTotal]), 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
+                                            <th th:text="${#numbers.formatDecimal(totalTicketsVendus, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
+                                            <th th:text="${#numbers.formatDecimal(totalTicketsPayes, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
+                                            <th th:text="${#numbers.formatDecimal(totalPublicite, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
+                                            <th class="fs-5" th:text="${#numbers.formatDecimal(totalGeneral, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
                                         </tr>
                                     </tfoot>
                                 </table>
