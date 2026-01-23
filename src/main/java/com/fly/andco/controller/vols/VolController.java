@@ -57,14 +57,15 @@ public class VolController {
 
             // Calculer le CA de la publicité payée (via paiement_publicite dans calculateRevenue)
             List<RevenuePublicite> pubRevenues = publiciteService.getRevenueForVolInstance(vi.getIdVolInstance().intValue());
-            BigDecimal montantPublicite = BigDecimal.ZERO;
+            BigDecimal montantPublicitePaye = BigDecimal.ZERO;
+            BigDecimal montantPubliciteTotal = BigDecimal.ZERO;
             for (RevenuePublicite pub : pubRevenues) {
-                // Utiliser totalPaye qui vient de la table paiement_publicite
-                montantPublicite = montantPublicite.add(pub.getTotalPaye());
+                montantPublicitePaye = montantPublicitePaye.add(pub.getTotalPaye());
+                montantPubliciteTotal = montantPubliciteTotal.add(pub.getTotalRevenue());
             }
 
             // CA Total = CA tickets vendus + CA publicité payée
-            BigDecimal montantTotal = montantTicketsVendus.add(montantPublicite);
+            BigDecimal montantTotal = montantTicketsVendus.add(montantPublicitePaye);
 
             // Informations du vol
             String aeroportDepart = vi.getVol().getAeroportDepart().getVille();
@@ -79,7 +80,8 @@ public class VolController {
                 avion,
                 dateDepart,
                 montantTicketsVendus,
-                montantPublicite,
+                montantPublicitePaye,
+                montantPubliciteTotal,
                 montantTotal
             ));
         }

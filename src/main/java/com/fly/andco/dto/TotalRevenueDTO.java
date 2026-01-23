@@ -9,13 +9,16 @@ public class TotalRevenueDTO {
     private String avion;
     private String dateDepart;
     private BigDecimal montantTicketsVendus;
-    private BigDecimal montantPublicite;
+    private BigDecimal montantPublicite; // This represents Paid amount
+    private BigDecimal montantPubliciteTotal;
     private BigDecimal montantTotal;
+    private BigDecimal pourcentagePayePublicite;
+    private BigDecimal pourcentageRestePublicite;
 
     public TotalRevenueDTO(Long idVolInstance, String aeroportDepart, String aeroportArrivee, 
                           String avion, String dateDepart, 
                           BigDecimal montantTicketsVendus,
-                          BigDecimal montantPublicite, BigDecimal montantTotal) {
+                          BigDecimal montantPublicite, BigDecimal montantPubliciteTotal, BigDecimal montantTotal) {
         this.idVolInstance = idVolInstance;
         this.aeroportDepart = aeroportDepart;
         this.aeroportArrivee = aeroportArrivee;
@@ -23,7 +26,16 @@ public class TotalRevenueDTO {
         this.dateDepart = dateDepart;
         this.montantTicketsVendus = montantTicketsVendus;
         this.montantPublicite = montantPublicite;
+        this.montantPubliciteTotal = montantPubliciteTotal;
         this.montantTotal = montantTotal;
+        
+        if (montantPubliciteTotal != null && montantPubliciteTotal.compareTo(BigDecimal.ZERO) > 0) {
+            this.pourcentagePayePublicite = montantPublicite.multiply(new BigDecimal(100)).divide(montantPubliciteTotal, 2, java.math.RoundingMode.HALF_UP);
+            this.pourcentageRestePublicite = new BigDecimal(100).subtract(this.pourcentagePayePublicite);
+        } else {
+            this.pourcentagePayePublicite = BigDecimal.ZERO;
+            this.pourcentageRestePublicite = BigDecimal.ZERO;
+        }
     }
 
     // Getters
@@ -35,6 +47,9 @@ public class TotalRevenueDTO {
     public BigDecimal getMontantTicketsVendus() { return montantTicketsVendus; }
     public BigDecimal getMontantPublicite() { return montantPublicite; }
     public BigDecimal getMontantTotal() { return montantTotal; }
+    public BigDecimal getMontantPubliciteTotal() { return montantPubliciteTotal; }
+    public BigDecimal getPourcentagePayePublicite() { return pourcentagePayePublicite; }
+    public BigDecimal getPourcentageRestePublicite() { return pourcentageRestePublicite; }
 
     // Setters
     public void setIdVolInstance(Long idVolInstance) { this.idVolInstance = idVolInstance; }
@@ -44,6 +59,9 @@ public class TotalRevenueDTO {
     public void setDateDepart(String dateDepart) { this.dateDepart = dateDepart; }
     public void setMontantTicketsVendus(BigDecimal montantTicketsVendus) { this.montantTicketsVendus = montantTicketsVendus; }
     public void setMontantPublicite(BigDecimal montantPublicite) { this.montantPublicite = montantPublicite; }
+    public void setMontantPubliciteTotal(BigDecimal montantPubliciteTotal) { this.montantPubliciteTotal = montantPubliciteTotal; }
     public void setMontantTotal(BigDecimal montantTotal) { this.montantTotal = montantTotal; }
+    public void setPourcentagePayePublicite(BigDecimal pourcentagePayePublicite) { this.pourcentagePayePublicite = pourcentagePayePublicite; }
+    public void setPourcentageRestePublicite(BigDecimal pourcentageRestePublicite) { this.pourcentageRestePublicite = pourcentageRestePublicite; }
 }
 
