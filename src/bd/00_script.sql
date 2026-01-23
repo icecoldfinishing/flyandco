@@ -324,19 +324,22 @@ INSERT INTO societe (nom) VALUES ('Vaniala'), ('Lewis') , ('Socobis') , ('Jejoo'
 INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES 
 (1, 400000);
 
---dif vaniala
+--dif1 vaniala volI 1
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
 (1, 1, 1, '2026-01-20', 1);
---dif lewis
+--dif2 lewis volI 1
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
 (2, 1, 1, '2026-01-20', 1);
---dif Socobis
+--dif3 Socobis volI 2
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
 (3, 2, 1, '2026-01-21', 2);
---dif Jejoo
+--dif4 Jejoo volI 2
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
 (4, 2, 1, '2026-01-21', 1);
 
+
+--INSERT INTO paiement_publicite (id_diffusion, date_paiement, montant) VALUES 
+--(1, '2026-01-20', 200000);
 
 --paiement id1 vaniala
 --paiement id2 lewis
