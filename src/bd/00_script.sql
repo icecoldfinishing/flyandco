@@ -326,10 +326,10 @@ INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES
 
 --dif vaniala
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
-(1, 1, 1, '2026-01-20', 1),
+(1, 1, 1, '2026-01-20', 1);
 --dif lewis
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
-(2, 2, 1, '2026-01-20', 1);
+(2, 1, 1, '2026-01-20', 1);
 --dif Socobis
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
 (3, 2, 1, '2026-01-21', 2);
@@ -340,7 +340,10 @@ INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion
 --paiement id1 vaniala
 --paiement id2 lewis
 INSERT INTO paiement_publicite (id_diffusion, date_paiement, montant) VALUES 
-(1, '2026-01-20', 1000000);
+(1, '2026-01-20', 400000),
+(2, '2026-01-20', 400000),
+(3, '2026-01-20', 800000),
+(4, '2026-01-20', 400000);
 
 
 

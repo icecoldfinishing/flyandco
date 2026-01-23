@@ -9,13 +9,12 @@ public class TotalRevenueDTO {
     private String avion;
     private String dateDepart;
     private BigDecimal montantTicketsVendus;
-    private BigDecimal montantTicketsPayes;
     private BigDecimal montantPublicite;
     private BigDecimal montantTotal;
 
     public TotalRevenueDTO(Long idVolInstance, String aeroportDepart, String aeroportArrivee, 
                           String avion, String dateDepart, 
-                          BigDecimal montantTicketsVendus, BigDecimal montantTicketsPayes,
+                          BigDecimal montantTicketsVendus,
                           BigDecimal montantPublicite, BigDecimal montantTotal) {
         this.idVolInstance = idVolInstance;
         this.aeroportDepart = aeroportDepart;
@@ -23,7 +22,6 @@ public class TotalRevenueDTO {
         this.avion = avion;
         this.dateDepart = dateDepart;
         this.montantTicketsVendus = montantTicketsVendus;
-        this.montantTicketsPayes = montantTicketsPayes;
         this.montantPublicite = montantPublicite;
         this.montantTotal = montantTotal;
     }
@@ -35,7 +33,6 @@ public class TotalRevenueDTO {
     public String getAvion() { return avion; }
     public String getDateDepart() { return dateDepart; }
     public BigDecimal getMontantTicketsVendus() { return montantTicketsVendus; }
-    public BigDecimal getMontantTicketsPayes() { return montantTicketsPayes; }
     public BigDecimal getMontantPublicite() { return montantPublicite; }
     public BigDecimal getMontantTotal() { return montantTotal; }
 
@@ -46,7 +43,6 @@ public class TotalRevenueDTO {
     public void setAvion(String avion) { this.avion = avion; }
     public void setDateDepart(String dateDepart) { this.dateDepart = dateDepart; }
     public void setMontantTicketsVendus(BigDecimal montantTicketsVendus) { this.montantTicketsVendus = montantTicketsVendus; }
-    public void setMontantTicketsPayes(BigDecimal montantTicketsPayes) { this.montantTicketsPayes = montantTicketsPayes; }
     public void setMontantPublicite(BigDecimal montantPublicite) { this.montantPublicite = montantPublicite; }
     public void setMontantTotal(BigDecimal montantTotal) { this.montantTotal = montantTotal; }
 }

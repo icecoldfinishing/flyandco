@@ -9,7 +9,6 @@ import com.fly.andco.service.vols.VolService;
 import com.fly.andco.service.avions.SiegeService;
 import com.fly.andco.service.publicite.PubliciteService;
 import com.fly.andco.repository.vols.VolInstanceRepository;
-import com.fly.andco.repository.paiements.PaiementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,9 +34,6 @@ public class VolController {
     @Autowired
     private PubliciteService publiciteService;
 
-    @Autowired
-    private PaiementRepository paiementRepository;
-
     @GetMapping("/vols")
     public String listVols(Model model) {
         List<Vol> vols = volService.getAll();
@@ -52,27 +48,22 @@ public class VolController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         for (VolInstance vi : volInstances) {
-            // Calculer le CA des tickets vendus (total, même si pas payé)
+            // Calculer le CA des tickets vendus via calculateActualRevenue
             List<RevenueDetail> ticketDetails = siegeService.calculateActualRevenue(vi.getIdVolInstance());
             BigDecimal montantTicketsVendus = BigDecimal.ZERO;
             for (RevenueDetail detail : ticketDetails) {
                 montantTicketsVendus = montantTicketsVendus.add(BigDecimal.valueOf(detail.getTotal()));
             }
 
-            // Calculer le montant payé des tickets
-            BigDecimal montantTicketsPayes = paiementRepository.sumMontantByVolInstance(vi);
-            if (montantTicketsPayes == null) {
-                montantTicketsPayes = BigDecimal.ZERO;
-            }
-
-            // Calculer le CA de la publicité (total du)
+            // Calculer le CA de la publicité payée (via paiement_publicite dans calculateRevenue)
             List<RevenuePublicite> pubRevenues = publiciteService.getRevenueForVolInstance(vi.getIdVolInstance().intValue());
             BigDecimal montantPublicite = BigDecimal.ZERO;
             for (RevenuePublicite pub : pubRevenues) {
-                montantPublicite = montantPublicite.add(pub.getTotalRevenue());
+                // Utiliser totalPaye qui vient de la table paiement_publicite
+                montantPublicite = montantPublicite.add(pub.getTotalPaye());
             }
 
-            // CA Total = CA tickets vendus (même si pas payé) + CA publicité
+            // CA Total = CA tickets vendus + CA publicité payée
             BigDecimal montantTotal = montantTicketsVendus.add(montantPublicite);
 
             // Informations du vol
@@ -88,7 +79,6 @@ public class VolController {
                 avion,
                 dateDepart,
                 montantTicketsVendus,
-                montantTicketsPayes,
                 montantPublicite,
                 montantTotal
             ));
@@ -97,10 +87,6 @@ public class VolController {
         // Calculer les totaux généraux
         BigDecimal totalTicketsVendus = totalRevenues.stream()
             .map(TotalRevenueDTO::getMontantTicketsVendus)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        
-        BigDecimal totalTicketsPayes = totalRevenues.stream()
-            .map(TotalRevenueDTO::getMontantTicketsPayes)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         
         BigDecimal totalPublicite = totalRevenues.stream()
@@ -113,7 +99,6 @@ public class VolController {
 
         model.addAttribute("totalRevenues", totalRevenues);
         model.addAttribute("totalTicketsVendus", totalTicketsVendus);
-        model.addAttribute("totalTicketsPayes", totalTicketsPayes);
         model.addAttribute("totalPublicite", totalPublicite);
         model.addAttribute("totalGeneral", totalGeneral);
         return "views/vols/ca-total";

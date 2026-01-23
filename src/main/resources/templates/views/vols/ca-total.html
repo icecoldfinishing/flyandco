@@ -70,8 +70,7 @@
                                             <th>Avion</th>
                                             <th>Date Départ</th>
                                             <th>CA Tickets Vendus</th>
-                                            <th>CA Tickets Payés</th>
-                                            <th>CA Publicité</th>
+                                            <th>CA Publicité Payée</th>
                                             <th>CA Total</th>
                                         </tr>
                                     </thead>
@@ -93,11 +92,6 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="text-success fw-bold"
-                                                    th:text="${#numbers.formatDecimal(tr.montantTicketsPayes, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
-                                                </span>
-                                            </td>
-                                            <td>
                                                 <span class="text-warning fw-bold"
                                                     th:text="${#numbers.formatDecimal(tr.montantPublicite, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
                                                 </span>
@@ -113,7 +107,6 @@
                                         <tr class="table-primary">
                                             <th colspan="4" class="text-end">TOTAL GÉNÉRAL</th>
                                             <th th:text="${#numbers.formatDecimal(totalTicketsVendus, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
-                                            <th th:text="${#numbers.formatDecimal(totalTicketsPayes, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
                                             <th th:text="${#numbers.formatDecimal(totalPublicite, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
                                             <th class="fs-5" th:text="${#numbers.formatDecimal(totalGeneral, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></th>
                                         </tr>
