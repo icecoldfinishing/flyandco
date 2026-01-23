@@ -1,0 +1,6 @@
+vaniala
+
+INSERT INTO paiement_publicite (id_diffusion, date_paiement, montant) VALUES 
+(1, '2025-12-15', 2000000);
+
+select*from paiement_publicite;
