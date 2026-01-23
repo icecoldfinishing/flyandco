@@ -337,13 +337,14 @@ INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
 (4, 2, 1, '2026-01-21', 1);
 
+
 --paiement id1 vaniala
 --paiement id2 lewis
-INSERT INTO paiement_publicite (id_diffusion, date_paiement, montant) VALUES 
-(1, '2026-01-20', 400000),
-(2, '2026-01-20', 400000),
-(3, '2026-01-20', 800000),
-(4, '2026-01-20', 400000);
+--INSERT INTO paiement_publicite (id_diffusion, date_paiement, montant) VALUES 
+--(1, '2026-01-20', 400000),
+--(2, '2026-01-20', 400000),
+--(3, '2026-01-20', 800000),
+--(4, '2026-01-20', 400000);
 
 
 
