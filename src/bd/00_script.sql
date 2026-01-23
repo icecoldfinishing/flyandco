@@ -431,9 +431,15 @@ SELECT 1, id_siege FROM siege WHERE id_avion = 1 ORDER BY id_siege;
 -- =========================
 -- ECONOMY
 INSERT INTO tarif_vol (id_vol_instance, classe, type_passager, montant) VALUES
-(1, 'ECONOMY', 'ADULTE', 900000), 
+(1, 'ECONOMY', 'ADULTE', 800000), 
 (1, 'ECONOMY', 'ENFANT', 600000),
-(1, 'ECONOMY', 'BEBE', 90000);  
+(1, 'ECONOMY', 'BEBE', 80000),  
+(2, 'ECONOMY', 'ADULTE', 800000), 
+(2, 'ECONOMY', 'ENFANT', 600000),
+(2, 'ECONOMY', 'BEBE', 80000),  
+(3, 'ECONOMY', 'ADULTE', 800000), 
+(3, 'ECONOMY', 'ENFANT', 600000),
+(3, 'ECONOMY', 'BEBE', 80000);
 
 -- FIRST
 INSERT INTO tarif_vol (id_vol_instance, classe, type_passager, montant) VALUES
