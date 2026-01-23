@@ -289,7 +289,7 @@ INSERT INTO compagnie (nom, pays, code_iata, code_icao) VALUES
 
 -- AVIONS
 INSERT INTO avion (id_compagnie, modele, capacite, numero_immatriculation) VALUES
-(1, 'ATR 72', 70, '5R-MJG'),     -- id_avion = 1
+(1, 'ATR-045', 70, '5R-MJG'),     -- id_avion = 1
 (2, 'ATR 42', 48, '5R-TSA'),     -- id_avion = 2
 (3, 'Boeing 737', 140, '5R-MDL'),-- id_avion = 3
 (1, 'Dash 8 Q400', 78, '5R-DQ4'), -- id_avion = 4
@@ -303,15 +303,10 @@ INSERT INTO vol (id_compagnie, id_aeroport_depart, id_aeroport_arrivee) VALUES
 
 -- VOL INSTANCES
 INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES
-(1, 1, '2026-01-12 12:00', '2026-01-12 13:30'), -- id_vol_instance = 1 uses id_avion = 1
-(2, 2, '2026-01-12 12:00', '2026-01-12 13:25'),
-(3, 3, '2026-01-15 02:00', '2026-01-15 08:25');
+(1, 1, '2026-01-20 10:00', '2026-01-20 13:00'), -- id_vol_instance = 1 uses id_avion = 1
+(1, 1, '2026-01-21 10:00', '2026-01-21 13:00'),
+(1, 1, '2026-01-21 15:00', '2026-01-21 18:00');
 
--- VOL INSTANCES (Décembre 2025 pour le test Publicité)
--- On utilise l'avion 1 et le vol 1 (Air Madagascar)
-INSERT INTO vol_instance (id_vol, id_avion, date_depart, date_arrivee) VALUES
-(1, 1, '2025-12-01 08:00', '2025-12-01 09:30'), -- id_vol_instance = 4
-(1, 1, '2025-12-15 08:00', '2025-12-15 09:30'); -- id_vol_instance = 5
 
 -- MOYENS PAIEMENT
 INSERT INTO moyen_paiement (libelle) VALUES
@@ -322,7 +317,7 @@ INSERT INTO moyen_paiement (libelle) VALUES
 --societe 2 lewis
 
 -- SOCIETES
-INSERT INTO societe (nom) VALUES ('Vaniala'), ('Lewis');
+INSERT INTO societe (nom) VALUES ('Vaniala'), ('Lewis') , ('Socobis') , ('Jejoo');
 
 -- TARIF PUBLICITAIRE
 -- Air Madagascar (id_compagnie = 1) : 400.000 Ar par diffusion
@@ -331,15 +326,21 @@ INSERT INTO tarif_publicitaire (id_compagnie, montant) VALUES
 
 --dif vaniala
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
-(1, 4, 1, '2025-12-01', 20); 
+(1, 1, 1, '2026-01-20', 1),
 --dif lewis
 INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
-(2, 4, 1, '2025-12-01', 10);
+(2, 2, 1, '2026-01-20', 1);
+--dif Socobis
+INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
+(3, 2, 1, '2026-01-21', 2);
+--dif Jejoo
+INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion, nombre) VALUES 
+(4, 2, 1, '2026-01-21', 1);
 
 --paiement id1 vaniala
 --paiement id2 lewis
 INSERT INTO paiement_publicite (id_diffusion, date_paiement, montant) VALUES 
-(1, '2025-12-15', 1000000);
+(1, '2026-01-20', 1000000);
 
 
 
