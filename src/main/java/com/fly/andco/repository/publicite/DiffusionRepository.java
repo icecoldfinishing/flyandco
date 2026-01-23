@@ -12,4 +12,6 @@ public interface DiffusionRepository extends JpaRepository<Diffusion, Integer> {
     List<Diffusion> findByMonthAndYear(@Param("month") int month, @Param("year") int year);
 
     List<Diffusion> findByVolInstance(VolInstance volInstance);
+
+    List<Diffusion> findBySociete(com.fly.andco.model.publicite.Societe societe);
 }

@@ -7,6 +7,7 @@ import com.fly.andco.dto.RevenuePublicite;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -117,5 +118,25 @@ public class PubliciteController {
         model.addAttribute("hideFilters", true);
 
         return "views/publicite/societes";
+    }
+
+    @GetMapping("/paiement/{idSociete}")
+    public String preparationPaiement(@PathVariable Integer idSociete, Model model) {
+        List<RevenuePublicite> revenues = publiciteService.getAllRevenueBySociete();
+        RevenuePublicite societeRevenue = revenues.stream()
+            .filter(r -> r.getIdSociete().equals(idSociete))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Société not found"));
+
+        model.addAttribute("revenue", societeRevenue);
+        model.addAttribute("pageTitle", "Paiement Intégral - " + societeRevenue.getSocieteNom());
+        
+        return "views/publicite/paiement_societe";
+    }
+
+    @PostMapping("/paiement")
+    public String effectuerPaiement(@RequestParam Integer idSociete, @RequestParam java.math.BigDecimal montant) {
+        publiciteService.payerParMontant(idSociete, montant);
+        return "redirect:/publicite/societes";
     }
 }

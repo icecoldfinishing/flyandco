@@ -82,7 +82,8 @@
                                                     <small th:text="${revenue.pourcentageResteAPayer} + '%'"></small>
                                                 </td>
                                                 <td>
-                                                    <a href="#" class="btn btn-sm btn-outline-primary">Paiement</a>
+                                                    <a th:href="@{'/publicite/paiement/' + ${revenue.idSociete}}"
+                                                        class="btn btn-sm btn-outline-primary">Paiement</a>
                                                 </td>
                                             </tr>
                                             <tr th:if="${#lists.isEmpty(revenues)}">

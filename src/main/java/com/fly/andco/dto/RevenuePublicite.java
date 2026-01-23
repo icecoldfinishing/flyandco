@@ -2,6 +2,7 @@ package com.fly.andco.dto;
 import java.math.BigDecimal;
 
 public class RevenuePublicite {
+    private Integer idSociete;
     private String societeNom;
     private int totalDiffusions;
     private BigDecimal montantUnitaire;
@@ -11,7 +12,8 @@ public class RevenuePublicite {
     private BigDecimal pourcentageResteAPayer;
     private BigDecimal pourcentagePaye;
     
-    public RevenuePublicite(String societeNom, int totalDiffusions, BigDecimal montantUnitaire, BigDecimal totalRevenue, BigDecimal totalPaye, BigDecimal resteAPayer) {
+    public RevenuePublicite(Integer idSociete, String societeNom, int totalDiffusions, BigDecimal montantUnitaire, BigDecimal totalRevenue, BigDecimal totalPaye, BigDecimal resteAPayer) {
+        this.idSociete = idSociete;
         this.societeNom = societeNom;
         this.totalDiffusions = totalDiffusions;
         this.montantUnitaire = montantUnitaire;
@@ -25,6 +27,13 @@ public class RevenuePublicite {
             this.pourcentageResteAPayer = BigDecimal.ZERO;
             this.pourcentagePaye = BigDecimal.ZERO;
         }
+    }
+
+    public Integer getIdSociete() {
+        return idSociete;
+    }
+    public void setIdSociete(Integer idSociete) {
+        this.idSociete = idSociete;
     }
     public String getSocieteNom() {
         return societeNom;

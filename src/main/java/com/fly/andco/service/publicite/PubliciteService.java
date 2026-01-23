@@ -91,6 +91,7 @@ public class PubliciteService {
             BigDecimal resteAPayer = totalDu.subtract(totalPaye);
 
             results.add(new RevenuePublicite(
+                societe.getIdSociete(),
                 societe.getNom(),
                 countMap.get(societe),
                 unitPrice,
@@ -100,5 +101,70 @@ public class PubliciteService {
             ));
         }
         return results;
+    }
+
+    public void payerParMontant(Integer idSociete, BigDecimal montantGlobal) {
+        Societe societe = new Societe();
+        societe.setIdSociete(idSociete);
+        List<Diffusion> diffusions = diffusionRepository.findBySociete(societe);
+        
+        // 1. Calculate remainders and total broadcasts of eligible (unpaid) diffusions
+        Map<Diffusion, BigDecimal> remainingMap = new HashMap<>();
+        int totalNombreEligible = 0;
+        
+        for (Diffusion diffusion : diffusions) {
+            BigDecimal price = (diffusion.getTarifPublicitaire() != null) ? 
+                              diffusion.getTarifPublicitaire().getMontant() : BigDecimal.ZERO;
+            BigDecimal totalDu = price.multiply(BigDecimal.valueOf(diffusion.getNombre()));
+            
+            BigDecimal alreadyPaid = paiementPubliciteRepository.findByDiffusion(diffusion).stream()
+                .map(PaiementPublicite::getMontant)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            BigDecimal reste = totalDu.subtract(alreadyPaid);
+            if (reste.compareTo(BigDecimal.ZERO) > 0) {
+                remainingMap.put(diffusion, reste);
+                totalNombreEligible += diffusion.getNombre();
+            }
+        }
+        
+        if (totalNombreEligible == 0 || montantGlobal.compareTo(BigDecimal.ZERO) <= 0) return;
+
+        BigDecimal remainingToDistribute = montantGlobal;
+        
+        // 2. Pro-rated distribution (first pass)
+        Map<Diffusion, BigDecimal> distribution = new HashMap<>();
+        for (Diffusion d : remainingMap.keySet()) {
+            BigDecimal share = montantGlobal.multiply(BigDecimal.valueOf(d.getNombre()))
+                                            .divide(BigDecimal.valueOf(totalNombreEligible), 2, java.math.RoundingMode.DOWN);
+            
+            BigDecimal payment = share.min(remainingMap.get(d));
+            distribution.put(d, payment);
+            remainingToDistribute = remainingToDistribute.subtract(payment);
+        }
+        
+        // 3. Surplus distribution (sequential pass for any left over due to rounding or caps)
+        if (remainingToDistribute.compareTo(BigDecimal.ZERO) > 0) {
+            for (Diffusion d : remainingMap.keySet()) {
+                BigDecimal stillDue = remainingMap.get(d).subtract(distribution.get(d));
+                if (stillDue.compareTo(BigDecimal.ZERO) > 0) {
+                    BigDecimal extra = stillDue.min(remainingToDistribute);
+                    distribution.put(d, distribution.get(d).add(extra));
+                    remainingToDistribute = remainingToDistribute.subtract(extra);
+                }
+                if (remainingToDistribute.compareTo(BigDecimal.ZERO) <= 0) break;
+            }
+        }
+        
+        // 4. Save payments
+        for (Map.Entry<Diffusion, BigDecimal> entry : distribution.entrySet()) {
+            if (entry.getValue().compareTo(BigDecimal.ZERO) > 0) {
+                PaiementPublicite p = new PaiementPublicite();
+                p.setDiffusion(entry.getKey());
+                p.setMontant(entry.getValue());
+                p.setDatePaiement(java.time.LocalDate.now());
+                paiementPubliciteRepository.save(p);
+            }
+        }
     }
 }
