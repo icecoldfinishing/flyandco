@@ -3,6 +3,7 @@ package com.fly.andco.controller.publicite;
 import com.fly.andco.service.publicite.PubliciteService;
 import com.fly.andco.model.vols.VolInstance;
 import com.fly.andco.repository.vols.VolInstanceRepository;
+import com.fly.andco.dto.RevenuePublicite;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,19 +35,19 @@ public class PubliciteController {
             year = 2025; // Default to 2025 for the test case
         }
 
-        List<PubliciteService.RevenuePublicite> revenues = publiciteService.getRevenueForMonth(month, year);
+        List<RevenuePublicite> revenues = publiciteService.getRevenueForMonth(month, year);
         
         // Calculate global totals
         java.math.BigDecimal totalGlobal = revenues.stream()
-            .map(PubliciteService.RevenuePublicite::getTotalRevenue)
+            .map(RevenuePublicite::getTotalRevenue)
             .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
 
         java.math.BigDecimal totalPayeGlobal = revenues.stream()
-            .map(PubliciteService.RevenuePublicite::getTotalPaye)
+            .map(RevenuePublicite::getTotalPaye)
             .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
 
         java.math.BigDecimal totalResteGlobal = revenues.stream()
-            .map(PubliciteService.RevenuePublicite::getResteAPayer)
+            .map(RevenuePublicite::getResteAPayer)
             .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
 
 
@@ -67,18 +68,18 @@ public class PubliciteController {
             .findById(idVolInstance.longValue())
             .orElse(null);
 
-        List<PubliciteService.RevenuePublicite> revenues = publiciteService.getRevenueForVolInstance(idVolInstance);
+        List<RevenuePublicite> revenues = publiciteService.getRevenueForVolInstance(idVolInstance);
 
         java.math.BigDecimal totalGlobal = revenues.stream()
-            .map(PubliciteService.RevenuePublicite::getTotalRevenue)
+            .map(RevenuePublicite::getTotalRevenue)
             .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
 
         java.math.BigDecimal totalPayeGlobal = revenues.stream()
-            .map(PubliciteService.RevenuePublicite::getTotalPaye)
+            .map(RevenuePublicite::getTotalPaye)
             .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
 
         java.math.BigDecimal totalResteGlobal = revenues.stream()
-            .map(PubliciteService.RevenuePublicite::getResteAPayer)
+            .map(RevenuePublicite::getResteAPayer)
             .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
 
         model.addAttribute("revenues", revenues);
