@@ -49,6 +49,11 @@ public class PubliciteService {
         return calculateRevenue(diffusions);
     }
 
+    public List<RevenuePublicite> getAllRevenueBySociete() {
+        List<Diffusion> diffusions = diffusionRepository.findAll();
+        return calculateRevenue(diffusions);
+    }
+
     private List<RevenuePublicite> calculateRevenue(List<Diffusion> diffusions) {
         Map<Societe, BigDecimal> revenueMap = new HashMap<>();
         Map<Societe, Integer> countMap = new HashMap<>();

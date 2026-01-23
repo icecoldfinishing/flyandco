@@ -86,10 +86,36 @@ public class PubliciteController {
         model.addAttribute("totalGlobal", totalGlobal);
         model.addAttribute("totalPayeGlobal", totalPayeGlobal);
         model.addAttribute("totalResteGlobal", totalResteGlobal);
-        model.addAttribute("pageTitle", "Revenus Publicitaires - Vol " + volInstance.getVol().getCompagnie().getNom() + " (" + volInstance.getDateDepart().toString() + ")");
-        // Hide filters for this view or adjust them
+        model.addAttribute("pageTitle", "Revenus Publicitaires - Vol " + (volInstance != null ? volInstance.getVol().getCompagnie().getNom() : "") + " (" + (volInstance != null ? volInstance.getDateDepart().toString() : "") + ")");
         model.addAttribute("hideFilters", true); 
 
         return "views/publicite/index";
+    }
+
+    @GetMapping("/societes")
+    public String revenueBySociete(Model model) {
+        List<RevenuePublicite> revenues = publiciteService.getAllRevenueBySociete();
+
+        java.math.BigDecimal totalGlobal = revenues.stream()
+            .map(RevenuePublicite::getTotalRevenue)
+            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+        java.math.BigDecimal totalPayeGlobal = revenues.stream()
+            .map(RevenuePublicite::getTotalPaye)
+            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+        java.math.BigDecimal totalResteGlobal = revenues.stream()
+            .map(RevenuePublicite::getResteAPayer)
+            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+
+        model.addAttribute("revenues", revenues);
+        model.addAttribute("totalGlobal", totalGlobal);
+        model.addAttribute("totalPayeGlobal", totalPayeGlobal);
+        model.addAttribute("totalResteGlobal", totalResteGlobal);
+        model.addAttribute("pageTitle", "Revenus Publicitaires par Société");
+        model.addAttribute("isSocieteView", true);
+        model.addAttribute("hideFilters", true);
+
+        return "views/publicite/societes";
     }
 }

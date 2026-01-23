@@ -8,6 +8,8 @@ public class RevenuePublicite {
     private BigDecimal totalRevenue;
     private BigDecimal totalPaye;
     private BigDecimal resteAPayer;
+    private BigDecimal pourcentageResteAPayer;
+    private BigDecimal pourcentagePaye;
     
     public RevenuePublicite(String societeNom, int totalDiffusions, BigDecimal montantUnitaire, BigDecimal totalRevenue, BigDecimal totalPaye, BigDecimal resteAPayer) {
         this.societeNom = societeNom;
@@ -16,6 +18,13 @@ public class RevenuePublicite {
         this.totalRevenue = totalRevenue;
         this.totalPaye = totalPaye;
         this.resteAPayer = resteAPayer;
+        if (totalRevenue != null && totalRevenue.compareTo(BigDecimal.ZERO) > 0) {
+            this.pourcentageResteAPayer = resteAPayer.multiply(new BigDecimal(100)).divide(totalRevenue, 2, java.math.RoundingMode.HALF_UP);
+            this.pourcentagePaye = totalPaye.multiply(new BigDecimal(100)).divide(totalRevenue, 2, java.math.RoundingMode.HALF_UP);
+        } else {
+            this.pourcentageResteAPayer = BigDecimal.ZERO;
+            this.pourcentagePaye = BigDecimal.ZERO;
+        }
     }
     public String getSocieteNom() {
         return societeNom;
@@ -52,5 +61,17 @@ public class RevenuePublicite {
     }
     public void setResteAPayer(BigDecimal resteAPayer) {
         this.resteAPayer = resteAPayer;
+    }
+    public BigDecimal getPourcentageResteAPayer() {
+        return pourcentageResteAPayer;
+    }
+    public void setPourcentageResteAPayer(BigDecimal pourcentageResteAPayer) {
+        this.pourcentageResteAPayer = pourcentageResteAPayer;
+    }
+    public BigDecimal getPourcentagePaye() {
+        return pourcentagePaye;
+    }
+    public void setPourcentagePaye(BigDecimal pourcentagePaye) {
+        this.pourcentagePaye = pourcentagePaye;
     }
 }
