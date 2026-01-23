@@ -9,9 +9,10 @@ public class TotalRevenueDTO {
     private String avion;
     private String dateDepart;
     private BigDecimal montantTicketsVendus;
-    private BigDecimal montantPublicite; // This represents Paid amount
-    private BigDecimal montantPubliciteTotal;
-    private BigDecimal montantTotal;
+    private BigDecimal montantPublicite; // Paid
+    private BigDecimal montantPubliciteTotal; // Due
+    private BigDecimal montantPubliciteReste; // Remaining
+    private BigDecimal montantTotal; // Tickets + Pub Total
     private BigDecimal pourcentagePayePublicite;
     private BigDecimal pourcentageRestePublicite;
 
@@ -27,6 +28,7 @@ public class TotalRevenueDTO {
         this.montantTicketsVendus = montantTicketsVendus;
         this.montantPublicite = montantPublicite;
         this.montantPubliciteTotal = montantPubliciteTotal;
+        this.montantPubliciteReste = montantPubliciteTotal.subtract(montantPublicite);
         this.montantTotal = montantTotal;
         
         if (montantPubliciteTotal != null && montantPubliciteTotal.compareTo(BigDecimal.ZERO) > 0) {
@@ -46,8 +48,9 @@ public class TotalRevenueDTO {
     public String getDateDepart() { return dateDepart; }
     public BigDecimal getMontantTicketsVendus() { return montantTicketsVendus; }
     public BigDecimal getMontantPublicite() { return montantPublicite; }
-    public BigDecimal getMontantTotal() { return montantTotal; }
     public BigDecimal getMontantPubliciteTotal() { return montantPubliciteTotal; }
+    public BigDecimal getMontantPubliciteReste() { return montantPubliciteReste; }
+    public BigDecimal getMontantTotal() { return montantTotal; }
     public BigDecimal getPourcentagePayePublicite() { return pourcentagePayePublicite; }
     public BigDecimal getPourcentageRestePublicite() { return pourcentageRestePublicite; }
 
@@ -60,6 +63,7 @@ public class TotalRevenueDTO {
     public void setMontantTicketsVendus(BigDecimal montantTicketsVendus) { this.montantTicketsVendus = montantTicketsVendus; }
     public void setMontantPublicite(BigDecimal montantPublicite) { this.montantPublicite = montantPublicite; }
     public void setMontantPubliciteTotal(BigDecimal montantPubliciteTotal) { this.montantPubliciteTotal = montantPubliciteTotal; }
+    public void setMontantPubliciteReste(BigDecimal montantPubliciteReste) { this.montantPubliciteReste = montantPubliciteReste; }
     public void setMontantTotal(BigDecimal montantTotal) { this.montantTotal = montantTotal; }
     public void setPourcentagePayePublicite(BigDecimal pourcentagePayePublicite) { this.pourcentagePayePublicite = pourcentagePayePublicite; }
     public void setPourcentageRestePublicite(BigDecimal pourcentageRestePublicite) { this.pourcentageRestePublicite = pourcentageRestePublicite; }

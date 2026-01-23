@@ -64,8 +64,8 @@ public class VolController {
                 montantPubliciteTotal = montantPubliciteTotal.add(pub.getTotalRevenue());
             }
 
-            // CA Total = CA tickets vendus + CA publicité payée
-            BigDecimal montantTotal = montantTicketsVendus.add(montantPublicitePaye);
+            // CA Total = CA tickets vendus + CA publicité totale (dûe)
+            BigDecimal montantTotal = montantTicketsVendus.add(montantPubliciteTotal);
 
             // Informations du vol
             String aeroportDepart = vi.getVol().getAeroportDepart().getVille();
@@ -91,8 +91,16 @@ public class VolController {
             .map(TotalRevenueDTO::getMontantTicketsVendus)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         
-        BigDecimal totalPublicite = totalRevenues.stream()
+        BigDecimal totalPublicitePaye = totalRevenues.stream()
             .map(TotalRevenueDTO::getMontantPublicite)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalPubliciteTotal = totalRevenues.stream()
+            .map(TotalRevenueDTO::getMontantPubliciteTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalPubliciteReste = totalRevenues.stream()
+            .map(TotalRevenueDTO::getMontantPubliciteReste)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         
         BigDecimal totalGeneral = totalRevenues.stream()
@@ -101,7 +109,9 @@ public class VolController {
 
         model.addAttribute("totalRevenues", totalRevenues);
         model.addAttribute("totalTicketsVendus", totalTicketsVendus);
-        model.addAttribute("totalPublicite", totalPublicite);
+        model.addAttribute("totalPublicitePaye", totalPublicitePaye);
+        model.addAttribute("totalPubliciteTotal", totalPubliciteTotal);
+        model.addAttribute("totalPubliciteReste", totalPubliciteReste);
         model.addAttribute("totalGeneral", totalGeneral);
         return "views/vols/ca-total";
     }

@@ -70,10 +70,12 @@
                                             <th>Aéroport Arrivée</th>
                                             <th>Avion</th>
                                             <th>Date Départ</th>
-                                            <th>CA Tickets Vendus</th>
-                                            <th>CA Publicité Payée</th>
-                                            <th>Status Publicité</th>
-                                            <th>CA Total</th>
+                                            <th>CA Tickets</th>
+                                            <th>Pub (Total Ar)</th>
+                                            <th>Pub (Payé Ar)</th>
+                                            <th>Pub (Reste Ar)</th>
+                                            <th>Status Pub</th>
+                                            <th>CA Global</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -94,8 +96,18 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="text-warning fw-bold"
+                                                <span class="text-info fw-bold"
+                                                    th:text="${#numbers.formatDecimal(tr.montantPubliciteTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-success fw-bold"
                                                     th:text="${#numbers.formatDecimal(tr.montantPublicite, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-warning fw-bold"
+                                                    th:text="${#numbers.formatDecimal(tr.montantPubliciteReste, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
                                                 </span>
                                             </td>
                                             <td>
@@ -128,13 +140,19 @@
                                         </tr>
                                     </tbody>
                                     <tfoot>
-                                        <tr class="table-primary">
+                                        <tr class="table-primary text-center">
                                             <th colspan="4" class="text-end">TOTAL GÉNÉRAL</th>
                                             <th
                                                 th:text="${#numbers.formatDecimal(totalTicketsVendus, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
                                             </th>
                                             <th
-                                                th:text="${#numbers.formatDecimal(totalPublicite, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                th:text="${#numbers.formatDecimal(totalPubliciteTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                            </th>
+                                            <th
+                                                th:text="${#numbers.formatDecimal(totalPublicitePaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                            </th>
+                                            <th
+                                                th:text="${#numbers.formatDecimal(totalPubliciteReste, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
                                             </th>
                                             <th></th>
                                             <th class="fs-5"
