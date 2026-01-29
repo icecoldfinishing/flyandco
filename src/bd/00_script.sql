@@ -494,10 +494,5 @@ INSERT INTO produit (id_societe, id_vol_instance, nom, prix, nombre) VALUES
     (1, 2, 'Tablette de chocolat', 5000, 40),
     (1, 3, 'Tablette de chocolat', 5000, 30);
 
--- Lewis propose un jus de fruits sur chaque vol_instance
-INSERT INTO produit (id_societe, id_vol_instance, nom, prix, nombre) VALUES
-    (2, 1, 'Jus de fruits', 3000, 20),
-    (2, 2, 'Jus de fruits', 3000, 25),
-    (2, 3, 'Jus de fruits', 3000, 15);
 
 

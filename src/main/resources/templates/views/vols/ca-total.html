@@ -71,6 +71,7 @@
                                             <th>Avion</th>
                                             <th>Date Départ</th>
                                             <th>CA Tickets</th>
+                                            <th>CA Produits</th>
                                             <th>Pub (Total Ar)</th>
                                             <th>Pub (Payé Ar)</th>
                                             <th>Pub (Reste Ar)</th>
@@ -93,6 +94,11 @@
                                             <td>
                                                 <span class="text-primary fw-bold"
                                                     th:text="${#numbers.formatDecimal(tr.montantTicketsVendus, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-secondary fw-bold"
+                                                    th:text="${#numbers.formatDecimal(tr.montantProduits, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
                                                 </span>
                                             </td>
                                             <td>
@@ -144,6 +150,9 @@
                                             <th colspan="4" class="text-end">TOTAL GÉNÉRAL</th>
                                             <th
                                                 th:text="${#numbers.formatDecimal(totalTicketsVendus, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
+                                            </th>
+                                            <th
+                                                th:text="${#numbers.formatDecimal(totalProduits, 0, 'COMMA', 0, 'POINT')} + ' Ar'">
                                             </th>
                                             <th
                                                 th:text="${#numbers.formatDecimal(totalPubliciteTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">

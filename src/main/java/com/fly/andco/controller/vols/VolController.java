@@ -8,6 +8,7 @@ import com.fly.andco.dto.TotalRevenueDTO;
 import com.fly.andco.service.vols.VolService;
 import com.fly.andco.service.avions.SiegeService;
 import com.fly.andco.service.publicite.PubliciteService;
+import com.fly.andco.service.produit.ProduitService;
 import com.fly.andco.repository.vols.VolInstanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,9 @@ public class VolController {
 
     @Autowired
     private PubliciteService publiciteService;
+
+    @Autowired
+    private ProduitService produitService;
 
     @GetMapping("/vols")
     public String listVols(Model model) {
@@ -64,8 +68,11 @@ public class VolController {
                 montantPubliciteTotal = montantPubliciteTotal.add(pub.getTotalRevenue());
             }
 
-            // CA Total = CA tickets vendus + CA publicité totale (dûe)
-            BigDecimal montantTotal = montantTicketsVendus.add(montantPubliciteTotal);
+            // Calculer le CA des produits vendus (prix * nombre)
+            BigDecimal montantProduits = produitService.getRevenueForVolInstance(vi.getIdVolInstance());
+
+            // CA Total = CA tickets vendus + CA publicité totale (dûe) + CA produits
+            BigDecimal montantTotal = montantTicketsVendus.add(montantPubliciteTotal).add(montantProduits);
 
             // Informations du vol
             String aeroportDepart = vi.getVol().getAeroportDepart().getVille();
@@ -82,6 +89,7 @@ public class VolController {
                 montantTicketsVendus,
                 montantPublicitePaye,
                 montantPubliciteTotal,
+                montantProduits,
                 montantTotal
             ));
         }
@@ -102,6 +110,10 @@ public class VolController {
         BigDecimal totalPubliciteReste = totalRevenues.stream()
             .map(TotalRevenueDTO::getMontantPubliciteReste)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalProduits = totalRevenues.stream()
+            .map(TotalRevenueDTO::getMontantProduits)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
         
         BigDecimal totalGeneral = totalRevenues.stream()
             .map(TotalRevenueDTO::getMontantTotal)
@@ -112,6 +124,7 @@ public class VolController {
         model.addAttribute("totalPublicitePaye", totalPublicitePaye);
         model.addAttribute("totalPubliciteTotal", totalPubliciteTotal);
         model.addAttribute("totalPubliciteReste", totalPubliciteReste);
+        model.addAttribute("totalProduits", totalProduits);
         model.addAttribute("totalGeneral", totalGeneral);
         return "views/vols/ca-total";
     }
