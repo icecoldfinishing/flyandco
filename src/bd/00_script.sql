@@ -225,18 +225,6 @@ CREATE TABLE societe (
     nom VARCHAR(100) NOT NULL UNIQUE
 );
 
-CREATE TABLE produit (
-    id_produit SERIAL PRIMARY KEY,
-    id_societe INT NOT NULL,
-    id_vol_instance INT,
-    nom VARCHAR(100) NOT NULL,
-    prix NUMERIC(10,2) NOT NULL CHECK (prix > 0),
-    date_ajout DATE DEFAULT CURRENT_DATE,
-    nombre INT NOT NULL CHECK (nombre >= 0),
-    FOREIGN KEY (id_societe) REFERENCES societe(id_societe),
-    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
-    UNIQUE (id_societe, nom, id_vol_instance)
-);
 
 -- =========================
 -- TARIF PUBLICITAIRE
@@ -277,6 +265,32 @@ CREATE TABLE paiement_publicite (
 -- =============================================================
 -- INSERTIONS DE DONNEES DE TEST
 -- =============================================================
+
+    CREATE TABLE produit (
+        id_produit SERIAL PRIMARY KEY,
+        id_societe INT NOT NULL,
+        nom VARCHAR(100) NOT NULL,
+        description TEXT,
+        prix NUMERIC(10,2) NOT NULL CHECK (prix > 0),
+        date_ajout DATE DEFAULT CURRENT_DATE,
+        disponible BOOLEAN DEFAULT TRUE,
+        FOREIGN KEY (id_societe) REFERENCES societe(id_societe),
+        UNIQUE (id_societe, nom)
+    );
+
+    -- =========================
+    -- VENTE_PRODUIT (Produits vendus par vol instance)
+    -- =========================
+    CREATE TABLE vente_produit (
+        id_vente_produit SERIAL PRIMARY KEY,
+        id_vol_instance INT NOT NULL,
+        id_produit INT NOT NULL,
+        quantite INT NOT NULL CHECK (quantite >= 0),
+        date_vente TIMESTAMP DEFAULT NOW(),
+        FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
+        FOREIGN KEY (id_produit) REFERENCES produit(id_produit),
+        UNIQUE (id_vol_instance, id_produit)
+    );
 
 -- UTILISATEUR
 INSERT INTO utilisateur (username, mot_de_passe, role) VALUES
@@ -359,6 +373,26 @@ INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion
 --(3, '2026-01-20', 800000),
 --(4, '2026-01-20', 400000);
 
+
+    -- =========================
+    -- CATALOGUE PRODUITS et VENTES par vol_instance
+    -- =========================
+    -- Produits proposés par les sociétés
+    INSERT INTO produit (id_societe, nom, prix) VALUES
+        (1, 'Tablette de chocolat', 5000),
+        (2, 'Jus de fruits', 3000);
+
+    -- Ventes par vol_instance (quantités)
+    -- Vaniala - Tablette de chocolat
+    INSERT INTO vente_produit (id_vol_instance, id_produit, quantite) VALUES
+    -- Vaniala - Tablette de chocolat (id_produit = 1)
+    (1, 1, 50),
+    (2, 1, 40),
+    (3, 1, 30);
+    -- Lewis - Jus de fruits (id_produit = 2)
+    --(1, 2, 20),
+    --(2, 2, 25),
+    --(3, 2, 15);
 
 
 -- =========================
@@ -484,15 +518,6 @@ INSERT INTO tarif_vol (id_vol_instance, classe, type_passager, montant) VALUES
 (1, 'PREMIUM', 'BEBE', 100000);    
 
 
-
--- =========================
--- PRODUITS pour les 3 vol_instance
--- =========================
--- Vaniala propose une tablette de chocolat sur chaque vol_instance
-INSERT INTO produit (id_societe, id_vol_instance, nom, prix, nombre) VALUES
-    (1, 1, 'Tablette de chocolat', 5000, 50),
-    (1, 2, 'Tablette de chocolat', 5000, 40),
-    (1, 3, 'Tablette de chocolat', 5000, 30);
 
 
 

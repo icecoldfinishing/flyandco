@@ -1,7 +1,6 @@
 package com.fly.andco.model.produit;
 
 import com.fly.andco.model.publicite.Societe;
-import com.fly.andco.model.vols.VolInstance;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,9 +18,8 @@ public class Produit {
 	@JoinColumn(name = "id_societe", nullable = false)
 	private Societe societe;
 
-	@ManyToOne(optional = true)
-	@JoinColumn(name = "id_vol_instance")
-	private VolInstance volInstance;
+	@Column(length = 255)
+	private String description;
 
 	@Column(nullable = false, length = 100)
 	private String nom;
@@ -32,8 +30,8 @@ public class Produit {
 	@Column(name = "date_ajout")
 	private LocalDate dateAjout;
 
-	@Column(nullable = false)
-	private Integer nombre;
+	@Column
+	private Boolean disponible;
 
 	public Produit() {}
 
@@ -53,12 +51,12 @@ public class Produit {
 		this.societe = societe;
 	}
 
-	public VolInstance getVolInstance() {
-		return volInstance;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setVolInstance(VolInstance volInstance) {
-		this.volInstance = volInstance;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getNom() {
@@ -85,12 +83,12 @@ public class Produit {
 		this.dateAjout = dateAjout;
 	}
 
-	public Integer getNombre() {
-		return nombre;
+	public Boolean getDisponible() {
+		return disponible;
 	}
 
-	public void setNombre(Integer nombre) {
-		this.nombre = nombre;
+	public void setDisponible(Boolean disponible) {
+		this.disponible = disponible;
 	}
 }
 

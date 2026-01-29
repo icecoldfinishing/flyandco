@@ -1,7 +1,9 @@
 package com.fly.andco.service.produit;
 
 import com.fly.andco.model.produit.Produit;
+import com.fly.andco.model.produit.VenteProduit;
 import com.fly.andco.repository.produit.ProduitRepository;
+import com.fly.andco.repository.produit.VenteProduitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,9 @@ public class ProduitService {
 	@Autowired
 	private ProduitRepository produitRepository;
 
+	@Autowired
+	private VenteProduitRepository venteProduitRepository;
+
 	public List<Produit> getAll() {
 		return produitRepository.findAll();
 	}
@@ -22,8 +27,9 @@ public class ProduitService {
 		return produitRepository.findById(id);
 	}
 
-	public List<Produit> getByVolInstance(Long idVolInstance) {
-		return produitRepository.findByVolInstance_IdVolInstance(idVolInstance);
+	// Produits liés à vol instance now come from sales entries
+	public List<VenteProduit> getVentesByVolInstance(Long idVolInstance) {
+		return venteProduitRepository.findByVolInstance_IdVolInstance(idVolInstance);
 	}
 
 	public List<Produit> getBySociete(Integer idSociete) {
@@ -38,25 +44,14 @@ public class ProduitService {
 		produitRepository.deleteById(id);
 	}
 
-	public Optional<Produit> updateStock(Long idProduit, int delta) {
-		Optional<Produit> opt = produitRepository.findById(idProduit);
-		opt.ifPresent(p -> {
-			int nouveau = (p.getNombre() == null ? 0 : p.getNombre()) + delta;
-			if (nouveau < 0) {
-				nouveau = 0;
-			}
-			p.setNombre(nouveau);
-			produitRepository.save(p);
-		});
-		return opt;
-	}
+	// Stock management should be handled per sale; keeping placeholder if needed
 
 	public java.math.BigDecimal getRevenueForVolInstance(Long idVolInstance) {
-		java.util.List<Produit> produits = produitRepository.findByVolInstance_IdVolInstance(idVolInstance);
+		java.util.List<VenteProduit> ventes = venteProduitRepository.findByVolInstance_IdVolInstance(idVolInstance);
 		java.math.BigDecimal total = java.math.BigDecimal.ZERO;
-		for (Produit p : produits) {
-			if (p.getPrix() != null && p.getNombre() != null) {
-				total = total.add(p.getPrix().multiply(java.math.BigDecimal.valueOf(p.getNombre())));
+		for (VenteProduit v : ventes) {
+			if (v.getProduit() != null && v.getProduit().getPrix() != null && v.getQuantite() != null) {
+				total = total.add(v.getProduit().getPrix().multiply(java.math.BigDecimal.valueOf(v.getQuantite())));
 			}
 		}
 		return total;

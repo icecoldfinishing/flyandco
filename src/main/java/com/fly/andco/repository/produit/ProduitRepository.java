@@ -8,8 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ProduitRepository extends JpaRepository<Produit, Long> {
-	List<Produit> findByVolInstance_IdVolInstance(Long idVolInstance);
 	List<Produit> findBySociete_IdSociete(Integer idSociete);
-	List<Produit> findByNomIgnoreCaseAndSociete_IdSocieteAndVolInstance_IdVolInstance(String nom, Integer idSociete, Long idVolInstance);
+	List<Produit> findByNomIgnoreCaseAndSociete_IdSociete(String nom, Integer idSociete);
 }
 
