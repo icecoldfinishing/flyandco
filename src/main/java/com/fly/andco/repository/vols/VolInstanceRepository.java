@@ -20,4 +20,6 @@ public interface VolInstanceRepository extends JpaRepository<VolInstance, Long> 
                                   @Param("arrivee") String arrivee,
                                   @Param("start") LocalDateTime start,
                                   @Param("end") LocalDateTime end);
+
+       List<VolInstance> findByDateDepartBetween(LocalDateTime start, LocalDateTime end);
 }

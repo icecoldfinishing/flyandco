@@ -55,6 +55,34 @@
                     </div>
                 </div>
                 <section class="section">
+                    <!-- Filter Card -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="card-title">Filtrer par date</h5>
+                        </div>
+                        <div class="card-body">
+                            <form class="row g-3" method="get" th:action="@{/vols/ca-total}">
+                                <div class="col-md-4">
+                                    <label class="form-label">Date début</label>
+                                    <input type="date" class="form-control" name="start" th:value="${selectedStart}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Date fin</label>
+                                    <input type="date" class="form-control" name="end" th:value="${selectedEnd}">
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary me-2">
+                                        <i class="bi bi-filter"></i> Filtrer
+                                    </button>
+                                    <a th:href="@{/vols/ca-total}" class="btn btn-outline-secondary">
+                                        Réinitialiser
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Results Card -->
                     <div class="card">
                         <div class="card-header">
                             <h5 class="card-title">

@@ -14,8 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +50,22 @@ public class VolController {
     }
 
     @GetMapping("/vols/ca-total")
-    public String showTotalCa(Model model) {
-        List<VolInstance> volInstances = volInstanceRepository.findAll();
+    public String showTotalCa(Model model,
+                              @RequestParam(value = "start", required = false)
+                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+                              @RequestParam(value = "end", required = false)
+                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        LocalDateTime startDT = (start != null) ? start.atStartOfDay() : null;
+        LocalDateTime endDT = (end != null) ? end.atTime(23, 59, 59) : null;
+
+        List<VolInstance> volInstances;
+        if (startDT != null || endDT != null) {
+            LocalDateTime min = (startDT != null) ? startDT : LocalDateTime.of(1900, 1, 1, 0, 0);
+            LocalDateTime max = (endDT != null) ? endDT : LocalDateTime.of(3000, 1, 1, 0, 0);
+            volInstances = volInstanceRepository.findByDateDepartBetween(min, max);
+        } else {
+            volInstances = volInstanceRepository.findAll();
+        }
         List<TotalRevenueDTO> totalRevenues = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -120,6 +138,8 @@ public class VolController {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         model.addAttribute("totalRevenues", totalRevenues);
+        model.addAttribute("selectedStart", start);
+        model.addAttribute("selectedEnd", end);
         model.addAttribute("totalTicketsVendus", totalTicketsVendus);
         model.addAttribute("totalPublicitePaye", totalPublicitePaye);
         model.addAttribute("totalPubliciteTotal", totalPubliciteTotal);
