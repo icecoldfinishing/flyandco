@@ -220,12 +220,22 @@ JOIN compagnie c ON a.id_compagnie = c.id_compagnie
 ORDER BY c.id_compagnie, vi.date_depart, v.id_vol;
 
 
--- =========================
--- SOCIETE (Publicité)
--- =========================
 CREATE TABLE societe (
     id_societe SERIAL PRIMARY KEY,
     nom VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE produit (
+    id_produit SERIAL PRIMARY KEY,
+    id_societe INT NOT NULL,
+    id_vol_instance INT,
+    nom VARCHAR(100) NOT NULL,
+    prix NUMERIC(10,2) NOT NULL CHECK (prix > 0),
+    date_ajout DATE DEFAULT CURRENT_DATE,
+    nombre INT NOT NULL CHECK (nombre >= 0),
+    FOREIGN KEY (id_societe) REFERENCES societe(id_societe),
+    FOREIGN KEY (id_vol_instance) REFERENCES vol_instance(id_vol_instance),
+    UNIQUE (id_societe, nom, id_vol_instance)
 );
 
 -- =========================
@@ -473,13 +483,21 @@ INSERT INTO tarif_vol (id_vol_instance, classe, type_passager, montant) VALUES
 (1, 'PREMIUM', 'ENFANT', 700000),
 (1, 'PREMIUM', 'BEBE', 100000);    
 
+
+
 -- =========================
--- PAIEMENTS PUBLICITE
+-- PRODUITS pour les 3 vol_instance
 -- =========================
--- Vaniala (id_societe = 1) : 1.000.000 Ar le 15/12/2025
--- On le lie à la première diffusion de Vaniala (id_societe=1, id_vol_instance=4)
--- NOTE: id_diffusion SERIAL might start at 1, but to be safe in SQL script, 
--- we link to a diffusion that we know exists for Vaniala.
--- In the script, Vaniala's first diffusion is: (1, 4, 1, '2025-12-01', 10)
+-- Vaniala propose une tablette de chocolat sur chaque vol_instance
+INSERT INTO produit (id_societe, id_vol_instance, nom, prix, nombre) VALUES
+    (1, 1, 'Tablette de chocolat', 5000, 50),
+    (1, 2, 'Tablette de chocolat', 5000, 40),
+    (1, 3, 'Tablette de chocolat', 5000, 30);
+
+-- Lewis propose un jus de fruits sur chaque vol_instance
+INSERT INTO produit (id_societe, id_vol_instance, nom, prix, nombre) VALUES
+    (2, 1, 'Jus de fruits', 3000, 20),
+    (2, 2, 'Jus de fruits', 3000, 25),
+    (2, 3, 'Jus de fruits', 3000, 15);
 
 
