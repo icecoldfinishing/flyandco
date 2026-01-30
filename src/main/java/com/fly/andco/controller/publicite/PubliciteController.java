@@ -4,6 +4,12 @@ import com.fly.andco.service.publicite.PubliciteService;
 import com.fly.andco.model.vols.VolInstance;
 import com.fly.andco.repository.vols.VolInstanceRepository;
 import com.fly.andco.dto.RevenuePublicite;
+import com.fly.andco.model.publicite.Societe;
+import com.fly.andco.model.publicite.Diffusion;
+import com.fly.andco.model.publicite.TarifPublicitaire;
+import com.fly.andco.repository.publicite.SocieteRepository;
+import com.fly.andco.repository.publicite.DiffusionRepository;
+import com.fly.andco.repository.publicite.TarifPublicitaireRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +19,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/publicite")
 public class PubliciteController {
     private final PubliciteService publiciteService;
     private final VolInstanceRepository volInstanceRepository;
+    private final SocieteRepository societeRepository;
+    private final DiffusionRepository diffusionRepository;
+    private final TarifPublicitaireRepository tarifPublicitaireRepository;
 
-    public PubliciteController(PubliciteService publiciteService, VolInstanceRepository volInstanceRepository) {
+    public PubliciteController(PubliciteService publiciteService,
+                               VolInstanceRepository volInstanceRepository,
+                               SocieteRepository societeRepository,
+                               DiffusionRepository diffusionRepository,
+                               TarifPublicitaireRepository tarifPublicitaireRepository) {
         this.publiciteService = publiciteService;
         this.volInstanceRepository = volInstanceRepository;
+        this.societeRepository = societeRepository;
+        this.diffusionRepository = diffusionRepository;
+        this.tarifPublicitaireRepository = tarifPublicitaireRepository;
     }
 
     @GetMapping
@@ -138,5 +155,59 @@ public class PubliciteController {
     public String effectuerPaiement(@RequestParam Integer idSociete, @RequestParam java.math.BigDecimal montant) {
         publiciteService.payerParMontant(idSociete, montant);
         return "redirect:/publicite/societes";
+    }
+
+    // ========= Gestion Sociétés =========
+    @GetMapping("/societes/ajouter")
+    public String ajouterSocieteForm(Model model) {
+        model.addAttribute("pageTitle", "Ajouter une société");
+        model.addAttribute("societes", societeRepository.findAll());
+        return "views/publicite/societes_add";
+    }
+
+    @PostMapping("/societes/ajouter")
+    public String ajouterSociete(@RequestParam("nom") String nom) {
+        if (nom != null && !nom.trim().isEmpty()) {
+            Societe s = new Societe();
+            s.setNom(nom.trim());
+            societeRepository.save(s);
+        }
+        return "redirect:/publicite/societes/ajouter";
+    }
+
+    // ========= Gestion Diffusions =========
+    @GetMapping("/diffusions")
+    public String diffusions(Model model) {
+        model.addAttribute("pageTitle", "Diffusions publicitaires");
+        model.addAttribute("diffusions", diffusionRepository.findAll());
+        model.addAttribute("societes", societeRepository.findAll());
+        model.addAttribute("volInstances", volInstanceRepository.findAll());
+        model.addAttribute("tarifs", tarifPublicitaireRepository.findAll());
+        return "views/publicite/diffusions";
+    }
+
+    @PostMapping("/diffusions")
+    public String createDiffusion(@RequestParam("idSociete") Integer idSociete,
+                                  @RequestParam("idVolInstance") Long idVolInstance,
+                                  @RequestParam("idTarifPub") Integer idTarifPub,
+                                  @RequestParam("dateDiffusion") String dateDiffusion,
+                                  @RequestParam("nombre") Integer nombre) {
+        Societe societe = societeRepository.findById(idSociete).orElse(null);
+        VolInstance volInstance = volInstanceRepository.findById(idVolInstance).orElse(null);
+        TarifPublicitaire tarif = tarifPublicitaireRepository.findById(idTarifPub).orElse(null);
+        if (societe != null && volInstance != null && tarif != null && nombre != null && nombre >= 0) {
+            Diffusion d = new Diffusion();
+            d.setSociete(societe);
+            d.setVolInstance(volInstance);
+            d.setTarifPublicitaire(tarif);
+            d.setNombre(nombre);
+            try {
+                d.setDateDiffusion(LocalDate.parse(dateDiffusion));
+            } catch (Exception e) {
+                d.setDateDiffusion(LocalDate.now());
+            }
+            diffusionRepository.save(d);
+        }
+        return "redirect:/publicite/diffusions";
     }
 }

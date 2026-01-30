@@ -378,8 +378,8 @@ INSERT INTO diffusion (id_societe, id_vol_instance, id_tarif_pub, date_diffusion
     -- CATALOGUE PRODUITS et VENTES par vol_instance
     -- =========================
     -- Produits proposés par les sociétés
-    --INSERT INTO produit (id_societe, nom, prix) VALUES
-      --  (1, 'Tablette de chocolat', 5000),
+INSERT INTO produit (id_societe, nom, prix) VALUES
+      (1, 'Tablette de chocolat', 5000);
       --  (2, 'Jus de fruits', 3000);
 
     -- Ventes par vol_instance (quantités)
